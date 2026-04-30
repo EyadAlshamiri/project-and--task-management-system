@@ -1,0 +1,26 @@
+@import 'ng-zorro-antd/ng-zorro-antd.css';
+
+:root {
+  --primary-color: #1890ff;
+  --secondary-color: #722ed1;
+  --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+* {
+  box-sizing: border-box;
+  padding : 0 ; 
+  margin : 0 ;
+}
+
+a{
+    text-decoration: none;
+}
+
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-gradient);
+  min-height: 100vh;
+}
