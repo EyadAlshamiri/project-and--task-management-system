@@ -1,5 +1,4 @@
-<button nz-button nzType="primary" class="add-btn" (click)="onAddClick()">
-  <span nz-icon nzType="plus"></span>
-  Add New Project
+<button nz-button nzType="primary" class="add-btn" [nzSize]="size" (click)="onAddClick()">
+  <span nz-icon [nzType]="icon" ></span>
+  {{ label }}
 </button>
-

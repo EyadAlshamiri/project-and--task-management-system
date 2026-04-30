@@ -1,60 +1,80 @@
 <nz-card [nzBordered]="false" class="project-card">
-  <div class="card-header">
-    <div class="title-section">
-      <h3 class="project-title">{{ project.title }}</h3>
-      <p class="task-count">{{ project.tasksCount }} مهمة</p>
-    </div>
-    <div class="more-options">
-      <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
-        <span nz-icon nzType="more" nzTheme="outline"></span>
-      </button>
-      <nz-dropdown-menu #menu="nzDropdownMenu">
-        <ul nz-menu>
-          <li nz-menu-item (click)="showModal(project)">تعديل</li>
-          <li
-            nz-menu-item
-            nzDanger
-            nz-popconfirm
-            nzPopconfirmTitle="هل أنت متأكد من أنك تريد حذف المشروع?"
-            (nzOnConfirm)="deleteProject(project.id)"
-          >
-            حذف
-          </li>
-        </ul>
-      </nz-dropdown-menu>
-    </div>
-  </div>
-
-  <div class="card-body">
-    <div class="status-badge" [ngClass]="getStatusClass(project.status)">
-      {{ getStatusLabel(project.status) }}
+  <ng-container *ngIf="!loading; else skeletonTemplate">
+    <div class="card-header">
+      <div class="title-section">
+        <h3 class="project-title">{{ project.title }}</h3>
+        <p class="task-count">{{ project.tasksCount }} مهمة</p>
+      </div>
+      <div class="more-options">
+        <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="menu">
+          <span nz-icon nzType="more" nzTheme="outline"></span>
+        </button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="showModal(project)">تعديل</li>
+            <li
+              nz-menu-item
+              nzDanger
+              nz-popconfirm
+              nzPopconfirmTitle="هل أنت متأكد من أنك تريد حذف المشروع?"
+              (nzOnConfirm)="deleteProject(project.id)"
+            >
+              حذف
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
     </div>
 
-    <div class="team-section">
-      <nz-avatar-group>
-        <ng-container *ngFor="let avatar of project.avatars; index as i">
+    <div class="card-body">
+      <div class="status-badge" [ngClass]="getStatusClass(project.status)">
+        {{ getStatusLabel(project.status) }}
+      </div>
+
+      <div class="team-section">
+        <nz-avatar-group>
+          <ng-container *ngFor="let avatar of project.avatars; index as i">
+            <nz-avatar
+              *ngIf="i < 3"
+              [nzSrc]="avatar"
+              nz-tooltip
+              [nzTooltipTitle]="'Member ' + (i + 1)"
+            ></nz-avatar>
+          </ng-container>
+
           <nz-avatar
-            *ngIf="i < 3"
-            [nzSrc]="avatar"
-            nz-tooltip
-            [nzTooltipTitle]="'Member ' + (i + 1)"
+            *ngIf="extraMembers > 0"
+            style="background-color: #fde3cf; color: #f56a00"
+            [nzText]="'+' + extraMembers"
           ></nz-avatar>
-        </ng-container>
-
-        <nz-avatar
-          *ngIf="extraMembers > 0"
-          style="background-color: #fde3cf; color: #f56a00"
-          [nzText]="'+' + extraMembers"
-        ></nz-avatar>
-      </nz-avatar-group>
+        </nz-avatar-group>
+      </div>
     </div>
-  </div>
 
-  <div class="card-footer">
-    <nz-progress
-      [nzPercent]="getProgress(project)"
-      [nzShowInfo]="false"
-      [nzStrokeColor]="getProgressColor(project.status)"
-    ></nz-progress>
-  </div>
+    <div class="card-footer">
+      <nz-progress
+        [nzPercent]="getProgress(project)"
+        [nzShowInfo]="false"
+        [nzStrokeColor]="getProgressColor(project.status)"
+      ></nz-progress>
+    </div>
+  </ng-container>
+
+  <ng-template #skeletonTemplate>
+    <div class="card-header">
+      <div class="title-section" style="width: 100%">
+        <nz-skeleton-element nzType="input" [nzActive]="true" style="width: 70%; height: 28px; border-radius: 4px;"></nz-skeleton-element>
+        <nz-skeleton-element nzType="input" [nzActive]="true" nzSize="small" style="width: 30%; margin-top: 8px; border-radius: 4px;"></nz-skeleton-element>
+      </div>
+    </div>
+    <div class="card-body">
+      <nz-skeleton-element nzType="button" [nzActive]="true" nzSize="small" style="width: 60px"></nz-skeleton-element>
+      <div class="team-section">
+        <nz-skeleton-element nzType="avatar" [nzActive]="true" nzSize="small" *ngFor="let i of [1,2,3]"></nz-skeleton-element>
+      </div>
+    </div>
+    <div class="card-footer">
+      <nz-skeleton-element nzType="input" [nzActive]="true" nzSize="small" style="width: 100%"></nz-skeleton-element>
+    </div>
+  </ng-template>
 </nz-card>

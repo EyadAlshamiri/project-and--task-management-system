@@ -77,4 +77,12 @@ export class ProjectService {
     return this.projects;
   }
 
+  addProject(project: Omit<Project, 'id'>): Project {
+    const newProject: Project = {
+      ...project,
+      id: Date.now(),
+    };
+    this.projects.push(newProject);
+    return newProject;
+  }
 }

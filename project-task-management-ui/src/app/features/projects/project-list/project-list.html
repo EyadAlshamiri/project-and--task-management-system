@@ -13,10 +13,41 @@
   </div>
 </div>
 
-<div class="project-cards">
-  <app-project-card
-    *ngFor="let project of filteredProjects"
-    [project]="project"
-  ></app-project-card>
-</div>
+<ng-container *ngIf="isLoading; else loadedContent">
+  <div class="project-cards">
+    <app-project-card
+      *ngFor="let item of [1,2,3,4,5,6]"
+      [loading]="true"
+    ></app-project-card>
+  </div>
+</ng-container>
+
+<ng-template #loadedContent>
+  <ng-container *ngIf="projects.length; else noProjects">
+    <div class="project-cards">
+      <app-project-card
+        *ngFor="let project of filteredProjects"
+        [project]="project"
+      ></app-project-card>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #noProjects>
+  <div class="no-projects-empty">
+    <div class="empty-state-container">
+      <div class="empty-icon-wrapper">
+        <svg width="120" height="100" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.5 16.6667H37.5L50 29.1667H107.5C114.375 29.1667 120 34.7917 120 41.6667V83.3333C120 90.2083 114.375 95.8333 107.5 95.8333H12.5C5.625 95.8333 0 90.2083 0 83.3333V29.1667C0 22.2917 5.625 16.6667 12.5 16.6667Z" fill="#E2E8F0"/>
+          <path d="M50 29.1667H107.5C114.375 29.1667 120 34.7917 120 41.6667V83.3333H0V29.1667C0 22.2917 5.625 16.6667 12.5 16.6667H37.5L50 29.1667Z" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/>
+          <rect x="20" y="30" width="80" height="40" rx="4" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+          <path d="M12.5 45.8333H107.5C110.952 45.8333 113.75 48.6316 113.75 52.0833V89.5833C113.75 93.0351 110.952 95.8333 107.5 95.8333H12.5C9.04822 95.8333 6.25 93.0351 6.25 89.5833V52.0833C6.25 48.6316 9.04822 45.8333 12.5 45.8333Z" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3 class="empty-title">لا توجد مشاريع بعد</h3>
+      <p class="empty-desc">لا يوجد مشاريع أنشئ مشروعك الجديد .</p>
+      <app-add-button label="أنشئ مشروعك الجديد " [icon]="''" (addClick)="onAddClick()"></app-add-button>
+    </div>
+  </div>
+</ng-template>
 

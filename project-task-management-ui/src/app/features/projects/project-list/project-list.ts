@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { ProjectCard } from '../../../shared/components/project-card/project-card';
 import { SearchBar } from '../../../shared/components/search-bar/search-bar';
 import { AddButton } from '../../../shared/components/add-button/add-button';
@@ -12,7 +14,7 @@ import { ProjectStatus } from '../../../core/models/project';
 
 @Component({
   selector: 'app-project-list',
-  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, ProjectCard, SearchBar, AddButton],
+  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzSkeletonModule, ProjectCard, SearchBar, AddButton],
   templateUrl: './project-list.html',
   styleUrl: './project-list.css',
 })
@@ -21,12 +23,25 @@ export class ProjectList implements OnInit {
   filteredProjects: any[] = [];
   sortOrder: 'asc' | 'desc' = 'asc';
   filterStatus: ProjectStatus | 'ALL' = 'ALL';
+  isLoading = true;
 
   constructor(private projectService: ProjectService) {}
 
   ngOnInit(): void {
-    this.projects = this.projectService.getProjects();
-    this.applyFiltersAndSort();
+    this.loadProjects();
+  }
+
+  private loadProjects(): void {
+    this.isLoading = true;
+    try {
+      const data = this.projectService.getProjects();
+      this.projects = data || [];
+      this.applyFiltersAndSort();
+    } catch (error) {
+      console.error('Error loading projects:', error);
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   onSearchChange(searchText: string): void {
@@ -34,8 +49,18 @@ export class ProjectList implements OnInit {
   }
 
   onAddClick(): void {
-    // منطق إضافة مشروع جديد
-    console.log('إضافة مشروع جديد - project-list.ts:37');
+    const newProject = {
+      title: 'مشروع جديد',
+      status: ProjectStatus.ACTIVE,
+      tasksCount: 0,
+      avatars: [],
+      progress: 0,
+      tasks: [],
+    };
+
+    this.projectService.addProject(newProject);
+    this.projects = this.projectService.getProjects();
+    this.applyFiltersAndSort();
   }
 
   onFilterClick(): void {
@@ -69,9 +94,9 @@ export class ProjectList implements OnInit {
     let filtered = [...this.projects];
 
     // تطبيق البحث
-    if (searchText.trim()) {
+    if (searchText && searchText.trim()) {
       const value = searchText.trim().toLowerCase();
-      filtered = filtered.filter((project) => project.title.toLowerCase().includes(value));
+      filtered = filtered.filter((project) => (project.title || '').toLowerCase().includes(value));
     }
 
     // تطبيق التصفية حسب الحالة
@@ -81,8 +106,8 @@ export class ProjectList implements OnInit {
 
     // تطبيق الترتيب
     filtered.sort((a, b) => {
-      const titleA = a.title.toLowerCase();
-      const titleB = b.title.toLowerCase();
+      const titleA = (a.title || '').toLowerCase();
+      const titleB = (b.title || '').toLowerCase();
       if (this.sortOrder === 'asc') {
         return titleA.localeCompare(titleB);
       } else {

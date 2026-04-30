@@ -9,6 +9,7 @@ import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 
 @Component({
   selector: 'app-project-card',
@@ -23,11 +24,13 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzTooltipModule,
     NzPopconfirmModule,
     NzIconModule,
+    NzSkeletonModule,
   ],
   templateUrl: './project-card.html',
   styleUrl: './project-card.css',
 })
 export class ProjectCard {
+  @Input() loading: boolean = false;
   @Input() project: any = {
     id: 0,
     title: '',
