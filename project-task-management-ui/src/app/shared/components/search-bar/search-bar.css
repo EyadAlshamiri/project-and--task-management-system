@@ -1,0 +1,33 @@
+.search-bar {
+  flex: 1;
+  min-width: 400px;
+  transition: all 0.3s;
+}
+
+.search-bar:focus-within {
+  box-shadow: 0 0 0 2px var(--primary-color);
+  border-radius: 7px;
+}
+
+nz-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border: none;
+  background-color: var(--secondary-bg-color);
+  border-radius: 7px;
+  padding: 10px 5px;
+}
+
+nz-input-group input {
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  color: var(--main-text-color);
+}
+
+nz-input-group input::placeholder {
+  color: var(--muted-text-color);
+}

@@ -1,0 +1,15 @@
+<div class="search-bar">
+  <nz-input-group [nzPrefix]="prefixIconSearch">
+    <input
+      type="text"
+      nz-input
+      placeholder="Search projects..."
+      [(ngModel)]="searchText"
+      (ngModelChange)="onSearchChange()"
+    />
+  </nz-input-group>
+  <ng-template #prefixIconSearch>
+    <span nz-icon nzType="search" style="color: #64748b;"></span>
+  </ng-template>
+</div>
+

@@ -2,29 +2,34 @@
   <nz-sider
     class="menu-sidebar"
     nzCollapsible
-    nzWidth="256px"
-    nzBreakpoint="md"
+    nzWidth="260px"
     [(nzCollapsed)]="isCollapsed"
     [nzTrigger]="null"
+    nzTheme="light"
   >
+    <!-- Logo -->
     <div class="sidebar-logo">
-      <a href="./app.html">
-        <img [src]="logo" alt="logo" />
-        <h1>إدارة المشاريع</h1>
-      </a>
+      <img [src]="logo" alt="logo" style="width: 32px" />
+      <h1 *ngIf="!isCollapsed"> إدارة المشاريع</h1>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="المشاريع" nzIcon="project">
-        <ul>
-          <!-- Project Items -->
 
-          @for (project of projects; track project.id) {
-            <li nz-menu-item nzMatchRouter>
-              <a [routerLink]="['/projects', project.id]" class="project-name">
-                {{ project.name }}
-              </a>
-            </li>
-          }
+    <!-- Menu -->
+    <ul nz-menu nzTheme="light" nzMode="inline">
+      <li nz-menu-group >
+        <ul>
+          <li nz-menu-item nzSelected>
+            <span nz-icon nzType="dashboard"></span>
+            <span>الرئيسية</span>
+          </li>
+          <li nz-submenu nzTitle="المشاريع" nzIcon="project">
+            <ul>
+              @for (project of projects; track project.id) {
+                <li nz-menu-item>
+                  <a [routerLink]="['/projects', project.id]">{{ project.title }}</a>
+                </li>
+              }
+            </ul>
+          </li>
         </ul>
       </li>
     </ul>
@@ -43,7 +48,7 @@
         </nz-badge>
         <div class="user-profile">
           <nz-avatar
-            nzSrc="https://randomuser.me/api/portraits/men/32.jpg"
+            [nzSrc]="userAvatar"
             nzSize="default"
           ></nz-avatar>
         </div>

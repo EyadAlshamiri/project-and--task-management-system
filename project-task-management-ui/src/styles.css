@@ -3,7 +3,13 @@
 :root {
   --primary-color: #1890ff;
   --secondary-color: #722ed1;
+  --bg-color: #ffffff;
+  --secondary-bg-color: #e2e8f0;
   --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --main-text-color: #000000;
+  --muted-text-color: #64748b;
+  --primary-box-shadow : 2px 4px 5px 1px rgba(59, 131, 246, 0.484); 
+  --box-shadow : 2px 4px 7px -1px #00000071;
 }
 
 * {
