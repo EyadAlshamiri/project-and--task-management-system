@@ -1,52 +1,56 @@
-# ProjectTaskManagementUi
+# Project Task Management UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.9.
+تطبيق Angular لإدارة المشاريع والمهام، مبني باستخدام Angular 21 و ng-zorro-antd للواجهة.
 
-## Development server
+## الميزات
+- إدارة المشاريع: إضافة، تعديل، حذف، وعرض المشاريع.
+- إدارة المهام: إضافة، تعديل، حذف، وعرض المهام المرتبطة بالمشاريع.
+- واجهة عربية باستخدام ng-zorro-antd.
+- تخزين محلي باستخدام localStorage.
 
-To start a local development server, run:
+## التقنيات المستخدمة
+- Angular 21
+- ng-zorro-antd (UI Library)
+- TypeScript
+- RxJS
+- Vitest (للاختبارات)
 
+## التطوير
+
+### تشغيل الخادم المحلي
 ```bash
 ng serve
 ```
+افتح المتصفح على `http://localhost:4200/`.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
+### البناء للإنتاج
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
+### الاختبارات
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+## هيكل المشروع
+```
+src/
+├── app/
+│   ├── core/
+│   │   ├── models/          # النماذج (Project, Task)
+│   │   └── services/        # الخدمات (ProjectService, TaskService)
+│   ├── features/
+│   │   ├── projects/        # مكونات المشاريع
+│   │   └── tasks/           # مكونات المهام
+│   ├── shared/              # مكونات مشتركة
+│   ├── app.config.ts        # إعدادات التطبيق
+│   ├── app.routes.ts        # التوجيه
+│   └── app.html             # القالب الرئيسي
+```
 
-For end-to-end (e2e) testing, run:
+## الترخيص
+هذا المشروع مفتوح المصدر.
 
 ```bash
 ng e2e
