@@ -22,6 +22,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectTaskService, ProjectTaskService>();
 
 var app = builder.Build();
 
