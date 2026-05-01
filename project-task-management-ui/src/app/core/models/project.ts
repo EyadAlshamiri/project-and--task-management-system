@@ -13,9 +13,10 @@ export interface Project {
   projectManagerName?: string;
 
   status: ProjectStatus;
-  createdAt?: Date;
-  startDate?: Date;
-  endDate?: Date;
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | string;
+  createdAt?: Date | string;
+  startDate?: Date | string;
+  endDate?: Date | string;
 
   tasksCount: number;
   avatars: string[];

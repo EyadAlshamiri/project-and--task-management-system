@@ -7,8 +7,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
 import { TaskModal } from '../../tasks/task-modal/task-modal';
 import { ProjectService } from '../../../core/services/project.service';
@@ -29,12 +29,12 @@ import { MemberSelectionModal, MemberSelectionData } from '../../../shared/compo
     NzSelectModule,
     NzButtonModule,
     NzIconModule,
-    NzCardModule,
+    NzDatePickerModule,
     CustomButton
   ],
   templateUrl: './project-form.html',
   styleUrl: './project-form.css',
-  providers: [NzModalService] // Provide service at component level if not provided globally
+  providers: [NzModalService]
 })
 export class ProjectForm implements OnInit {
   projectForm!: FormGroup;
@@ -45,6 +45,7 @@ export class ProjectForm implements OnInit {
   ];
 
   selectedMembers: User[] = [];
+  projectManager: User | null = null;
   showAllTasks = false;
 
   constructor(
@@ -62,8 +63,12 @@ export class ProjectForm implements OnInit {
       title: [null, [Validators.required, Validators.minLength(3)]],
       description: [null],
       status: [ProjectStatus.ACTIVE, [Validators.required]],
-      members: [[]], // Array of selected user IDs
-      tasks: this.fb.array([]), // Dynamic tasks array
+      startDate: [null, [Validators.required]],
+      endDate: [null, [Validators.required]],
+      priority: ['MEDIUM', [Validators.required]],
+      projectManagerName: [null, [Validators.required]],
+      members: [[]],
+      tasks: this.fb.array([]),
     });
   }
 
@@ -80,7 +85,6 @@ export class ProjectForm implements OnInit {
   }
 
   goToTasksPage(): void {
-    // Map FormArray values to the format expected by TaskList
     const tasksData = this.tasks.value.map((t: any, index: number) => ({
       id: index + 1,
       name: t.title,
@@ -95,8 +99,9 @@ export class ProjectForm implements OnInit {
     const modal = this.modalService.create({
       nzTitle: 'إضافة مهمة جديدة',
       nzContent: TaskModal,
+      nzData: { task: null, members: this.selectedMembers },
       nzFooter: null,
-      nzWidth: 500
+      nzWidth: 600
     });
 
     modal.afterClose.subscribe(result => {
@@ -104,11 +109,15 @@ export class ProjectForm implements OnInit {
         const taskForm = this.fb.group({
           title: [result.title, [Validators.required]],
           description: [result.description],
-          status: [result.status, [Validators.required]]
+          status: [result.status, [Validators.required]],
+          dueDate: [result.dueDate],
+          priority: [result.priority],
+          executorName: [result.executorName],
+          subTasks: [result.subTasks || []]
         });
         this.tasks.push(taskForm);
-        this.showAllTasks = true; // Expand to show the newly added task
-        this.cdr.detectChanges(); // Ensure UI updates immediately
+        this.showAllTasks = true;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -119,15 +128,15 @@ export class ProjectForm implements OnInit {
     const modal = this.modalService.create({
       nzTitle: 'تعديل المهمة',
       nzContent: TaskModal,
-      nzData: task,
+      nzData: { task: task, members: this.selectedMembers },
       nzFooter: null,
-      nzWidth: 500
+      nzWidth: 600
     });
 
     modal.afterClose.subscribe(result => {
       if (result) {
         this.tasks.at(index).patchValue(result);
-        this.cdr.detectChanges(); // Ensure UI updates immediately
+        this.cdr.detectChanges();
       }
     });
   }
@@ -137,6 +146,33 @@ export class ProjectForm implements OnInit {
     this.cdr.detectChanges();
   }
 
+  openManagerSelectionModal(): void {
+    const currentId = this.projectManager?.id ? [this.projectManager.id] : [];
+    
+    const modal = this.modalService.create({
+      nzTitle: 'إختيار مدير المشروع',
+      nzContent: MemberSelectionModal,
+      nzData: {
+        selectedUserIds: currentId,
+        singleSelection: true
+      } as MemberSelectionData,
+      nzFooter: null,
+      nzWidth: 480,
+      nzBodyStyle: { padding: '16px' }
+    });
+
+    modal.afterClose.subscribe((result: number[] | null) => {
+      if (result !== null && result !== undefined && result.length > 0) {
+        this.userService.getUsersByIds(result).subscribe(users => {
+          if (users.length > 0) {
+            this.projectManager = users[0];
+            this.projectForm.patchValue({ projectManagerName: users[0].name });
+            this.cdr.detectChanges();
+          }
+        });
+      }
+    });
+  }
 
   openMemberSelectionModal(): void {
     const currentMemberIds = this.projectForm.get('members')?.value || [];
@@ -147,20 +183,17 @@ export class ProjectForm implements OnInit {
       nzData: {
         selectedUserIds: currentMemberIds
       } as MemberSelectionData,
-      nzFooter: null, // Modal has its own footer
+      nzFooter: null,
       nzWidth: 480,
       nzBodyStyle: { padding: '16px' }
     });
 
     modal.afterClose.subscribe((result: number[] | null) => {
       if (result !== null && result !== undefined) {
-        // Update form control
         this.projectForm.patchValue({ members: result });
-        
-        // Fetch full user objects for display
         this.userService.getUsersByIds(result).subscribe(users => {
-          this.selectedMembers = [...users]; // New reference
-          this.cdr.detectChanges(); // Force UI update
+          this.selectedMembers = [...users];
+          this.cdr.detectChanges();
         });
       }
     });
@@ -173,13 +206,21 @@ export class ProjectForm implements OnInit {
       const newProject = {
         title: formValue.title,
         status: formValue.status,
+        startDate: formValue.startDate,
+        endDate: formValue.endDate,
+        priority: formValue.priority,
+        projectManagerName: formValue.projectManagerName,
         tasksCount: formValue.tasks ? formValue.tasks.length : 0,
-        // Map selected users to just their avatar URLs for the project model
         avatars: this.selectedMembers.map(u => u.avatar),
         progress: 0,
         tasks: formValue.tasks ? formValue.tasks.map((t: any, i: number) => ({
           id: i + 1,
           title: t.title,
+          status: t.status,
+          dueDate: t.dueDate,
+          priority: t.priority,
+          executorName: t.executorName,
+          subTasks: t.subTasks,
           completed: t.status === 'DONE'
         })) : [],
       };

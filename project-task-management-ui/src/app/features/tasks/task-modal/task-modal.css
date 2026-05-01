@@ -11,6 +11,10 @@
   gap: 16px;
 }
 
+.full-width-item {
+  grid-column: 1 / -1;
+}
+
 .floating-label-item {
   margin-bottom: 0;
 }
@@ -36,7 +40,7 @@
 .floating-label {
   position: absolute;
   top: -10px;
-  left: 12px;
+  inset-inline-start: 12px;
   background: white;
   padding: 0 4px;
   font-size: 12px;
@@ -51,7 +55,7 @@
 
 .required-asterisk {
   position: absolute;
-  right: 12px;
+  inset-inline-end: 12px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--error-color);
@@ -60,7 +64,8 @@
 }
 
 ::ng-deep .input-wrapper input.ant-input,
-::ng-deep .input-wrapper textarea.ant-input {
+::ng-deep .input-wrapper textarea.ant-input,
+::ng-deep .input-wrapper .ant-picker {
   border: none !important;
   box-shadow: none !important;
   padding: 0;
@@ -86,8 +91,73 @@
   margin-top: 10px;
 }
 
+/* Subtasks Styles */
+.subtasks-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.subtasks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.subtasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-inline-end: 5px;
+}
+
+.subtask-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-body);
+  padding: 10px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-light);
+}
+
+.subtask-checkbox-item {
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.delete-icon {
+  cursor: pointer;
+  color: var(--error-color);
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.delete-icon:hover {
+  opacity: 0.7;
+  transform: scale(1.1);
+}
+
 @media (max-width: 576px) {
   .form-grid {
     grid-template-columns: 1fr;
+  }
+  .subtask-item {
+    flex-wrap: wrap;
   }
 }

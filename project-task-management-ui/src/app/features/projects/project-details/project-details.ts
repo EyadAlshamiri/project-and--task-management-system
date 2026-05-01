@@ -1,9 +1,85 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ProjectService } from '../../../core/services/project.service';
+import { Project } from '../../../core/models/project';
+
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { CustomButton } from '../../../shared/components/custom-button/custom-button';
 
 @Component({
   selector: 'app-project-details',
-  imports: [],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    NzGridModule,
+    NzTagModule,
+    NzProgressModule,
+    NzIconModule,
+    NzTabsModule,
+    NzEmptyModule,
+    NzButtonModule,
+    NzTooltipModule,
+    CustomButton
+  ],
   templateUrl: './project-details.html',
-  styleUrl: './project-details.css',
+  styleUrl: './project-details.css'
 })
-export class ProjectDetails {}
+export class ProjectDetails implements OnInit {
+  project: Project | undefined;
+  isLoading = true;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private projectService: ProjectService
+  ) {}
+
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      const id = parseInt(idParam, 10);
+      this.project = this.projectService.getProjectById(id);
+    }
+    this.isLoading = false;
+  }
+
+  goBack(): void {
+    this.router.navigate(['/projects']);
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'ACTIVE': return 'blue';
+      case 'ON HOLD': return 'orange';
+      case 'COMPLETED': return 'green';
+      default: return 'default';
+    }
+  }
+
+  getPriorityColor(priority: string): string {
+    switch (priority?.toUpperCase()) {
+      case 'HIGH': return 'red';
+      case 'MEDIUM': return 'orange';
+      case 'LOW': return 'green';
+      default: return 'default';
+    }
+  }
+
+  getTaskStatusColor(status: string): string {
+    switch (status) {
+      case 'TODO': return 'default';
+      case 'IN_PROGRESS': return 'processing';
+      case 'DONE': return 'success';
+      default: return 'default';
+    }
+  }
+}

@@ -1,14 +1,9 @@
 <form nz-form [formGroup]="taskForm" nzLayout="vertical" class="task-modal-form">
   <div class="form-grid">
     <!-- Title -->
-    <nz-form-item class="floating-label-item">
+    <nz-form-item class="floating-label-item full-width-item">
       <nz-form-control nzErrorTip="عنوان المهمة مطلوب.">
-        <div
-          class="input-wrapper"
-          [class.has-error]="
-            taskForm.get('title')?.invalid && taskForm.get('title')?.touched
-          "
-        >
+        <div class="input-wrapper" [class.has-error]="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
           <label class="floating-label">عنوان المهمة</label>
           <input nz-input formControlName="title" />
           <span class="required-asterisk">*</span>
@@ -29,6 +24,42 @@
         </div>
       </nz-form-control>
     </nz-form-item>
+
+    <!-- Priority -->
+    <nz-form-item class="floating-label-item">
+      <nz-form-control>
+        <div class="input-wrapper">
+          <label class="floating-label">الأولوية</label>
+          <nz-select formControlName="priority" nzBorderless>
+            <nz-option nzValue="LOW" nzLabel="منخفض"></nz-option>
+            <nz-option nzValue="MEDIUM" nzLabel="متوسط"></nz-option>
+            <nz-option nzValue="HIGH" nzLabel="عالي"></nz-option>
+          </nz-select>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Due Date -->
+    <nz-form-item class="floating-label-item">
+      <nz-form-control>
+        <div class="input-wrapper">
+          <label class="floating-label">تاريخ الاستحقاق</label>
+          <nz-date-picker formControlName="dueDate" nzBorderless style="width: 100%"></nz-date-picker>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Executor Name -->
+    <nz-form-item class="floating-label-item">
+      <nz-form-control>
+        <div class="input-wrapper">
+          <label class="floating-label">المسند إليه</label>
+          <nz-select formControlName="executorName" nzBorderless nzPlaceHolder="اختر المسند إليه">
+            <nz-option *ngFor="let member of projectMembers" [nzValue]="member.name" [nzLabel]="member.name"></nz-option>
+          </nz-select>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
   </div>
 
   <!-- Description -->
@@ -36,32 +67,57 @@
     <nz-form-control>
       <div class="input-wrapper">
         <label class="floating-label">الوصف</label>
-        <textarea
-          nz-input
-          formControlName="description"
-          [nzAutosize]="{ minRows: 4, maxRows: 6 }"
-        ></textarea>
+        <textarea nz-input formControlName="description" [nzAutosize]="{ minRows: 3, maxRows: 5 }"></textarea>
       </div>
     </nz-form-control>
   </nz-form-item>
 
+  <nz-divider></nz-divider>
+
+  <!-- Subtasks -->
+  <div class="subtasks-section">
+    <div class="subtasks-header">
+      <h4 class="section-title">المهام الفرعية</h4>
+      <app-custom-button label="إضافة" type="dashed" (btnClick)="addSubTask()"></app-custom-button>
+    </div>
+
+    <div formArrayName="subTasks" class="subtasks-list">
+      <div *ngFor="let subTask of subTasks.controls; let i = index" [formGroupName]="i" class="subtask-item">
+        
+        <nz-form-item class="subtask-checkbox-item">
+          <nz-form-control>
+            <label nz-checkbox formControlName="isCompleted"></label>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="floating-label-item flex-1">
+          <nz-form-control nzErrorTip="العنوان مطلوب">
+            <div class="input-wrapper" [class.has-error]="subTask.get('title')?.invalid && subTask.get('title')?.touched">
+              <label class="floating-label">العنوان</label>
+              <input nz-input formControlName="title" placeholder="عنوان المهمة الفرعية" />
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="floating-label-item flex-1">
+          <nz-form-control>
+            <div class="input-wrapper">
+              <label class="floating-label">المنفذ</label>
+              <nz-select formControlName="executorName" nzBorderless nzPlaceHolder="اختر المنفذ">
+                <nz-option *ngFor="let member of projectMembers" [nzValue]="member.name" [nzLabel]="member.name"></nz-option>
+              </nz-select>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+
+        <span nz-icon nzType="delete" nzTheme="outline" class="delete-icon" (click)="removeSubTask(i)"></span>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-footer">
-    <app-custom-button
-      label="إلغاء"
-      type="default"
-      (btnClick)="cancel()"
-    ></app-custom-button>
-    <app-custom-button
-      label="إضافة المهمة"
-      type="primary"
-      (btnClick)="submit()"
-      *ngIf="!isEdit"
-    ></app-custom-button>
-    <app-custom-button
-      label="تعديل المهمة"
-      type="primary"
-      (btnClick)="submit()"
-      *ngIf="isEdit"
-    ></app-custom-button>
+    <app-custom-button label="إلغاء" type="default" (btnClick)="cancel()"></app-custom-button>
+    <app-custom-button label="إضافة المهمة" type="primary" (btnClick)="submit()" *ngIf="!isEdit"></app-custom-button>
+    <app-custom-button label="تعديل المهمة" type="primary" (btnClick)="submit()" *ngIf="isEdit"></app-custom-button>
   </div>
 </form>

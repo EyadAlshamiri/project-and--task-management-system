@@ -15,6 +15,7 @@ import { UserService } from '../../../core/services/user.service';
 
 export interface MemberSelectionData {
   selectedUserIds: number[];
+  singleSelection?: boolean;
 }
 
 @Component({
@@ -96,6 +97,9 @@ export class MemberSelectionModal implements OnInit, OnDestroy {
     if (this.selectedUserIds.has(userId)) {
       this.selectedUserIds.delete(userId);
     } else {
+      if (this.data?.singleSelection) {
+        this.selectedUserIds.clear();
+      }
       this.selectedUserIds.add(userId);
     }
     this.cdr.detectChanges();

@@ -25,7 +25,7 @@
             <ul>
               @for (project of projects; track project.id) {
                 <li nz-menu-item>
-                  <a [routerLink]="['/projects', project.id]">{{ project.title }}</a>
+                  <a [routerLink]="['/projects/details-project', project.id]">{{ project.title }}</a>
                 </li>
               }
             </ul>

@@ -1,13 +1,14 @@
 export interface Task {
-  id: number;                    // بديل TaskId
+  id: number;
   title: string;
+  description?: string;
   status: string;
 
-  taskExecutorName?: string;
+  executorName?: string;
 
-  createdAt?: Date;
-  dueDate?: Date;
-  priority?: 'low' | 'medium' | 'high';
+  createdAt?: Date | string;
+  dueDate?: Date | string;
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | string;
 
   subTasks?: Task[];             
 }

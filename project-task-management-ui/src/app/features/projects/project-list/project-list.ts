@@ -68,6 +68,10 @@ export class ProjectList implements OnInit {
     this.router.navigate(['/projects/add-project']);
   }
 
+  goToProjectDetails(id: number): void {
+    this.router.navigate(['/projects/details-project', id]);
+  }
+
   onFilterClick(): void {
     const statuses: (ProjectStatus | 'ALL')[] = ['ALL', ProjectStatus.ACTIVE, ProjectStatus.ON_HOLD, ProjectStatus.COMPLETED];
     const currentIndex = statuses.indexOf(this.filterStatus);
