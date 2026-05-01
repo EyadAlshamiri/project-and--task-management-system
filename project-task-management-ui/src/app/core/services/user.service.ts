@@ -18,6 +18,10 @@ export class UserService {
     { id: 8, name: 'ليلى حمد', avatar: 'assets/avatars/avatar4.png' }
   ];
 
+  getAllUsers(): Observable<User[]> {
+    return of(this.mockUsers);
+  }
+
   searchUsers(query: string): Observable<User[]> {
     if (!query || query.trim() === '') {
       return of(this.mockUsers);

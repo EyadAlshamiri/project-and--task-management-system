@@ -1,6 +1,8 @@
 <div class="project-list-header">
-  <app-search-bar (searchChange)="onSearchChange($event)"></app-search-bar>
-
+  <div class="search-bar">
+    <app-search-bar (searchChange)="onSearchChange($event)"></app-search-bar>
+  </div>
+  
   <div class="header-actions">
     <button nz-button nzType="text" class="filter-btn" (click)="onFilterClick()">
       <span nz-icon nzType="filter" nzTheme="outline"></span>
@@ -29,6 +31,8 @@
         *ngFor="let project of filteredProjects"
         [project]="project"
         (click)="goToProjectDetails(project.id)"
+        (edit)="onEditProject($event)"
+        (delete)="onDeleteProject($event)"
         style="cursor: pointer;"
       ></app-project-card>
     </div>

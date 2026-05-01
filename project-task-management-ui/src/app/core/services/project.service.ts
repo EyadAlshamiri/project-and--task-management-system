@@ -115,4 +115,23 @@ export class ProjectService {
       this.projects[index] = updatedProject;
     }
   }
+
+  deleteProject(id: number): void {
+    this.projects = this.projects.filter(p => p.id !== id);
+  }
+
+  getTaskById(taskId: number): any {
+    for (const project of this.projects) {
+      const task = project.tasks?.find(t => t.id === taskId);
+      if (task) return task;
+    }
+    return undefined;
+  }
+
+  deleteTask(projectId: number, taskId: number): void {
+    const project = this.projects.find(p => p.id === projectId);
+    if (project && project.tasks) {
+      project.tasks = project.tasks.filter(t => t.id !== taskId);
+    }
+  }
 }

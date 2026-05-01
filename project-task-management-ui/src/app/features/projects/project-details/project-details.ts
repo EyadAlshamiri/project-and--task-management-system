@@ -13,6 +13,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
 
 @Component({
@@ -30,6 +31,7 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
     NzButtonModule,
     NzTooltipModule,
     NzAvatarModule,
+    NzPopconfirmModule,
     CustomButton
   ],
   templateUrl: './project-details.html',
@@ -59,6 +61,29 @@ export class ProjectDetails implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/projects']);
+  }
+
+  editProject(): void {
+    if (this.project) {
+      this.router.navigate(['/projects/edit', this.project.id]);
+    }
+  }
+
+  viewTaskDetails(taskId: number): void {
+    this.router.navigate(['/tasks/details-task', taskId]);
+  }
+
+  editTask(taskId: number): void {
+    // Navigate to a task edit page (using the route we added)
+    this.router.navigate(['/tasks/edit-task', taskId]);
+  }
+
+  deleteTask(taskId: number): void {
+    if (this.project) {
+      this.projectService.deleteTask(this.project.id, taskId);
+      // Refresh local project data
+      this.project = this.projectService.getProjectById(this.project.id);
+    }
   }
 
   getStatusColor(status: string): string {

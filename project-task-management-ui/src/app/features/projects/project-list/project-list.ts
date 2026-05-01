@@ -72,6 +72,15 @@ export class ProjectList implements OnInit {
     this.router.navigate(['/projects', projectId]);
   }
 
+  onEditProject(projectId: number): void {
+    this.router.navigate(['/projects/edit', projectId]);
+  }
+
+  onDeleteProject(projectId: number): void {
+    this.projectService.deleteProject(projectId);
+    this.loadProjects();
+  }
+
   onFilterClick(): void {
     const statuses: (ProjectStatus | 'ALL')[] = ['ALL', ProjectStatus.ACTIVE, ProjectStatus.ON_HOLD, ProjectStatus.COMPLETED];
     const currentIndex = statuses.indexOf(this.filterStatus);

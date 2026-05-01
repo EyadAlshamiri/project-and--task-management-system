@@ -1,8 +1,8 @@
 <div class="page-container">
   <div class="form-container custom-page-form">
     <div class="page-header">
-      <h2>إضافة مشروع جديد</h2>
-      <p>قم بتعبئة تفاصيل المشروع للبدء في تتبع المهام.</p>
+      <h2>{{ isEditMode ? 'تعديل المشروع' : 'إضافة مشروع جديد' }}</h2>
+      <p>{{ isEditMode ? 'قم بتعديل تفاصيل المشروع الحالية.' : 'قم بتعبئة تفاصيل المشروع للبدء في تتبع المهام.' }}</p>
     </div>
 
     <div class="card-body-scrollable">
@@ -235,12 +235,11 @@
     <!-- Footer -->
     <div class="page-footer-actions">
       <app-custom-button
-        label="حفظ"
+        [label]="isEditMode ? 'تحديث' : 'حفظ'"
         type="primary"
         (btnClick)="submitForm()"
         [disabled]="!projectForm.valid"
         size="large"
-        
       ></app-custom-button>
       <app-custom-button label="إلغاء" type="default" size="large" (btnClick)="cancel()"></app-custom-button>
     </div>

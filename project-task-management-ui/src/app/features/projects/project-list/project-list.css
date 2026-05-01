@@ -6,11 +6,13 @@
 .project-list-header {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
   gap: 16px;
   align-items: center;
   margin-bottom: 30px;
-  flex-shrink: 0;
+}
+
+.search-bar {
+  flex: 1;
 }
 
 .header-actions {

@@ -1,7 +1,7 @@
 .search-bar {
   flex: 1;
-  min-width: 400px;
   transition: all 0.3s;
+  
 }
 
 .search-bar:focus-within {
@@ -14,7 +14,7 @@ nz-input-group {
   gap: 8px;
   align-items: center;
   border: none;
-  background-color: var(--bg-body);
+  background-color: var(--primary-light);
   border-radius: 7px;
   padding: 10px 5px;
   height: 42px;

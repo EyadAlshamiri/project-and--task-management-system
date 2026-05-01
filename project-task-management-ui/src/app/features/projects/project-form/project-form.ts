@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -37,7 +37,19 @@ import { MemberSelectionModal, MemberSelectionData } from '../../../shared/compo
   providers: [NzModalService]
 })
 export class ProjectForm implements OnInit {
+  private fb = inject(FormBuilder);
+  private projectService = inject(ProjectService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private modalService = inject(NzModalService);
+  private userService = inject(UserService);
+  private taskService = inject(TaskService);
+  private cdr = inject(ChangeDetectorRef);
+
   projectForm!: FormGroup;
+  isEditMode = false;
+  projectId: number | null = null;
+
   statuses = [
     { value: ProjectStatus.ACTIVE, label: 'Active' },
     { value: ProjectStatus.ON_HOLD, label: 'On Hold' },
@@ -48,17 +60,19 @@ export class ProjectForm implements OnInit {
   projectManager: User | null = null;
   showAllTasks = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private projectService: ProjectService,
-    private router: Router,
-    private modalService: NzModalService,
-    private userService: UserService,
-    private taskService: TaskService,
-    private cdr: ChangeDetectorRef
-  ) {}
-
   ngOnInit(): void {
+    this.initForm();
+    
+    // Check for edit mode
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.isEditMode = true;
+      this.projectId = parseInt(idParam, 10);
+      this.loadProjectData(this.projectId);
+    }
+  }
+
+  private initForm(): void {
     this.projectForm = this.fb.group({
       title: [null, [Validators.required, Validators.minLength(3)]],
       description: [null],
@@ -72,6 +86,50 @@ export class ProjectForm implements OnInit {
     });
   }
 
+  private loadProjectData(id: number): void {
+    const project = this.projectService.getProjectById(id);
+    if (project) {
+      this.projectForm.patchValue({
+        title: project.title,
+        description: project.description,
+        status: project.status,
+        startDate: project.startDate,
+        endDate: project.endDate,
+        priority: project.priority,
+        projectManagerName: project.projectManagerName,
+        members: project.members || []
+      });
+
+      // Load manager and members objects
+      this.userService.getAllUsers().subscribe(users => {
+        const manager = users.find(u => u.name === project.projectManagerName);
+        if (manager) this.projectManager = manager;
+        
+        const members = project.members;
+        if (members) {
+          this.selectedMembers = users.filter(u => members.includes(u.id));
+        }
+      });
+
+      // Load tasks
+      if (project.tasks) {
+        project.tasks.forEach(t => {
+          const taskForm = this.fb.group({
+            title: [t.title, [Validators.required]],
+            description: [t.description || ''],
+            status: [t.status, [Validators.required]],
+            dueDate: [t.dueDate],
+            priority: [t.priority],
+            executorName: [t.executorName],
+            subTasks: [t.subTasks || []]
+          });
+          this.tasks.push(taskForm);
+        });
+      }
+      this.cdr.detectChanges();
+    }
+  }
+
   get tasks(): FormArray {
     return (this.projectForm?.get('tasks') as FormArray) || this.fb.array([]);
   }
@@ -82,17 +140,6 @@ export class ProjectForm implements OnInit {
 
   trackByIndex(index: number): number {
     return index;
-  }
-
-  goToTasksPage(): void {
-    const tasksData = this.tasks.value.map((t: any, index: number) => ({
-      id: index + 1,
-      name: t.title,
-      status: t.status,
-      selected: false
-    }));
-    this.taskService.setTasks(tasksData);
-    this.router.navigate(['/tasks']);
   }
 
   addTask(): void {
@@ -162,7 +209,7 @@ export class ProjectForm implements OnInit {
     });
 
     modal.afterClose.subscribe((result: number[] | null) => {
-      if (result !== null && result !== undefined && result.length > 0) {
+      if (result && result.length > 0) {
         this.userService.getUsersByIds(result).subscribe(users => {
           if (users.length > 0) {
             this.projectManager = users[0];
@@ -189,7 +236,7 @@ export class ProjectForm implements OnInit {
     });
 
     modal.afterClose.subscribe((result: number[] | null) => {
-      if (result !== null && result !== undefined) {
+      if (result) {
         this.projectForm.patchValue({ members: result });
         this.userService.getUsersByIds(result).subscribe(users => {
           this.selectedMembers = [...users];
@@ -203,19 +250,22 @@ export class ProjectForm implements OnInit {
     if (this.projectForm.valid) {
       const formValue = this.projectForm.value;
       
-      const newProject = {
+      const projectData: any = {
         title: formValue.title,
+        description: formValue.description,
         status: formValue.status,
         startDate: formValue.startDate,
         endDate: formValue.endDate,
         priority: formValue.priority,
         projectManagerName: formValue.projectManagerName,
+        members: formValue.members,
         tasksCount: formValue.tasks ? formValue.tasks.length : 0,
         avatars: this.selectedMembers.map(u => u.avatar),
-        progress: 0,
+        progress: this.isEditMode ? (this.projectService.getProjectById(this.projectId!)?.progress || 0) : 0,
         tasks: formValue.tasks ? formValue.tasks.map((t: any, i: number) => ({
           id: i + 1,
           title: t.title,
+          description: t.description,
           status: t.status,
           dueDate: t.dueDate,
           priority: t.priority,
@@ -225,8 +275,14 @@ export class ProjectForm implements OnInit {
         })) : [],
       };
 
-      this.projectService.addProject(newProject);
-      this.router.navigate(['/projects']);
+      if (this.isEditMode && this.projectId) {
+        projectData.id = this.projectId;
+        this.projectService.updateProject(projectData);
+        this.router.navigate(['/projects', this.projectId]);
+      } else {
+        this.projectService.addProject(projectData);
+        this.router.navigate(['/projects']);
+      }
     } else {
       Object.values(this.projectForm.controls).forEach((control) => {
         if (control.invalid) {
@@ -238,6 +294,10 @@ export class ProjectForm implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/projects']);
+    if (this.isEditMode && this.projectId) {
+      this.router.navigate(['/projects', this.projectId]);
+    } else {
+      this.router.navigate(['/projects']);
+    }
   }
 }

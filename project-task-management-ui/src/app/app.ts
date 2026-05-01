@@ -36,8 +36,8 @@ export class App implements OnInit {
   }
 
   private checkUrl(url: string): void {
-    // Hide layout for Project Details (/projects/123) and Add Project (/projects/add-project)
-    this.isFullPage = /^\/projects\/(\d+|add-project)$/.test(url);
+    // Hide layout for Project Details, Add Project, Edit Project, Task Details, and Task Edit
+    this.isFullPage = /^\/(projects\/(add-project|edit\/\d+|\d+)|tasks\/(details-task|edit-task)\/\d+)$/.test(url);
   }
 }
 

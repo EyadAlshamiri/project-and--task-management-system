@@ -1,1 +1,65 @@
-<p>task-details works!</p>
+<div class="task-details-page">
+  <div class="page-container" *ngIf="!isLoading && task">
+    <!-- Header Section -->
+    <div class="task-header">
+      <div class="header-main">
+        <div class="title-section">
+          <div class="breadcrumb">
+            <a (click)="goBack()">العودة</a> / تفاصيل المهمة
+          </div>
+          <h2>{{ task.title }}</h2>
+          <div class="tags">
+            <nz-tag [nzColor]="getStatusColor(task.status)">{{ task.status }}</nz-tag>
+            <nz-tag *ngIf="task.priority" [nzColor]="getPriorityColor(task.priority)">
+              {{ task.priority === 'HIGH' ? 'عالي' : task.priority === 'MEDIUM' ? 'متوسط' : 'منخفض' }}
+            </nz-tag>
+          </div>
+        </div>
+        <div class="header-actions">
+          <app-custom-button label="إغلاق" type="default" (btnClick)="goBack()"></app-custom-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="task-content">
+      <div class="info-section card">
+        <h3 class="section-title">وصف المهمة</h3>
+        <p class="description-text">{{ task.description || 'لا يوجد وصف متاح لهذه المهمة.' }}</p>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-label">المسؤول</span>
+          <div class="executor-info">
+            <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+            <span class="info-value">{{ task.executorName || 'غير محدد' }}</span>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="info-label">تاريخ الاستحقاق</span>
+          <span class="info-value">
+            <span nz-icon nzType="calendar"></span> 
+            {{ task.dueDate ? (task.dueDate | date: 'mediumDate') : 'غير محدد' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="subtasks-section card" *ngIf="task.subTasks && task.subTasks.length > 0">
+        <h3 class="section-title">المهام الفرعية</h3>
+        <div class="subtasks-list">
+          <div class="subtask-item" *ngFor="let sub of task.subTasks">
+            <span class="subtask-check" [class.completed]="sub.status === 'DONE'">
+              <span nz-icon [nzType]="sub.status === 'DONE' ? 'check-circle' : 'border'"></span>
+            </span>
+            <span class="subtask-title">{{ sub.title }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-container empty-state" *ngIf="!isLoading && !task">
+    <nz-empty nzNotFoundContent="المهمة غير موجودة"></nz-empty>
+    <app-custom-button label="العودة" type="primary" (btnClick)="goBack()"></app-custom-button>
+  </div>
+</div>

@@ -21,6 +21,7 @@ export interface Project {
   tasksCount: number;
   avatars: string[];
   progress: number;
+  members?: number[];
 
   tasks: Task[];
 }

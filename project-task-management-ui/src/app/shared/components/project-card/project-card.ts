@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -39,6 +39,9 @@ export class ProjectCard {
     avatars: [],
     progress: 0,
   };
+
+  @Output() edit = new EventEmitter<number>();
+  @Output() delete = new EventEmitter<number>();
 
   getStatusLabel(status: string): string {
     switch ((status || '').toUpperCase()) {
@@ -90,7 +93,7 @@ export class ProjectCard {
   }
 
   showModal(project: any): void {
-    console.log('Edit project', project);
+    this.edit.emit(project.id);
   }
 
   get extraMembers(): number {
@@ -99,7 +102,7 @@ export class ProjectCard {
   }
 
   deleteProject(id: any): void {
-    console.log('Delete project', id);
+    this.delete.emit(id);
   }
 }
 

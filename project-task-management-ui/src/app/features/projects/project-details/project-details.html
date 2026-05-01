@@ -19,6 +19,7 @@
           </div>
         </div>
         <div class="header-actions">
+          <app-custom-button label="تعديل المشروع" type="primary" icon="edit" (btnClick)="editProject()"></app-custom-button>
           <app-custom-button label="العودة للقائمة" type="default" (btnClick)="goBack()"></app-custom-button>
         </div>
       </div>
@@ -74,6 +75,25 @@
                         <nz-avatar nzSize="small" nzIcon="user" style="margin-inline-end: 8px;"></nz-avatar>
                         {{ task.executorName }}
                       </span>
+                      <button nz-button nzType="text" nzShape="circle" (click)="viewTaskDetails(task.id)" nzTooltipTitle="عرض التفاصيل" nz-tooltip>
+                        <span nz-icon nzType="eye"></span>
+                      </button>
+                      <button nz-button nzType="text" nzShape="circle" (click)="editTask(task.id)" nzTooltipTitle="تعديل المهمة" nz-tooltip>
+                        <span nz-icon nzType="edit" class="edit-icon"></span>
+                      </button>
+                      <button 
+                        nz-button 
+                        nzType="text" 
+                        nzShape="circle" 
+                        nzDanger
+                        nz-popconfirm
+                        nzPopconfirmTitle="هل أنت متأكد من حذف هذه المهمة؟"
+                        (nzOnConfirm)="deleteTask(task.id)"
+                        nzTooltipTitle="حذف المهمة" 
+                        nz-tooltip
+                      >
+                        <span nz-icon nzType="delete"></span>
+                      </button>
                     </div>
                   </div>
                 </div>

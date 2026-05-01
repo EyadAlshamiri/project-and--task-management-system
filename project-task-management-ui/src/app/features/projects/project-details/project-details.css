@@ -1,9 +1,17 @@
 .project-details-page {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-color);
+  background-color: var(--primary-light);
   padding-bottom: 50px;
 }
+
+
+.header-actions  {
+  display: flex;
+  gap: 15px;
+}
+
+
 
 .page-container {
   max-width: 1100px;
@@ -197,6 +205,12 @@
   justify-content: center;
   min-height: 400px;
   gap: 20px;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 /* Responsive */
