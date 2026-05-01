@@ -32,7 +32,10 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
-    this.projects = this.projectService.getProjects();
+    this.projectService.getProjects().subscribe({
+      next: (res) => this.projects = res,
+      error: (err) => console.error('Error loading projects:', err)
+    });
   }
 
   private checkUrl(url: string): void {

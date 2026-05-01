@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectService } from '../../../core/services/project.service';
+import { TaskService } from '../../../core/services/task.service';
 import { TaskForm } from '../task-form/task-form';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
 
@@ -36,7 +36,7 @@ export class TaskEditPage implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private projectService = inject(ProjectService);
+  private taskService = inject(TaskService);
 
   editForm?: FormGroup;
   taskId?: number;
@@ -45,24 +45,25 @@ export class TaskEditPage implements OnInit {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       this.taskId = parseInt(idParam, 10);
-      const task = this.projectService.getTaskById(this.taskId);
-      if (task) {
-        this.editForm = this.fb.group({
-          title: [task.title, Validators.required],
-          status: [task.status, Validators.required],
-          priority: [task.priority],
-          dueDate: [task.dueDate],
-          description: [task.description]
-        });
-      }
+      this.taskService.getTaskById(this.taskId).subscribe(task => {
+        if (task) {
+          this.editForm = this.fb.group({
+            title: [task.title, Validators.required],
+            status: [task.status, Validators.required],
+            priority: [task.priority],
+            dueDate: [task.dueDate],
+            description: [task.description]
+          });
+        }
+      });
     }
   }
 
   save(): void {
     if (this.editForm?.valid && this.taskId) {
-      // In a real app, we'd update via service
-      // For now, let's just go back
-      window.history.back();
+      this.taskService.updateTask(this.taskId, this.editForm.value).subscribe(() => {
+        window.history.back();
+      });
     }
   }
 

@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProjectService } from '../../../core/services/project.service';
+import { TaskService } from '../../../core/services/task.service';
 import { Task } from '../../../core/models/task';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -30,6 +31,7 @@ export class TaskDetails implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private projectService = inject(ProjectService);
+  private taskService = inject(TaskService);
 
   task: Task | undefined;
   isLoading = true;
@@ -39,9 +41,20 @@ export class TaskDetails implements OnInit {
       const idParam = params.get('id');
       if (idParam) {
         const id = parseInt(idParam, 10);
-        this.task = this.projectService.getTaskById(id);
+        this.isLoading = true;
+        this.taskService.getTaskById(id).subscribe({
+          next: (task) => {
+            this.task = task;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            console.error('Error loading task:', err);
+            this.isLoading = false;
+          }
+        });
+      } else {
+        this.isLoading = false;
       }
-      this.isLoading = false;
     });
   }
 

@@ -88,7 +88,7 @@
 
           <!-- Project Manager Name -->
           <nz-form-item class="floating-label-item">
-            <nz-form-control nzErrorTip="اسم مدير المشروع مطلوب.">
+            <nz-form-control>
               <div
                 class="input-wrapper"
                 style="cursor: pointer"
@@ -115,7 +115,7 @@
                 <div *ngIf="!projectManager" class="placeholder-text">اختر مدير المشروع</div>
                 <!-- Hidden input just to bind the form control -->
                 <input type="hidden" formControlName="projectManagerName" />
-                <span class="required-asterisk">*</span>
+                <!-- No required asterisk -->
               </div>
             </nz-form-control>
           </nz-form-item>
@@ -238,7 +238,7 @@
         [label]="isEditMode ? 'تحديث' : 'حفظ'"
         type="primary"
         (btnClick)="submitForm()"
-        [disabled]="!projectForm.valid"
+        [disabled]="!!(projectForm.get('title')?.invalid || projectForm.get('startDate')?.invalid || projectForm.get('endDate')?.invalid)"
         size="large"
       ></app-custom-button>
       <app-custom-button label="إلغاء" type="default" size="large" (btnClick)="cancel()"></app-custom-button>

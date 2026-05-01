@@ -30,17 +30,9 @@ import { TaskService } from '../../../core/services/task.service';
 })
 export class TaskList implements OnInit {
   filterStatus = 'All';
-  tasks: any[] = [
-    { id: 1, name: 'Setup CI/CD Pipeline', status: 'TODO', selected: false },
-    { id: 2, name: 'Implement User Auth', status: 'IN_PROGRESS', selected: false },
-    { id: 3, name: 'Design Dashboard Layout', status: 'IN_PROGRESS', selected: false },
-    { id: 4, name: 'Design Dashboard Monikoting', status: 'DONE', selected: false },
-    { id: 5, name: 'Setup CI/CD Pipeline', status: 'TODO', selected: false },
-    { id: 6, name: 'Implement User Auth', status: 'IN_PROGRESS', selected: false },
-    { id: 7, name: 'Completerd App linput', status: 'DONE', selected: false },
-  ];
-
-  filteredTasks = [...this.tasks];
+  tasks: any[] = [];
+  filteredTasks: any[] = [];
+  isLoading = false;
 
   constructor(
     private modalService: NzModalService,
@@ -48,11 +40,22 @@ export class TaskList implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const sharedTasks = this.taskService.getTasks();
-    if (sharedTasks && sharedTasks.length > 0) {
-      this.tasks = sharedTasks;
-    }
-    this.applyFilter();
+    this.loadTasks();
+  }
+
+  loadTasks(): void {
+    this.isLoading = true;
+    this.taskService.getAllTasks().subscribe({
+      next: (res) => {
+        this.tasks = res.data;
+        this.applyFilter();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading tasks:', err);
+        this.isLoading = false;
+      }
+    });
   }
 
   applyFilter(): void {
@@ -79,13 +82,10 @@ export class TaskList implements OnInit {
 
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.tasks.push({
-          id: Date.now(),
-          name: result.title,
-          status: result.status,
-          selected: false
+        this.taskService.createTask(result).subscribe({
+          next: () => this.loadTasks(),
+          error: (err) => console.error('Error adding task:', err)
         });
-        this.applyFilter();
       }
     });
   }
@@ -95,9 +95,7 @@ export class TaskList implements OnInit {
       nzTitle: 'تعديل المهمة',
       nzContent: TaskModal,
       nzData: {
-        title: task.name,
-        status: task.status,
-        description: ''
+        task: task // Pass the whole task object
       },
       nzFooter: null,
       nzWidth: 500
@@ -105,17 +103,23 @@ export class TaskList implements OnInit {
 
     modal.afterClose.subscribe(result => {
       if (result) {
-        const idx = this.tasks.findIndex(t => t.id === task.id);
-        if (idx !== -1) {
-          this.tasks[idx] = { ...this.tasks[idx], name: result.title, status: result.status };
-          this.applyFilter();
-        }
+        this.taskService.updateTask(task.id, result).subscribe({
+          next: () => this.loadTasks(),
+          error: (err) => console.error('Error updating task:', err)
+        });
       }
     });
   }
 
   deleteTask(id: number): void {
-    this.tasks = this.tasks.filter(t => t.id !== id);
-    this.applyFilter();
+    this.modalService.confirm({
+      nzTitle: 'هل أنت متأكد من حذف هذه المهمة؟',
+      nzOnOk: () => {
+        this.taskService.deleteTask(id).subscribe({
+          next: () => this.loadTasks(),
+          error: (err) => console.error('Error deleting task:', err)
+        });
+      }
+    });
   }
 }

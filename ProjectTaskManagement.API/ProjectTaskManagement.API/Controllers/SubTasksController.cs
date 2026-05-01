@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using ProjectTaskManagement.Core.Common;
 using ProjectTaskManagement.Core.DTOs;
 using ProjectTaskManagement.Service;
 
@@ -18,7 +19,7 @@ public class SubTasksController : ControllerBase
     public async Task<IActionResult> Create(CreateSubTaskDTO dto)
     {
         var result = await _service.CreateAsync(dto);
-        return Ok(result);
+        return Ok(new ApiResponse<SubTaskDTO>(result, "SubTask created successfully"));
     }
 
     // GET ALL
@@ -26,7 +27,7 @@ public class SubTasksController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var result = await _service.GetAllAsync();
-        return Ok(result);
+        return Ok(new ApiResponse<List<SubTaskDTO>>(result, "SubTasks retrieved successfully"));
     }
 
     // GET BY ID
@@ -34,9 +35,9 @@ public class SubTasksController : ControllerBase
     public async Task<IActionResult> GetById(int id)
     {
         var result = await _service.GetByIdAsync(id);
-        if (result == null) return NotFound();
+        if (result == null) return NotFound(new ApiResponse<string>("", "SubTask not found"));
 
-        return Ok(result);
+        return Ok(new ApiResponse<SubTaskDTO>(result, "SubTask retrieved successfully"));
     }
 
     // UPDATE
@@ -44,9 +45,9 @@ public class SubTasksController : ControllerBase
     public async Task<IActionResult> Update(int id, UpdateSubTaskDTO dto)
     {
         var updated = await _service.UpdateAsync(id, dto);
-        if (!updated) return NotFound();
+        if (!updated) return NotFound(new ApiResponse<string>("", "SubTask not found"));
 
-        return NoContent();
+        return Ok(new ApiResponse<bool>(true, "SubTask updated successfully"));
     }
 
     // DELETE
@@ -54,8 +55,8 @@ public class SubTasksController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _service.DeleteAsync(id);
-        if (!deleted) return NotFound();
+        if (!deleted) return NotFound(new ApiResponse<string>("", "SubTask not found"));
 
-        return NoContent();
+        return Ok(new ApiResponse<bool>(true, "SubTask deleted successfully"));
     }
 }

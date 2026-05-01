@@ -10,8 +10,8 @@
           <h2>{{ task.title }}</h2>
           <div class="tags">
             <nz-tag [nzColor]="getStatusColor(task.status)">{{ task.status }}</nz-tag>
-            <nz-tag *ngIf="task.priority" [nzColor]="getPriorityColor(task.priority)">
-              {{ task.priority === 'HIGH' ? 'عالي' : task.priority === 'MEDIUM' ? 'متوسط' : 'منخفض' }}
+            <nz-tag *ngIf="task.priority" [nzColor]="getPriorityColor(task.priority.toString())">
+              {{ task.priority === 2 ? 'عالي' : task.priority === 1 ? 'متوسط' : 'منخفض' }}
             </nz-tag>
           </div>
         </div>
@@ -32,7 +32,7 @@
           <span class="info-label">المسؤول</span>
           <div class="executor-info">
             <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
-            <span class="info-value">{{ task.executorName || 'غير محدد' }}</span>
+            <span class="info-value">{{ task.assignedTo || 'غير محدد' }}</span>
           </div>
         </div>
         <div class="info-card">
@@ -48,8 +48,8 @@
         <h3 class="section-title">المهام الفرعية</h3>
         <div class="subtasks-list">
           <div class="subtask-item" *ngFor="let sub of task.subTasks">
-            <span class="subtask-check" [class.completed]="sub.status === 'DONE'">
-              <span nz-icon [nzType]="sub.status === 'DONE' ? 'check-circle' : 'border'"></span>
+            <span class="subtask-check" [class.completed]="sub.isCompleted">
+              <span nz-icon [nzType]="sub.isCompleted ? 'check-circle' : 'border'"></span>
             </span>
             <span class="subtask-title">{{ sub.title }}</span>
           </div>

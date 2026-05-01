@@ -51,7 +51,7 @@ export class TaskModal implements OnInit {
       status: [taskData?.status || 'TODO', [Validators.required]],
       dueDate: [taskData?.dueDate || null],
       priority: [taskData?.priority || 'MEDIUM'],
-      executorName: [taskData?.executorName || null],
+      assignedTo: [taskData?.assignedTo || null],
       subTasks: this.fb.array([])
     });
 
@@ -73,7 +73,7 @@ export class TaskModal implements OnInit {
     const subTaskGroup = this.fb.group({
       title: [subTaskData?.title || null, [Validators.required]],
       isCompleted: [subTaskData?.isCompleted || false],
-      executorName: [subTaskData?.executorName || null]
+      assignedTo: [subTaskData?.assignedTo || null]
     });
     this.subTasks.push(subTaskGroup);
   }

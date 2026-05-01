@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,6 +15,9 @@ namespace ProjectTaskManagement.Data.Entities
         public DateTime EndDate { get; set; }
 
         public string Status { get; set; } = "NotStarted";
+        public string Priority { get; set; } = "MEDIUM";
+        public string? ProjectManagerName { get; set; }
+        public string? Members { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

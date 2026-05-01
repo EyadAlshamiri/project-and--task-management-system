@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -40,7 +40,9 @@ export class ProjectList implements OnInit {
 
   constructor(
     private projectService: ProjectService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -49,15 +51,23 @@ export class ProjectList implements OnInit {
 
   private loadProjects(): void {
     this.isLoading = true;
-    try {
-      const data = this.projectService.getProjects();
-      this.projects = data || [];
-      this.applyFiltersAndSort();
-    } catch (error) {
-      console.error('Error loading projects:', error);
-    } finally {
-      this.isLoading = false;
-    }
+    this.projectService.getProjects().subscribe({
+      next: (data) => {
+        this.ngZone.run(() => {
+          this.projects = data || [];
+          this.applyFiltersAndSort();
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        });
+      },
+      error: (error) => {
+        console.error('Error loading projects:', error);
+        this.ngZone.run(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        });
+      }
+    });
   }
 
   onSearchChange(searchText: string): void {
@@ -77,8 +87,9 @@ export class ProjectList implements OnInit {
   }
 
   onDeleteProject(projectId: number): void {
-    this.projectService.deleteProject(projectId);
-    this.loadProjects();
+    this.projectService.deleteProject(projectId).subscribe(() => {
+      this.loadProjects();
+    });
   }
 
   onFilterClick(): void {

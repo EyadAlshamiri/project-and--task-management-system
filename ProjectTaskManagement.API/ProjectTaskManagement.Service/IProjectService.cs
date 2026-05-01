@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ProjectTaskManagement.Core.DTOs;
 using ProjectTaskManagement.Data.Entities;
 using ProjectTaskManagement.Infrastructure;
@@ -36,16 +36,24 @@ namespace ProjectTaskManagement.Service
                     StartDate = p.StartDate,
                     EndDate = p.EndDate,
                     Status = p.Status,
+                    Priority = p.Priority,
+                    ProjectManagerName = p.ProjectManagerName,
+                    Members = string.IsNullOrEmpty(p.Members) ? new List<string>() : p.Members.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList(),
                     CreatedAt = p.CreatedAt,
 
-                    TasksCount = p.Tasks.Count()
+                    TasksCount = p.Tasks.Count(),
+                    Progress = p.Tasks.Count > 0 
+                        ? (int)((double)p.Tasks.Count(t => t.Status == "DONE") / p.Tasks.Count * 100) 
+                        : 0
                 })
                 .ToListAsync();
         }
 
         public async Task<Project?> GetByIdAsync(int id)
         {
-            return await _context.Projects.FindAsync(id);
+            return await _context.Projects
+                .Include(p => p.Tasks)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Project> CreateAsync(Project project)

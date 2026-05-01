@@ -80,54 +80,47 @@ export class ProjectForm implements OnInit {
       startDate: [null, [Validators.required]],
       endDate: [null, [Validators.required]],
       priority: ['MEDIUM', [Validators.required]],
-      projectManagerName: [null, [Validators.required]],
+      projectManagerName: [null],
       members: [[]],
       tasks: this.fb.array([]),
     });
   }
 
   private loadProjectData(id: number): void {
-    const project = this.projectService.getProjectById(id);
-    if (project) {
-      this.projectForm.patchValue({
-        title: project.title,
-        description: project.description,
-        status: project.status,
-        startDate: project.startDate,
-        endDate: project.endDate,
-        priority: project.priority,
-        projectManagerName: project.projectManagerName,
-        members: project.members || []
-      });
-
-      // Load manager and members objects
-      this.userService.getAllUsers().subscribe(users => {
-        const manager = users.find(u => u.name === project.projectManagerName);
-        if (manager) this.projectManager = manager;
-        
-        const members = project.members;
-        if (members) {
-          this.selectedMembers = users.filter(u => members.includes(u.id));
-        }
-      });
-
-      // Load tasks
-      if (project.tasks) {
-        project.tasks.forEach(t => {
-          const taskForm = this.fb.group({
-            title: [t.title, [Validators.required]],
-            description: [t.description || ''],
-            status: [t.status, [Validators.required]],
-            dueDate: [t.dueDate],
-            priority: [t.priority],
-            executorName: [t.executorName],
-            subTasks: [t.subTasks || []]
+    this.projectService.getProjectById(id).subscribe({
+      next: (project) => {
+        if (project) {
+          this.projectForm.patchValue({
+            title: project.tilte,
+            description: project.description,
+            status: project.status,
+            priority: project.priority,
+            startDate: project.startDate,
+            endDate: project.endDate,
+            projectManagerName: project.projectManagerName,
+            tasksCount: project.tasksCount
           });
-          this.tasks.push(taskForm);
-        });
+
+          // Load tasks if available
+          if (project.tasks) {
+            this.tasks.clear();
+            project.tasks.forEach(t => {
+              const taskForm = this.fb.group({
+                title: [t.title, [Validators.required]],
+                description: [t.description || ''],
+                status: [t.status, [Validators.required]],
+                dueDate: [t.dueDate],
+                priority: [t.priority],
+                assignedTo: [t.assignedTo],
+                subTasks: [t.subTasks || []]
+              });
+              this.tasks.push(taskForm);
+            });
+          }
+          this.cdr.detectChanges();
+        }
       }
-      this.cdr.detectChanges();
-    }
+    });
   }
 
   get tasks(): FormArray {
@@ -251,37 +244,27 @@ export class ProjectForm implements OnInit {
       const formValue = this.projectForm.value;
       
       const projectData: any = {
-        title: formValue.title,
+        tilte: formValue.title,
         description: formValue.description,
         status: formValue.status,
-        startDate: formValue.startDate,
-        endDate: formValue.endDate,
+        startDate: formValue.startDate ? new Date(formValue.startDate).toISOString() : null,
+        endDate: formValue.endDate ? new Date(formValue.endDate).toISOString() : null,
         priority: formValue.priority,
         projectManagerName: formValue.projectManagerName,
-        members: formValue.members,
-        tasksCount: formValue.tasks ? formValue.tasks.length : 0,
-        avatars: this.selectedMembers.map(u => u.avatar),
-        progress: this.isEditMode ? (this.projectService.getProjectById(this.projectId!)?.progress || 0) : 0,
-        tasks: formValue.tasks ? formValue.tasks.map((t: any, i: number) => ({
-          id: i + 1,
-          title: t.title,
-          description: t.description,
-          status: t.status,
-          dueDate: t.dueDate,
-          priority: t.priority,
-          executorName: t.executorName,
-          subTasks: t.subTasks,
-          completed: t.status === 'DONE'
-        })) : [],
+        members: this.selectedMembers.map(u => u.name),
       };
 
       if (this.isEditMode && this.projectId) {
         projectData.id = this.projectId;
-        this.projectService.updateProject(projectData);
-        this.router.navigate(['/projects', this.projectId]);
+        this.projectService.updateProject(projectData).subscribe({
+          next: () => this.router.navigate(['/projects', this.projectId]),
+          error: (err) => console.error('Error updating project:', err)
+        });
       } else {
-        this.projectService.addProject(projectData);
-        this.router.navigate(['/projects']);
+        this.projectService.addProject(projectData).subscribe({
+          next: () => this.router.navigate(['/projects']),
+          error: (err) => console.error('Error adding project:', err)
+        });
       }
     } else {
       Object.values(this.projectForm.controls).forEach((control) => {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ProjectTaskManagement.Core.Common;
 using ProjectTaskManagement.Core.DTOs;
 using ProjectTaskManagement.Data.Entities;
@@ -17,55 +17,99 @@ public class ProjectsController : ControllerBase
 
     // GET
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> Get()
     {
-        var data = await _service.GetAllAsync();
-        return Ok(new ApiResponse<List<ProjectDTO>>(data, "Projects retrieved successfully"));
+        var items = await _service.GetAllAsync();
+        return Ok(new ApiResponse<List<ProjectDTO>>(items, "Projects retrieved successfully"));
     }
 
     // GET BY ID
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        var item = await _service.GetByIdAsync(id);
-        if (item == null) return NotFound();
-        return Ok(item);
+        var p = await _service.GetByIdAsync(id);
+        if (p == null) return NotFound(new ApiResponse<string>("", "Project not found"));
+
+        var dto = new ProjectDTO
+        {
+            Id = p.Id,
+            Tilte = p.Title,
+            Description = p.Description,
+            StartDate = p.StartDate,
+            EndDate = p.EndDate,
+            Status = p.Status,
+            Priority = p.Priority,
+            ProjectManagerName = p.ProjectManagerName,
+            Members = string.IsNullOrEmpty(p.Members) ? new List<string>() : p.Members.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList(),
+            CreatedAt = p.CreatedAt,
+            TasksCount = p.Tasks?.Count ?? 0,
+            Progress = (p.Tasks != null && p.Tasks.Count > 0)
+                ? (int)((double)p.Tasks.Count(t => t.Status == "DONE") / p.Tasks.Count * 100)
+                : 0,
+            Tasks = p.Tasks?.Select(t => new ProjectTaskDTO
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                Status = t.Status,
+                Priority = t.Priority,
+                StartDate = t.StartDate,
+                DueDate = t.DueDate,
+                AssignedTo = t.AssignedTo,
+                ProjectId = t.ProjectId,
+                SubTasks = t.SubTasks?.Select(st => new SubTaskDTO()).ToList() ?? new List<SubTaskDTO>()
+            }).ToList() ?? new List<ProjectTaskDTO>()
+        };
+
+        return Ok(new ApiResponse<ProjectDTO>(dto, "Project retrieved successfully"));
     }
 
     // POST
     [HttpPost]
     public async Task<IActionResult> Create(CreateProjectDto dto)
     {
+        if (dto == null) return BadRequest(new ApiResponse<string>("", "Invalid project data"));
+        if (string.IsNullOrWhiteSpace(dto.Tilte)) return BadRequest(new ApiResponse<string>("", "Title is required"));
+
         var project = new Project
         {
-            Title = dto.Title,
+            Title = dto.Tilte,
             Description = dto.Description,
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,
-            Status = dto.Status
+            Status = dto.Status ?? string.Empty,
+            Priority = dto.Priority ?? string.Empty,
+            ProjectManagerName = dto.ProjectManagerName,
+            Members = dto.Members != null ? string.Join(",", dto.Members) : null
         };
 
         var result = await _service.CreateAsync(project);
-        return Ok(result);
+        return Ok(new ApiResponse<Project>(result, "Project created successfully"));
     }
 
     // PUT
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateProjectDto dto)
     {
+        if (dto == null) return BadRequest(new ApiResponse<string>("", "Invalid project data"));
+        if (string.IsNullOrWhiteSpace(dto.Tilte)) return BadRequest(new ApiResponse<string>("", "Title is required"));
+
         var project = new Project
         {
-            Title = dto.Title,
+            Title = dto.Tilte,
             Description = dto.Description,
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,
-            Status = dto.Status
+            Status = dto.Status ?? string.Empty,
+            Priority = dto.Priority ?? string.Empty,
+            ProjectManagerName = dto.ProjectManagerName,
+            Members = dto.Members != null ? string.Join(",", dto.Members) : null
         };
 
         var updated = await _service.UpdateAsync(id, project);
-        if (!updated) return NotFound();
+        if (!updated) return NotFound(new ApiResponse<string>("", "Project not found"));
 
-        return NoContent();
+        return Ok(new ApiResponse<bool>(true, "Project updated successfully"));
     }
 
     // DELETE
@@ -73,8 +117,8 @@ public class ProjectsController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _service.DeleteAsync(id);
-        if (!deleted) return NotFound();
+        if (!deleted) return NotFound(new ApiResponse<string>("", "Project not found"));
 
-        return NoContent();
+        return Ok(new ApiResponse<bool>(true, "Project deleted successfully"));
     }
 }

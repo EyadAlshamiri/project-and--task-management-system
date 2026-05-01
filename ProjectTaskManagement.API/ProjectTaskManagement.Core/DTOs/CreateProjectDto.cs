@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +6,7 @@ namespace ProjectTaskManagement.Core.DTOs
 {
     public class CreateProjectDto
     {
-        public string Title { get; set; } = null!;
+        public string Tilte { get; set; } = null!;
         public string? Description { get; set; }
 
 
@@ -14,6 +14,9 @@ namespace ProjectTaskManagement.Core.DTOs
         public DateTime EndDate { get; set; }
 
         public string Status { get; set; } = "NotStarted";
+        public string Priority { get; set; } = "MEDIUM";
+        public string? ProjectManagerName { get; set; }
+        public List<string>? Members { get; set; }
 
 
     }

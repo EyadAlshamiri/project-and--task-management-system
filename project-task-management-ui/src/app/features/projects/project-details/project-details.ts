@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProjectService } from '../../../core/services/project.service';
@@ -14,6 +14,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { TaskService } from '../../../core/services/task.service';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
 
 @Component({
@@ -40,23 +41,55 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
 export class ProjectDetails implements OnInit {
   project: Project | undefined;
   isLoading = true;
+  isRefreshing = false;
+  currentProjectId: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private taskService: TaskService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    // Reactive subscription to handle URL changes (e.g. from sidebar)
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
-        const id = parseInt(idParam, 10);
-        this.project = this.projectService.getProjectById(id);
+        this.currentProjectId = parseInt(idParam, 10);
+        this.loadProject(this.currentProjectId);
+      } else {
+        this.isLoading = false;
       }
-      this.isLoading = false;
     });
+  }
+
+  loadProject(id: number, isRefresh = false): void {
+    if (isRefresh) {
+      this.isRefreshing = true;
+    } else {
+      this.isLoading = true;
+    }
+    this.projectService.getProjectById(id).subscribe({
+      next: (project) => {
+        this.project = project;
+        this.isLoading = false;
+        this.isRefreshing = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error fetching project:', err);
+        this.isLoading = false;
+        this.isRefreshing = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  refreshProject(): void {
+    if (this.currentProjectId) {
+      this.loadProject(this.currentProjectId, true);
+    }
   }
 
   goBack(): void {
@@ -80,9 +113,11 @@ export class ProjectDetails implements OnInit {
 
   deleteTask(taskId: number): void {
     if (this.project) {
-      this.projectService.deleteTask(this.project.id, taskId);
-      // Refresh local project data
-      this.project = this.projectService.getProjectById(this.project.id);
+      this.taskService.deleteTask(taskId).subscribe(() => {
+        if (this.project) {
+           this.projectService.getProjectById(this.project.id).subscribe(p => this.project = p);
+        }
+      });
     }
   }
 

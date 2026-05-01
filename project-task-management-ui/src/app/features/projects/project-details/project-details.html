@@ -1,26 +1,44 @@
 <div class="project-details-page">
   <div class="page-container" *ngIf="!isLoading && project">
-    
     <!-- Header Section -->
     <div class="project-header">
       <div class="header-main">
         <div class="title-section">
-          <div class="breadcrumb">
-            <a routerLink="/projects">المشاريع</a> / {{ project.title }}
-          </div>
-          <h2>{{ project.title }}</h2>
+          <div class="breadcrumb"><a routerLink="/projects">المشاريع</a> / {{ project.tilte }}</div>
+          <h2>{{ project.tilte }}</h2>
           <div class="tags">
             <nz-tag [nzColor]="getStatusColor(project.status)">
-              {{ project.status === 'ACTIVE' ? 'نشط' : project.status === 'ON HOLD' ? 'موقوف' : 'مكتمل' }}
+              {{
+                project.status === 'ACTIVE'
+                  ? 'نشط'
+                  : project.status === 'ON HOLD'
+                    ? 'موقوف'
+                    : 'مكتمل'
+              }}
             </nz-tag>
             <nz-tag *ngIf="project.priority" [nzColor]="getPriorityColor(project.priority)">
-              {{ project.priority === 'HIGH' ? 'عالي' : project.priority === 'MEDIUM' ? 'متوسط' : 'منخفض' }}
+              {{
+                project.priority === 'HIGH'
+                  ? 'عالي'
+                  : project.priority === 'MEDIUM'
+                    ? 'متوسط'
+                    : 'منخفض'
+              }}
             </nz-tag>
           </div>
         </div>
         <div class="header-actions">
-          <app-custom-button label="تعديل المشروع" type="primary" icon="edit" (btnClick)="editProject()"></app-custom-button>
-          <app-custom-button label="العودة للقائمة" type="default" (btnClick)="goBack()"></app-custom-button>
+          <app-custom-button
+            label="تعديل المشروع"
+            type="primary"
+            icon="edit"
+            (btnClick)="editProject()"
+          ></app-custom-button>
+          <app-custom-button
+            label="العودة للقائمة"
+            type="default"
+            (btnClick)="goBack()"
+          ></app-custom-button>
         </div>
       </div>
     </div>
@@ -30,11 +48,15 @@
       <div class="info-grid">
         <div class="info-card">
           <span class="info-label">تاريخ البدء</span>
-          <span class="info-value">{{ project.startDate ? (project.startDate | date: 'mediumDate') : 'غير محدد' }}</span>
+          <span class="info-value">{{
+            project.startDate ? (project.startDate | date: 'mediumDate') : 'غير محدد'
+          }}</span>
         </div>
         <div class="info-card">
           <span class="info-label">تاريخ الانتهاء</span>
-          <span class="info-value">{{ project.endDate ? (project.endDate | date: 'mediumDate') : 'غير محدد' }}</span>
+          <span class="info-value">{{
+            project.endDate ? (project.endDate | date: 'mediumDate') : 'غير محدد'
+          }}</span>
         </div>
         <div class="info-card">
           <span class="info-label">مدير المشروع</span>
@@ -52,10 +74,12 @@
           <nz-tab nzTitle="نظرة عامة">
             <div class="tab-pane">
               <h3 class="section-title">وصف المشروع</h3>
-              <p class="description-text">{{ project.description || 'لا يوجد وصف متاح لهذا المشروع.' }}</p>
+              <p class="description-text">
+                {{ project.description || 'لا يوجد وصف متاح لهذا المشروع.' }}
+              </p>
             </div>
           </nz-tab>
-          
+
           <nz-tab nzTitle="المهام">
             <div class="tab-pane">
               <div *ngIf="project.tasks && project.tasks.length > 0; else noTasks">
@@ -64,32 +88,53 @@
                     <div class="task-main">
                       <span class="task-name">{{ task.title }}</span>
                       <div class="task-tags">
-                        <nz-tag [nzColor]="getTaskStatusColor(task.status)">{{ task.status }}</nz-tag>
+                        <nz-tag [nzColor]="getTaskStatusColor(task.status)">{{
+                          task.status
+                        }}</nz-tag>
                         <span class="task-date" *ngIf="task.dueDate">
-                          <span nz-icon nzType="calendar"></span> {{ task.dueDate | date: 'shortDate' }}
+                          <span nz-icon nzType="calendar"></span>
+                          {{ task.dueDate | date: 'shortDate' }}
                         </span>
                       </div>
                     </div>
                     <div class="task-meta">
-                      <span *ngIf="task.executorName" class="executor">
-                        <nz-avatar nzSize="small" nzIcon="user" style="margin-inline-end: 8px;"></nz-avatar>
-                        {{ task.executorName }}
+                      <span *ngIf="task.assignedTo" class="executor">
+                        <nz-avatar
+                          nzSize="small"
+                          nzIcon="user"
+                          style="margin-inline-end: 8px"
+                        ></nz-avatar>
+                        {{ task.assignedTo }}
                       </span>
-                      <button nz-button nzType="text" nzShape="circle" (click)="viewTaskDetails(task.id)" nzTooltipTitle="عرض التفاصيل" nz-tooltip>
+                      <button
+                        nz-button
+                        nzType="text"
+                        nzShape="circle"
+                        (click)="viewTaskDetails(task.id)"
+                        nzTooltipTitle="عرض التفاصيل"
+                        nz-tooltip
+                      >
                         <span nz-icon nzType="eye"></span>
                       </button>
-                      <button nz-button nzType="text" nzShape="circle" (click)="editTask(task.id)" nzTooltipTitle="تعديل المهمة" nz-tooltip>
+                      <button
+                        nz-button
+                        nzType="text"
+                        nzShape="circle"
+                        (click)="editTask(task.id)"
+                        nzTooltipTitle="تعديل المهمة"
+                        nz-tooltip
+                      >
                         <span nz-icon nzType="edit" class="edit-icon"></span>
                       </button>
-                      <button 
-                        nz-button 
-                        nzType="text" 
-                        nzShape="circle" 
+                      <button
+                        nz-button
+                        nzType="text"
+                        nzShape="circle"
                         nzDanger
                         nz-popconfirm
                         nzPopconfirmTitle="هل أنت متأكد من حذف هذه المهمة؟"
                         (nzOnConfirm)="deleteTask(task.id)"
-                        nzTooltipTitle="حذف المهمة" 
+                        nzTooltipTitle="حذف المهمة"
                         nz-tooltip
                       >
                         <span nz-icon nzType="delete"></span>
@@ -107,7 +152,10 @@
           <nz-tab nzTitle="الفريق">
             <div class="tab-pane">
               <div class="members-layout">
-                <div class="member-item" *ngFor="let avatar of project.avatars; let i = index">
+                <div
+                  class="member-item"
+                  *ngFor="let avatar of project.projectManagerName; let i = index"
+                >
                   <img [src]="avatar" alt="Member Avatar" class="member-img" />
                   <span class="member-role">عضو فريق</span>
                 </div>
@@ -121,6 +169,10 @@
 
   <div class="page-container empty-state" *ngIf="!isLoading && !project">
     <nz-empty nzNotFoundContent="المشروع غير موجود"></nz-empty>
-    <app-custom-button label="العودة للرئيسية" type="primary" (btnClick)="goBack()"></app-custom-button>
+    <app-custom-button
+      label="العودة للرئيسية"
+      type="primary"
+      (btnClick)="goBack()"
+    ></app-custom-button>
   </div>
 </div>

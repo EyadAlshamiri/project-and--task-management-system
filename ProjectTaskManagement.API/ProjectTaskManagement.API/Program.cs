@@ -9,6 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,6 +34,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IProjectTaskService, ProjectTaskService>();
+builder.Services.AddScoped<ISubTaskService, SubTaskService>();
 
 var app = builder.Build();
 
@@ -34,8 +46,15 @@ if (app.Environment.IsDevelopment())
 }
 
 
+app.UseCors("AllowAngular");
+
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
+
 
 app.UseAuthorization();
 

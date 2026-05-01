@@ -1,4 +1,4 @@
-﻿using ProjectTaskManagement.Core.DTOs;
+using ProjectTaskManagement.Core.DTOs;
 using ProjectTaskManagement.Data.Entities;
 using ProjectTaskManagement.Infrastructure;
 using System;
@@ -16,6 +16,7 @@ namespace ProjectTaskManagement.Service
 
         Task<bool> UpdateAsync(int id, UpdateProjectTaskDTO dto);
         Task<bool> DeleteAsync(int id);
+        Task<List<ProjectTaskDTO>> GetByProjectIdAsync(int projectId);
     }
     public class ProjectTaskService : IProjectTaskService
     {
@@ -48,13 +49,25 @@ namespace ProjectTaskManagement.Service
 
         public async Task<List<ProjectTaskDTO>> GetAllAsync()
         {
-            var tasks = await _context.Tasks.ToListAsync();
+            var tasks = await _context.Tasks.Include(t => t.SubTasks).ToListAsync();
+            return tasks.Select(MapToDTO).ToList();
+        }
+
+        public async Task<List<ProjectTaskDTO>> GetByProjectIdAsync(int projectId)
+        {
+            var tasks = await _context.Tasks
+                .Include(t => t.SubTasks)
+                .Where(t => t.ProjectId == projectId)
+                .ToListAsync();
             return tasks.Select(MapToDTO).ToList();
         }
 
         public async Task<ProjectTaskDTO?> GetByIdAsync(int id)
         {
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _context.Tasks
+                .Include(t => t.SubTasks)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
             return task == null ? null : MapToDTO(task);
         }
 
@@ -98,7 +111,15 @@ namespace ProjectTaskManagement.Service
                 StartDate = task.StartDate,
                 DueDate = task.DueDate,
                 AssignedTo = task.AssignedTo,
-                ProjectId = task.ProjectId
+                ProjectId = task.ProjectId,
+                SubTasks = task.SubTasks.Select(s => new SubTaskDTO
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    IsCompleted = s.IsCompleted,
+                    AssignedTo = s.AssignedTo,
+                    TaskId = s.TaskId
+                }).ToList()
             };
         }
     }

@@ -3,12 +3,20 @@ export interface Task {
   title: string;
   description?: string;
   status: string;
+  priority: number;
+  startDate: string;
+  dueDate?: string;
+  assignedTo?: string;
+  projectId: number;
+  createdAt: string;
+  subTasks?: SubTask[];             
+}
 
-  executorName?: string;
-
-  createdAt?: Date | string;
-  dueDate?: Date | string;
-  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | string;
-
-  subTasks?: Task[];             
+export interface SubTask {
+  id: number;
+  title: string;
+  isCompleted: boolean;
+  assignedTo?: string;
+  taskId: number;
+  createdAt: string;
 }
