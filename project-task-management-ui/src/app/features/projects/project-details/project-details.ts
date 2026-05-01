@@ -12,6 +12,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
 
 @Component({
@@ -28,6 +29,7 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
     NzEmptyModule,
     NzButtonModule,
     NzTooltipModule,
+    NzAvatarModule,
     CustomButton
   ],
   templateUrl: './project-details.html',
@@ -44,12 +46,15 @@ export class ProjectDetails implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      const id = parseInt(idParam, 10);
-      this.project = this.projectService.getProjectById(id);
-    }
-    this.isLoading = false;
+    // Reactive subscription to handle URL changes (e.g. from sidebar)
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam) {
+        const id = parseInt(idParam, 10);
+        this.project = this.projectService.getProjectById(id);
+      }
+      this.isLoading = false;
+    });
   }
 
   goBack(): void {

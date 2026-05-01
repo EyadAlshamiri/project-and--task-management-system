@@ -1,64 +1,73 @@
-<nz-layout class="app-layout">
-  <nz-sider
-    class="menu-sidebar"
-    nzCollapsible
-    nzWidth="260px"
-    [(nzCollapsed)]="isCollapsed"
-    [nzTrigger]="null"
-    nzTheme="light"
-  >
-    <!-- Logo -->
-    <div class="sidebar-logo">
-      <img [src]="logo" alt="logo" style="width: 32px" />
-      <h1 *ngIf="!isCollapsed"> إدارة المشاريع</h1>
-    </div>
-
-    <!-- Menu -->
-    <ul nz-menu nzTheme="light" nzMode="inline">
-      <li nz-menu-group >
-        <ul>
-          <li nz-menu-item routerLink="/projects" routerLinkActive="nzSelected">
-            <span nz-icon nzType="dashboard"></span>
-            <span>الرئيسية</span>
-          </li>
-          <li nz-submenu nzTitle="المشاريع" nzIcon="project">
-            <ul>
-              @for (project of projects; track project.id) {
-                <li nz-menu-item>
-                  <a [routerLink]="['/projects/details-project', project.id]">{{ project.title }}</a>
-                </li>
-              }
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </nz-sider>
-
-  <nz-layout>
-    <nz-header>
-      <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-          <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" />
-        </span>
+<ng-container *ngIf="!isFullPage; else fullPage">
+  <nz-layout class="app-layout">
+    <nz-sider
+      class="menu-sidebar"
+      nzCollapsible
+      nzWidth="260px"
+      [(nzCollapsed)]="isCollapsed"
+      [nzTrigger]="null"
+      nzTheme="light"
+    >
+      <!-- Logo -->
+      <div class="sidebar-logo">
+        <img [src]="logo" alt="logo" style="width: 32px" />
+        <h1 *ngIf="!isCollapsed">إدارة المشاريع</h1>
       </div>
-      <div class="header-right">
-        <nz-badge nzDot [nzOffset]="[-24, 3]">
-          <span nz-icon nzType="bell" nzTheme="outline"></span>
-        </nz-badge>
-        <div class="user-profile">
-          <nz-avatar
-            [nzSrc]="userAvatar"
-            nzSize="default"
-          ></nz-avatar>
+
+      <!-- Menu -->
+      <ul nz-menu nzTheme="light" nzMode="inline">
+        <li nz-menu-group>
+          <ul>
+            <li nz-menu-item routerLink="/projects" routerLinkActive="nzSelected">
+              <span nz-icon nzType="dashboard"></span>
+              <span>الرئيسية</span>
+            </li>
+            <li nz-submenu nzTitle="المشاريع" nzIcon="project">
+              <ul>
+                @for (project of projects; track project.id) {
+                  <li nz-menu-item>
+                    <a [routerLink]="['/projects', project.id]">{{
+                      project.title
+                    }}</a>
+                  </li>
+                }
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nz-sider>
+
+    <nz-layout>
+      <nz-header>
+        <div class="app-header">
+          <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+            <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" />
+          </span>
         </div>
-      </div>
-    </nz-header>
+        <div class="header-right">
+          <nz-badge nzDot [nzOffset]="[-24, 3]">
+            <span nz-icon nzType="bell" nzTheme="outline"></span>
+          </nz-badge>
+          <div class="user-profile">
+            <nz-avatar [nzSrc]="userAvatar" nzSize="default"></nz-avatar>
+          </div>
+        </div>
+      </nz-header>
 
-    <nz-content>
-      <div class="inner-content">
-        <router-outlet></router-outlet>
-      </div>
-    </nz-content>
+      <nz-content>
+        <div class="inner-content">
+          <router-outlet></router-outlet>
+        </div>
+      </nz-content>
+    </nz-layout>
   </nz-layout>
-</nz-layout>
+</ng-container>
+
+<ng-template #fullPage>
+  <div class="full-page-router-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+</ng-template>
+
+

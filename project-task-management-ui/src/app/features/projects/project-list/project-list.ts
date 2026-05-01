@@ -68,8 +68,8 @@ export class ProjectList implements OnInit {
     this.router.navigate(['/projects/add-project']);
   }
 
-  goToProjectDetails(id: number): void {
-    this.router.navigate(['/projects/details-project', id]);
+  goToProjectDetails(projectId: number): void {
+    this.router.navigate(['/projects', projectId]);
   }
 
   onFilterClick(): void {

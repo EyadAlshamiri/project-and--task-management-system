@@ -108,4 +108,11 @@ export class ProjectService {
     this.projects.push(newProject);
     return newProject;
   }
+
+  updateProject(updatedProject: Project): void {
+    const index = this.projects.findIndex(p => p.id === updatedProject.id);
+    if (index !== -1) {
+      this.projects[index] = updatedProject;
+    }
+  }
 }

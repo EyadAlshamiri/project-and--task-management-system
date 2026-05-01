@@ -1,122 +1,106 @@
-<div class="page-container">
-  <div class="project-details-container" *ngIf="!isLoading && project">
+<div class="project-details-page">
+  <div class="page-container" *ngIf="!isLoading && project">
     
-    <!-- Header -->
+    <!-- Header Section -->
     <div class="project-header">
       <div class="header-main">
         <div class="title-section">
+          <div class="breadcrumb">
+            <a routerLink="/projects">المشاريع</a> / {{ project.title }}
+          </div>
           <h2>{{ project.title }}</h2>
           <div class="tags">
-            <nz-tag [nzColor]="getStatusColor(project.status)">{{ project.status }}</nz-tag>
-            <nz-tag *ngIf="project.priority" [nzColor]="getPriorityColor(project.priority)">{{ project.priority }}</nz-tag>
+            <nz-tag [nzColor]="getStatusColor(project.status)">
+              {{ project.status === 'ACTIVE' ? 'نشط' : project.status === 'ON HOLD' ? 'موقوف' : 'مكتمل' }}
+            </nz-tag>
+            <nz-tag *ngIf="project.priority" [nzColor]="getPriorityColor(project.priority)">
+              {{ project.priority === 'HIGH' ? 'عالي' : project.priority === 'MEDIUM' ? 'متوسط' : 'منخفض' }}
+            </nz-tag>
           </div>
         </div>
         <div class="header-actions">
-          <app-custom-button label="العودة" type="default" (btnClick)="goBack()"></app-custom-button>
+          <app-custom-button label="العودة للقائمة" type="default" (btnClick)="goBack()"></app-custom-button>
         </div>
       </div>
     </div>
 
-    <!-- Metrics Grid -->
-    <div class="project-metrics">
-      <div class="metric-card">
-        <span class="metric-icon"><span nz-icon nzType="calendar"></span></span>
-        <div class="metric-info">
-          <span class="metric-label">تاريخ البدء</span>
-          <span class="metric-value">{{ project.startDate ? (project.startDate | date:'mediumDate') : 'غير محدد' }}</span>
+    <div class="project-content">
+      <!-- Info Grid -->
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-label">تاريخ البدء</span>
+          <span class="info-value">{{ project.startDate ? (project.startDate | date: 'mediumDate') : 'غير محدد' }}</span>
         </div>
-      </div>
-      <div class="metric-card">
-        <span class="metric-icon"><span nz-icon nzType="calendar"></span></span>
-        <div class="metric-info">
-          <span class="metric-label">تاريخ الانتهاء</span>
-          <span class="metric-value">{{ project.endDate ? (project.endDate | date:'mediumDate') : 'غير محدد' }}</span>
+        <div class="info-card">
+          <span class="info-label">تاريخ الانتهاء</span>
+          <span class="info-value">{{ project.endDate ? (project.endDate | date: 'mediumDate') : 'غير محدد' }}</span>
         </div>
-      </div>
-      <div class="metric-card">
-        <span class="metric-icon"><span nz-icon nzType="user"></span></span>
-        <div class="metric-info">
-          <span class="metric-label">مدير المشروع</span>
-          <span class="metric-value">{{ project.projectManagerName || 'غير محدد' }}</span>
+        <div class="info-card">
+          <span class="info-label">مدير المشروع</span>
+          <span class="info-value">{{ project.projectManagerName || 'غير محدد' }}</span>
         </div>
-      </div>
-      <div class="metric-card progress-card">
-        <div class="metric-info" style="width: 100%;">
-          <span class="metric-label">نسبة الإنجاز</span>
+        <div class="info-card">
+          <span class="info-label">نسبة الإنجاز</span>
           <nz-progress [nzPercent]="project.progress" nzSize="small"></nz-progress>
         </div>
       </div>
-    </div>
 
-    <!-- Tabs -->
-    <div class="project-tabs">
-      <nz-tabs>
-        <!-- Tab 1: Overview -->
-        <nz-tab nzTitle="نظرة عامة">
-          <div class="tab-content">
-            <h3 class="section-title">وصف المشروع</h3>
-            <p class="project-description">{{ project.description || 'لا يوجد وصف متاح لهذا المشروع.' }}</p>
-          </div>
-        </nz-tab>
-
-        <!-- Tab 2: Tasks -->
-        <nz-tab nzTitle="المهام">
-          <div class="tab-content tasks-tab-content">
-            <div *ngIf="project.tasks && project.tasks.length > 0; else noTasks">
-              <div class="tasks-list">
-                <div class="task-item" *ngFor="let task of project.tasks">
-                  <div class="task-info">
-                    <span class="task-title">{{ task.title }}</span>
+      <!-- Detail Tabs -->
+      <div class="detail-sections">
+        <nz-tabs>
+          <nz-tab nzTitle="نظرة عامة">
+            <div class="tab-pane">
+              <h3 class="section-title">وصف المشروع</h3>
+              <p class="description-text">{{ project.description || 'لا يوجد وصف متاح لهذا المشروع.' }}</p>
+            </div>
+          </nz-tab>
+          
+          <nz-tab nzTitle="المهام">
+            <div class="tab-pane">
+              <div *ngIf="project.tasks && project.tasks.length > 0; else noTasks">
+                <div class="tasks-list">
+                  <div class="task-row" *ngFor="let task of project.tasks">
+                    <div class="task-main">
+                      <span class="task-name">{{ task.title }}</span>
+                      <div class="task-tags">
+                        <nz-tag [nzColor]="getTaskStatusColor(task.status)">{{ task.status }}</nz-tag>
+                        <span class="task-date" *ngIf="task.dueDate">
+                          <span nz-icon nzType="calendar"></span> {{ task.dueDate | date: 'shortDate' }}
+                        </span>
+                      </div>
+                    </div>
                     <div class="task-meta">
-                      <nz-tag [nzColor]="getTaskStatusColor(task.status)">{{ task.status }}</nz-tag>
-                      <nz-tag *ngIf="task.priority" [nzColor]="getPriorityColor(task.priority)">
-                        <span nz-icon nzType="flag" nzTheme="outline"></span> {{ task.priority }}
-                      </nz-tag>
-                      <span class="task-meta-item" *ngIf="task.dueDate">
-                        <span nz-icon nzType="calendar" nzTheme="outline"></span> {{ task.dueDate | date:'shortDate' }}
+                      <span *ngIf="task.executorName" class="executor">
+                        <nz-avatar nzSize="small" nzIcon="user" style="margin-inline-end: 8px;"></nz-avatar>
+                        {{ task.executorName }}
                       </span>
                     </div>
                   </div>
-                  <div class="task-executor" *ngIf="task.executorName">
-                    <span nz-icon nzType="user" nzTheme="outline"></span> {{ task.executorName }}
-                  </div>
+                </div>
+              </div>
+              <ng-template #noTasks>
+                <nz-empty nzNotFoundContent="لا توجد مهام حالياً"></nz-empty>
+              </ng-template>
+            </div>
+          </nz-tab>
+
+          <nz-tab nzTitle="الفريق">
+            <div class="tab-pane">
+              <div class="members-layout">
+                <div class="member-item" *ngFor="let avatar of project.avatars; let i = index">
+                  <img [src]="avatar" alt="Member Avatar" class="member-img" />
+                  <span class="member-role">عضو فريق</span>
                 </div>
               </div>
             </div>
-            <ng-template #noTasks>
-              <div class="empty-state">
-                <nz-empty nzNotFoundImage="simple" nzNotFoundContent="لا توجد مهام مسندة حالياً."></nz-empty>
-              </div>
-            </ng-template>
-          </div>
-        </nz-tab>
-
-        <!-- Tab 3: Members -->
-        <nz-tab nzTitle="أعضاء الفريق">
-          <div class="tab-content team-tab-content">
-            <div *ngIf="project.avatars && project.avatars.length > 0; else noMembers" class="members-grid">
-              <div class="member-card" *ngFor="let avatar of project.avatars; let i = index">
-                <img [src]="avatar" alt="Member Avatar" class="member-avatar-large" />
-                <span class="member-name">عضو {{ i + 1 }}</span>
-              </div>
-            </div>
-            <ng-template #noMembers>
-              <div class="empty-state">
-                <nz-empty nzNotFoundImage="simple" nzNotFoundContent="لا يوجد أعضاء في هذا المشروع."></nz-empty>
-              </div>
-            </ng-template>
-          </div>
-        </nz-tab>
-      </nz-tabs>
+          </nz-tab>
+        </nz-tabs>
+      </div>
     </div>
   </div>
 
-  <div class="project-details-container empty-state-container" *ngIf="!isLoading && !project">
-    <div class="empty-state" style="padding: 50px 0;">
-      <nz-empty nzNotFoundImage="simple" nzNotFoundContent="لم يتم العثور على المشروع."></nz-empty>
-      <div style="text-align: center; margin-top: 20px;">
-        <app-custom-button label="العودة للقائمة" type="primary" (btnClick)="goBack()"></app-custom-button>
-      </div>
-    </div>
+  <div class="page-container empty-state" *ngIf="!isLoading && !project">
+    <nz-empty nzNotFoundContent="المشروع غير موجود"></nz-empty>
+    <app-custom-button label="العودة للرئيسية" type="primary" (btnClick)="goBack()"></app-custom-button>
   </div>
 </div>

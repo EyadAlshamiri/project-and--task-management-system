@@ -15,7 +15,7 @@ export const PROJECTS_ROUTES: Routes = [
   } ,
 
   {
-    path: 'details-project/:id',
+    path: ':id',
     component: ProjectDetails ,
   }
   

@@ -7,14 +7,18 @@
 
     <div class="card-body-scrollable">
       <form nz-form [formGroup]="projectForm" nzLayout="vertical" class="custom-form">
-        
-        <h3 class="section-title"> معلومات المشروع</h3>
-        
+        <h3 class="section-title">معلومات المشروع</h3>
+
         <div class="form-row two-cols">
           <!-- Project Title -->
           <nz-form-item class="floating-label-item">
             <nz-form-control nzErrorTip="اسم المشروع مطلوب.">
-              <div class="input-wrapper" [class.has-error]="projectForm.get('title')?.invalid && projectForm.get('title')?.touched">
+              <div
+                class="input-wrapper"
+                [class.has-error]="
+                  projectForm.get('title')?.invalid && projectForm.get('title')?.touched
+                "
+              >
                 <label class="floating-label">اسم المشروع</label>
                 <input nz-input formControlName="title" />
                 <span class="required-asterisk">*</span>
@@ -43,7 +47,11 @@
             <nz-form-control nzErrorTip="تاريخ البدء مطلوب.">
               <div class="input-wrapper">
                 <label class="floating-label">تاريخ البدء</label>
-                <nz-date-picker formControlName="startDate" nzBorderless style="width: 100%"></nz-date-picker>
+                <nz-date-picker
+                  formControlName="startDate"
+                  nzBorderless
+                  style="width: 100%"
+                ></nz-date-picker>
               </div>
             </nz-form-control>
           </nz-form-item>
@@ -53,7 +61,11 @@
             <nz-form-control nzErrorTip="تاريخ الانتهاء مطلوب.">
               <div class="input-wrapper">
                 <label class="floating-label">تاريخ الانتهاء</label>
-                <nz-date-picker formControlName="endDate" nzBorderless style="width: 100%"></nz-date-picker>
+                <nz-date-picker
+                  formControlName="endDate"
+                  nzBorderless
+                  style="width: 100%"
+                ></nz-date-picker>
               </div>
             </nz-form-control>
           </nz-form-item>
@@ -77,10 +89,27 @@
           <!-- Project Manager Name -->
           <nz-form-item class="floating-label-item">
             <nz-form-control nzErrorTip="اسم مدير المشروع مطلوب.">
-              <div class="input-wrapper" style="cursor: pointer" (click)="openManagerSelectionModal()" [class.has-error]="projectForm.get('projectManagerName')?.invalid && projectForm.get('projectManagerName')?.touched">
+              <div
+                class="input-wrapper"
+                style="cursor: pointer"
+                (click)="openManagerSelectionModal()"
+                [class.has-error]="
+                  projectForm.get('projectManagerName')?.invalid &&
+                  projectForm.get('projectManagerName')?.touched
+                "
+              >
                 <label class="floating-label">مدير المشروع</label>
                 <div class="selected-manager-display" *ngIf="projectManager">
-                  <img [src]="projectManager.avatar" class="avatar-img" style="width: 24px; height: 24px; margin-inline-start: 0; margin-inline-end: 8px;" />
+                  <img
+                    [src]="projectManager.avatar"
+                    class="avatar-img"
+                    style="
+                      width: 24px;
+                      height: 24px;
+                      margin-inline-start: 0;
+                      margin-inline-end: 8px;
+                    "
+                  />
                   <span>{{ projectManager.name }}</span>
                 </div>
                 <div *ngIf="!projectManager" class="placeholder-text">اختر مدير المشروع</div>
@@ -97,57 +126,103 @@
             <nz-form-control nzErrorTip="الوصف بين 10 و 500 حرف">
               <div class="input-wrapper">
                 <label class="floating-label">وصف المشروع</label>
-                <textarea nz-input formControlName="description" [nzAutosize]="{ minRows: 4, maxRows: 6 }"></textarea>
+                <textarea
+                  nz-input
+                  formControlName="description"
+                  [nzAutosize]="{ minRows: 4, maxRows: 6 }"
+                ></textarea>
               </div>
             </nz-form-control>
           </nz-form-item>
         </div>
 
-        <div class="section-divider"></div>
-        <h3 class="section-title">👥 الأعضاء</h3>
-        <div class="form-row actions-row">
-          <div class="members">
-            <div class="avatar-circles" *ngIf="selectedMembers.length > 0">
-              <img *ngFor="let member of selectedMembers.slice(0, 3)" [src]="member.avatar" [alt]="member.name" [title]="member.name" class="mock-avatar" />
-              <div class="avatar-count" *ngIf="selectedMembers.length > 3">
-                +{{ selectedMembers.length - 3 }}
+
+        <div class="form-row-members-tasks">
+          <div class="membars-div">
+            <h3 class="section-title">👥 الأعضاء</h3>
+            <div class="form-row actions-row">
+              <div class="members">
+                <div class="avatar-circles" *ngIf="selectedMembers.length > 0">
+                  <img
+                    *ngFor="let member of selectedMembers.slice(0, 3)"
+                    [src]="member.avatar"
+                    [alt]="member.name"
+                    [title]="member.name"
+                    class="mock-avatar"
+                  />
+                  <div class="avatar-count" *ngIf="selectedMembers.length > 3">
+                    +{{ selectedMembers.length - 3 }}
+                  </div>
+                </div>
+                <app-custom-button
+                  label="إضافة أعضاء"
+                  type="default"
+                  (btnClick)="openMemberSelectionModal()"
+                ></app-custom-button>
               </div>
             </div>
-            <app-custom-button label="إضافة أعضاء" type="default" (btnClick)="openMemberSelectionModal()"></app-custom-button>
           </div>
-        </div>
 
-        <div class="section-divider"></div>
-        <h3 class="section-title">📝 المهام</h3>
-        <div class="form-row actions-row">
-          <app-custom-button label="إضافة مهمة" type="dashed" (btnClick)="addTask()"></app-custom-button>
+          <div class="task-div">
+            <h3 class="section-title">📝 المهام</h3>
+            <div class="form-row actions-row">
+              <app-custom-button
+                label="إضافة مهمة"
+                type="dashed"
+                (btnClick)="addTask()"
+              ></app-custom-button>
+            </div>
+          </div>
         </div>
 
         <!-- Compact Tasks List -->
         <div class="compact-tasks-list" *ngIf="tasks && tasks.length > 0">
-          <div *ngFor="let task of visibleTasks; let i = index; trackBy: trackByIndex" class="compact-task-item">
+          <div
+            *ngFor="let task of visibleTasks; let i = index; trackBy: trackByIndex"
+            class="compact-task-item"
+          >
             <div class="task-info">
               <span class="task-number">#{{ i + 1 }}</span>
               <div class="task-details">
                 <span class="task-title">{{ task.get('title')?.value }}</span>
                 <div class="task-meta">
-                  <span class="task-status-badge" [class]="task.get('status')?.value">{{ task.get('status')?.value }}</span>
+                  <span class="task-status-badge" [class]="task.get('status')?.value">{{
+                    task.get('status')?.value
+                  }}</span>
                   <span class="task-meta-item" *ngIf="task.get('priority')?.value">
-                    <span nz-icon nzType="flag" nzTheme="outline"></span> {{ task.get('priority')?.value }}
+                    <span nz-icon nzType="flag" nzTheme="outline"></span>
+                    {{ task.get('priority')?.value }}
                   </span>
                   <span class="task-date" *ngIf="task.get('dueDate')?.value">
-                    <span nz-icon nzType="calendar" nzTheme="outline"></span> {{ task.get('dueDate')?.value | date:'shortDate' }}
+                    <span nz-icon nzType="calendar" nzTheme="outline"></span>
+                    {{ task.get('dueDate')?.value | date: 'shortDate' }}
                   </span>
                 </div>
               </div>
             </div>
             <div class="task-actions">
-              <span nz-icon nzType="edit" nzTheme="outline" class="edit-icon" (click)="editTask(i)"></span>
-              <span nz-icon nzType="delete" nzTheme="outline" class="delete-icon" (click)="removeTask(i)"></span>
+              <span
+                nz-icon
+                nzType="edit"
+                nzTheme="outline"
+                class="edit-icon"
+                (click)="editTask(i)"
+              ></span>
+              <span
+                nz-icon
+                nzType="delete"
+                nzTheme="outline"
+                class="delete-icon"
+                (click)="removeTask(i)"
+              ></span>
             </div>
           </div>
 
-          <div class="compact-task-item show-all-card" *ngIf="tasks && tasks.length > 3" routerLink="/tasks">
+          <div
+            class="compact-task-item show-all-card"
+            *ngIf="tasks && tasks.length > 3"
+            routerLink="/tasks"
+          >
             <div class="show-all-content">
               <span class="plus-count">+{{ tasks.length - 3 }}</span>
               <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
@@ -159,8 +234,15 @@
 
     <!-- Footer -->
     <div class="page-footer-actions">
-      <app-custom-button label="حفظ" type="primary" (btnClick)="submitForm()" [disabled]="!projectForm.valid"></app-custom-button>
-      <app-custom-button label="إلغاء" type="default" (btnClick)="cancel()"></app-custom-button>
+      <app-custom-button
+        label="حفظ"
+        type="primary"
+        (btnClick)="submitForm()"
+        [disabled]="!projectForm.valid"
+        size="large"
+        
+      ></app-custom-button>
+      <app-custom-button label="إلغاء" type="default" size="large" (btnClick)="cancel()"></app-custom-button>
     </div>
   </div>
 </div>
