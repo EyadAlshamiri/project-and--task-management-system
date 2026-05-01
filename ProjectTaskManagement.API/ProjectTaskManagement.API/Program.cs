@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ProjectTaskManagement.API.Middleware;
 using ProjectTaskManagement.Data;
 using ProjectTaskManagement.Infrastructure;
 using ProjectTaskManagement.Service;
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
     )
 );
 
+
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
 var app = builder.Build();
 
 // Configure HTTP pipeline
@@ -28,6 +32,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); 
 }
 
+
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
