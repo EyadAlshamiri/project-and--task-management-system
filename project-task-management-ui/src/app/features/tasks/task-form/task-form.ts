@@ -1,9 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-task-form',
-  imports: [],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
+    NzIconModule
+  ],
   templateUrl: './task-form.html',
   styleUrl: './task-form.css',
 })
-export class TaskForm {}
+export class TaskForm {
+  @Input() taskGroup!: FormGroup;
+  @Input() index!: number;
+  @Output() remove = new EventEmitter<void>();
+
+  onRemove(): void {
+    this.remove.emit();
+  }
+}

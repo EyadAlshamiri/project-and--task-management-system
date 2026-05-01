@@ -1,0 +1,65 @@
+<div class="member-selection-container">
+  <!-- Search Header -->
+  <div class="search-header">
+    <nz-input-group [nzPrefix]="searchIcon" nzSize="large" class="search-input">
+      <input 
+        type="text" 
+        nz-input 
+        placeholder="البحث عن طريق الاسم..." 
+        [(ngModel)]="searchQuery" 
+        (ngModelChange)="onSearchChange($event)"
+      />
+    </nz-input-group>
+    <ng-template #searchIcon>
+      <span nz-icon nzType="search" nzTheme="outline" class="search-icon"></span>
+    </ng-template>
+  </div>
+
+  <!-- User List -->
+  <div class="users-list-container">
+    <div *ngIf="isLoading" class="loading-state">
+      <nz-spin nzSimple nzSize="large"></nz-spin>
+    </div>
+
+    <nz-list *ngIf="!isLoading" [nzDataSource]="users" [nzRenderItem]="userItem">
+      <ng-template #userItem let-user>
+        <nz-list-item 
+          class="user-item" 
+          [class.selected]="isSelected(user.id)"
+          (click)="toggleSelection(user.id)"
+        >
+          <div class="user-info">
+            <img [src]="user.avatar" [alt]="user.name" class="user-avatar" />
+            <span class="user-name">{{ user.name }}</span>
+          </div>
+          <div class="user-checkbox">
+            <label 
+              nz-checkbox 
+              [ngModel]="isSelected(user.id)" 
+              (ngModelChange)="toggleSelection(user.id)"
+              (click)="$event.stopPropagation()"
+            ></label>
+          </div>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+
+    <div *ngIf="!isLoading && users.length === 0" class="empty-state">
+      لا توجد نتائج مطابقة للبحث.
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="modal-actions">
+    <app-custom-button label="إلغاء" type="default" (btnClick)="cancel()"></app-custom-button>
+    <app-custom-button 
+      label="تأكيد الاختيار" 
+      type="primary" 
+      (btnClick)="confirm()"
+    >
+      <ng-container *ngIf="selectedUserIds.size > 0">
+        ({{ selectedUserIds.size }})
+      </ng-container>
+    </app-custom-button>
+  </div>
+</div>

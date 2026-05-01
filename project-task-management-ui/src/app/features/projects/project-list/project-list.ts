@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -14,7 +15,18 @@ import { ProjectStatus } from '../../../core/models/project';
 
 @Component({
   selector: 'app-project-list',
-  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzSkeletonModule, ProjectCard, SearchBar, AddButton],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    NzInputModule, 
+    NzButtonModule, 
+    NzIconModule, 
+    NzEmptyModule, 
+    NzSkeletonModule, 
+    ProjectCard, 
+    SearchBar, 
+    AddButton
+  ],
   templateUrl: './project-list.html',
   styleUrl: './project-list.css',
 })
@@ -25,7 +37,11 @@ export class ProjectList implements OnInit {
   filterStatus: ProjectStatus | 'ALL' = 'ALL';
   isLoading = true;
 
-  constructor(private projectService: ProjectService) {}
+
+  constructor(
+    private projectService: ProjectService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadProjects();
@@ -49,18 +65,7 @@ export class ProjectList implements OnInit {
   }
 
   onAddClick(): void {
-    const newProject = {
-      title: 'مشروع جديد',
-      status: ProjectStatus.ACTIVE,
-      tasksCount: 0,
-      avatars: [],
-      progress: 0,
-      tasks: [],
-    };
-
-    this.projectService.addProject(newProject);
-    this.projects = this.projectService.getProjects();
-    this.applyFiltersAndSort();
+    this.router.navigate(['/projects/add-project']);
   }
 
   onFilterClick(): void {

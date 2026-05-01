@@ -14,9 +14,10 @@ nz-input-group {
   gap: 8px;
   align-items: center;
   border: none;
-  background-color: var(--secondary-bg-color);
+  background-color: var(--bg-body);
   border-radius: 7px;
   padding: 10px 5px;
+  height: 42px;
 }
 
 nz-input-group input {

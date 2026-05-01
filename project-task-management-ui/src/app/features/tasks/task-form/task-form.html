@@ -1,1 +1,52 @@
-<p>task-form works!</p>
+<div [formGroup]="taskGroup" class="task-card">
+  <div class="task-card-header">
+    <h4>المهمة #{{ index + 1 }}</h4>
+    <span
+      nz-icon
+      nzType="delete"
+      nzTheme="outline"
+      class="delete-icon"
+      (click)="onRemove()"
+    ></span>
+  </div>
+
+  <div class="task-form-grid">
+    <nz-form-item class="floating-label-item">
+      <nz-form-control nzErrorTip="عنوان المهمة مطلوب.">
+        <div class="input-wrapper">
+          <label class="floating-label">عنوان المهمة</label>
+          <input nz-input formControlName="title" />
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item class="floating-label-item">
+      <nz-form-control>
+        <div class="input-wrapper">
+          <label class="floating-label">حالة المهمة</label>
+          <nz-select formControlName="status" nzBorderless>
+            <nz-option nzValue="TODO" nzLabel="قيد الانتظار"></nz-option>
+            <nz-option
+              nzValue="IN_PROGRESS"
+              nzLabel="قيد التنفيذ"
+            ></nz-option>
+            <nz-option nzValue="DONE" nzLabel="مكتمل"></nz-option>
+          </nz-select>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <nz-form-item class="floating-label-item full-width">
+    <nz-form-control>
+      <div class="input-wrapper">
+        <label class="floating-label">الوصف</label>
+        <textarea
+          nz-input
+          formControlName="description"
+          [nzAutosize]="{ minRows: 2, maxRows: 4 }"
+        ></textarea>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+</div>

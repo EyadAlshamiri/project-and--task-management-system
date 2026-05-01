@@ -1,0 +1,114 @@
+.member-selection-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.search-header {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 8px;
+}
+
+.search-input {
+  border-radius: var(--border-radius-sm);
+}
+
+::ng-deep .search-input .ant-input {
+  border-radius: var(--border-radius-sm);
+  background-color: var(--bg-body);
+  border-color: var(--border-avatar);
+}
+
+::ng-deep .search-input .ant-input:focus {
+  background-color: var(--bg-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.search-icon {
+  color: var(--text-light);
+}
+
+.users-list-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 300px;
+  max-height: 400px;
+  padding-right: 8px;
+}
+
+/* Custom Scrollbar */
+.users-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.users-list-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.users-list-container::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 10px;
+}
+
+.loading-state, .empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.user-item {
+  padding: 12px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+  margin-bottom: 4px;
+}
+
+.user-item:hover {
+  background-color: var(--bg-body);
+}
+
+.user-item.selected {
+  background-color: var(--primary-light);
+  border-color: var(--primary-border);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-avatar);
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+::ng-deep .user-checkbox .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+  margin-top: 16px;
+}

@@ -1,0 +1,67 @@
+<form nz-form [formGroup]="taskForm" nzLayout="vertical" class="task-modal-form">
+  <div class="form-grid">
+    <!-- Title -->
+    <nz-form-item class="floating-label-item">
+      <nz-form-control nzErrorTip="عنوان المهمة مطلوب.">
+        <div
+          class="input-wrapper"
+          [class.has-error]="
+            taskForm.get('title')?.invalid && taskForm.get('title')?.touched
+          "
+        >
+          <label class="floating-label">عنوان المهمة</label>
+          <input nz-input formControlName="title" />
+          <span class="required-asterisk">*</span>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Status -->
+    <nz-form-item class="floating-label-item">
+      <nz-form-control>
+        <div class="input-wrapper">
+          <label class="floating-label">حالة المهمة</label>
+          <nz-select formControlName="status" nzBorderless>
+            <nz-option nzValue="TODO" nzLabel="قيد الانتظار"></nz-option>
+            <nz-option nzValue="IN_PROGRESS" nzLabel="قيد التنفيذ"></nz-option>
+            <nz-option nzValue="DONE" nzLabel="مكتمل"></nz-option>
+          </nz-select>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <!-- Description -->
+  <nz-form-item class="floating-label-item">
+    <nz-form-control>
+      <div class="input-wrapper">
+        <label class="floating-label">الوصف</label>
+        <textarea
+          nz-input
+          formControlName="description"
+          [nzAutosize]="{ minRows: 4, maxRows: 6 }"
+        ></textarea>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="modal-footer">
+    <app-custom-button
+      label="إلغاء"
+      type="default"
+      (btnClick)="cancel()"
+    ></app-custom-button>
+    <app-custom-button
+      label="إضافة المهمة"
+      type="primary"
+      (btnClick)="submit()"
+      *ngIf="!isEdit"
+    ></app-custom-button>
+    <app-custom-button
+      label="تعديل المهمة"
+      type="primary"
+      (btnClick)="submit()"
+      *ngIf="isEdit"
+    ></app-custom-button>
+  </div>
+</form>

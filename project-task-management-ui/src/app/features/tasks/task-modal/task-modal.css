@@ -1,50 +1,20 @@
-.task-card {
-  background: var(--bg-body);
-  border: 1px solid var(--border-light);
-  border-radius: var(--border-radius-md);
-  padding: 16px;
+.task-modal-form {
+  padding: 10px 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  position: relative;
-  transition: all var(--transition-fast);
+  gap: 20px;
 }
 
-.task-card:hover {
-  box-shadow: var(--shadow-sm);
-  border-color: var(--border-color);
-}
-
-.task-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.task-card-header h4 {
-  margin: 0;
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.delete-icon {
-  color: var(--error-color);
-  cursor: pointer;
-  font-size: 18px;
-  transition: transform 0.2s;
-}
-
-.delete-icon:hover {
-  transform: scale(1.1);
-}
-
-.task-form-grid {
+.form-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
-/* Floating Label & Outline Style (Copied from ProjectForm for consistency) */
+.floating-label-item {
+  margin-bottom: 0;
+}
+
 .input-wrapper {
   position: relative;
   border: 1px solid var(--border-color);
@@ -52,6 +22,10 @@
   padding: 8px 12px;
   transition: all var(--transition-normal);
   background: white;
+}
+
+.input-wrapper.has-error {
+  border-color: var(--error-color) !important;
 }
 
 .input-wrapper:focus-within {
@@ -71,6 +45,20 @@
   z-index: 1;
 }
 
+.input-wrapper.has-error .floating-label {
+  color: var(--error-color);
+}
+
+.required-asterisk {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--error-color);
+  font-size: 16px;
+  font-weight: bold;
+}
+
 ::ng-deep .input-wrapper input.ant-input,
 ::ng-deep .input-wrapper textarea.ant-input {
   border: none !important;
@@ -79,6 +67,7 @@
   font-size: 15px;
   color: var(--text-main);
   width: 100%;
+  background: transparent;
 }
 
 ::ng-deep .input-wrapper .ant-select-selector {
@@ -87,10 +76,18 @@
   padding: 0 !important;
   height: 32px !important;  
   line-height: 32px !important;
+  background: transparent !important;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
 }
 
 @media (max-width: 576px) {
-  .task-form-grid {
+  .form-grid {
     grid-template-columns: 1fr;
   }
 }

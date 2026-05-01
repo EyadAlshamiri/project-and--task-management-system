@@ -1,1 +1,61 @@
-<p>list-list works!</p>
+<div class="task-management-container">
+  <!-- Header with Filter and Add Button -->
+  <div class="task-header">
+    <div class="filter-section">
+      <span class="filter-label">Task status filter</span>
+      <nz-radio-group [(ngModel)]="filterStatus" (ngModelChange)="applyFilter()" nzButtonStyle="solid">
+        <label nz-radio-button nzValue="All">All</label>
+        <label nz-radio-button nzValue="Todo">Todo</label>
+        <label nz-radio-button nzValue="In Progress">In Progress</label>
+        <label nz-radio-button nzValue="Done">Done</label>
+      </nz-radio-group>
+    </div>
+
+    <button nz-button nzType="primary" class="add-task-btn" (click)="addTask()">
+      <span nz-icon nzType="plus"></span>
+      Add Task
+    </button>
+  </div>
+
+  <!-- Task Table -->
+  <div class="table-card">
+    <nz-table 
+      #basicTable 
+      [nzData]="filteredTasks" 
+      [nzBordered]="false" 
+      [nzPaginationType]="'small'"
+      [nzPageSize]="10"
+      class="task-table"
+    >
+      <thead>
+        <tr>
+          <th nzWidth="50px"></th>
+          <th>Task Name</th>
+          <th>Status</th>
+          <th nzRight>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td><label nz-checkbox [(ngModel)]="data.selected"></label></td>
+          <td class="task-name">{{ data.name }}</td>
+          <td>
+            <span class="status-tag" [class]="data.status">
+              {{ data.status }}
+            </span>
+          </td>
+          <td nzRight>
+            <div class="action-buttons">
+              <button nz-button nzType="text" (click)="editTask(data)">
+                <span nz-icon nzType="edit" nzTheme="outline" class="edit-icon"></span>
+              </button>
+              <button nz-button nzType="text" (click)="deleteTask(data.id)">
+                <span nz-icon nzType="delete" nzTheme="outline" class="delete-icon"></span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

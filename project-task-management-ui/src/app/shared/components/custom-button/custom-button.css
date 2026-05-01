@@ -1,0 +1,33 @@
+.app-custom-button {
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 20px;
+  justify-content: center;
+  font-weight: 500;
+  transition: all var(--transition-normal);
+}
+
+/* Primary Button Override */
+::ng-deep .ant-btn-primary.app-custom-button {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--bg-color);
+}
+
+::ng-deep .ant-btn-primary.app-custom-button:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: var(--bg-color);
+}
+
+::ng-deep .ant-btn-default.app-custom-button {
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+::ng-deep .ant-btn-default.app-custom-button:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}

@@ -1,1 +1,142 @@
-<p>project-form works!</p>
+<div class="page-container">
+  <nz-card class="form-card custom-page-form" [nzBordered]="false">
+    <div class="page-header">
+      <h2>إضافة مشروع جديد</h2>
+      <p>قم بتعبئة تفاصيل المشروع للبدء في تتبع المهام.</p>
+    </div>
+
+    <form nz-form [formGroup]="projectForm" nzLayout="vertical" class="custom-form">
+      <div class="form-row two-cols">
+        <!-- Project Title -->
+        <nz-form-item class="floating-label-item">
+          <nz-form-control nzErrorTip="اسم المشروع مطلوب.">
+            <div
+              class="input-wrapper"
+              [class.has-error]="
+                projectForm.get('title')?.invalid && projectForm.get('title')?.touched
+              "
+            >
+              <label class="floating-label">اسم المشروع</label>
+              <input nz-input formControlName="title" />
+              <span class="required-asterisk">*</span>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Project Status -->
+        <nz-form-item class="floating-label-item">
+          <nz-form-control>
+            <div class="input-wrapper">
+              <label class="floating-label">حالة المشروع</label>
+              <nz-select formControlName="status" nzBorderless>
+                <nz-option nzValue="ACTIVE" nzLabel="نشط"></nz-option>
+                <nz-option nzValue="ON_HOLD" nzLabel="متوقف"></nz-option>
+                <nz-option nzValue="COMPLETED" nzLabel="مكتمل"></nz-option>
+              </nz-select>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="form-row full-width">
+        <nz-form-item class="floating-label-item">
+          <nz-form-control nzErrorTip="الوصف بين 10 و 500 حرف">
+            <div class="input-wrapper">
+              <label class="floating-label">وصف المشروع</label>
+              <textarea
+                nz-input
+                formControlName="description"
+                [nzAutosize]="{ minRows: 4, maxRows: 6 }"
+              ></textarea>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="form-row actions-row">
+        <!-- Members -->
+        <div class="members">
+          <div class="avatar-circles" *ngIf="selectedMembers.length > 0">
+            <img
+              *ngFor="let member of selectedMembers.slice(0, 3)"
+              [src]="member.avatar"
+              [alt]="member.name"
+              [title]="member.name"
+              class="mock-avatar"
+            />
+            <div class="avatar-count" *ngIf="selectedMembers.length > 3">
+              +{{ selectedMembers.length - 3 }}
+            </div>
+          </div>
+
+          <app-custom-button
+            label="إضافة أعضاء"
+            type="default"
+            (btnClick)="openMemberSelectionModal()"
+          >
+          </app-custom-button>
+        </div>
+
+        <!-- Add Task -->
+        <app-custom-button
+          label="إضافة مهمة"
+          type="dashed"
+          (btnClick)="addTask()"
+        ></app-custom-button>
+      </div>
+
+      <!-- Compact Tasks List (Max 3 + Show All Button) -->
+      <div class="compact-tasks-list" *ngIf="tasks && tasks.length > 0">
+        <!-- Display first 3 tasks -->
+        <div
+          *ngFor="let task of visibleTasks; let i = index; trackBy: trackByIndex"
+          class="compact-task-item"
+        >
+          <div class="task-info">
+            <span class="task-number">#{{ i + 1 }}</span>
+            <span class="task-title">{{ task.get('title')?.value }}</span>
+            <span class="task-status-badge" [class]="task.get('status')?.value">
+              {{ task.get('status')?.value }}
+            </span>
+          </div>
+          <div class="task-actions">
+            <span
+              nz-icon
+              nzType="edit"
+              nzTheme="outline"
+              class="edit-icon"
+              (click)="editTask(i)"
+            ></span>
+            <span
+              nz-icon
+              nzType="delete"
+              nzTheme="outline"
+              class="delete-icon"
+              (click)="removeTask(i)"
+            ></span>
+          </div>
+        </div>
+
+        <!-- Show All Button as a Card -->
+        <div class="compact-task-item show-all-card" *ngIf="tasks && tasks.length > 3" routerLink="/tasks">
+          <div class="show-all-content">
+            <span class="plus-count">+{{ tasks.length - 3 }}</span>
+            <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Footer -->
+    <div class="page-footer-actions">
+      <app-custom-button
+        label="حفظ"
+        type="primary"
+        (btnClick)="submitForm()"
+        [disabled]="!projectForm.valid"
+      ></app-custom-button>
+
+      <app-custom-button label="إلغاء" type="default" (btnClick)="cancel()"></app-custom-button>
+    </div>
+  </nz-card>
+</div>
