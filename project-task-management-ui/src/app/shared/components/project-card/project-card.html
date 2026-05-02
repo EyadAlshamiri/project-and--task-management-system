@@ -34,11 +34,11 @@
 
     <div class="card-body">
       <div class="badges-row">
-        <div class="status-badge" [ngClass]="getStatusClass(project.status)">
-          {{ getStatusLabel(project.status) }}
+        <div class="status-badge" [ngClass]="project.status | statusFormat:'class'">
+          {{ project.status | statusFormat:'label' }}
         </div>
-        <div class="priority-badge" [ngClass]="getPriorityClass(project.priority)">
-          {{ getPriorityLabel(project.priority) }}
+        <div class="priority-badge" [ngClass]="project.priority | priorityFormat:'class'">
+          {{ project.priority | priorityFormat:'label' }}
         </div>
       </div>
 

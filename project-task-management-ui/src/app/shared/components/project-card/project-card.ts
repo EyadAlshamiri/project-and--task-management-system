@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -10,6 +10,8 @@ import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
+import { StatusFormatPipe } from '../../pipes/status-format.pipe';
+import { PriorityFormatPipe } from '../../pipes/priority-format.pipe';
 
 @Component({
   selector: 'app-project-card',
@@ -25,9 +27,12 @@ import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
     NzPopconfirmModule,
     NzIconModule,
     NzSkeletonModule,
+    StatusFormatPipe,
+    PriorityFormatPipe
   ],
   templateUrl: './project-card.html',
   styleUrl: './project-card.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectCard {
   @Input() loading: boolean = false;
@@ -43,71 +48,7 @@ export class ProjectCard {
   @Output() edit = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
 
-  getStatusLabel(status: string): string {
-    switch ((status || '').toUpperCase()) {
-      case 'ACTIVE':
-      case 'نشط':
-        return 'نشط';
-      case 'ON HOLD':
-      case 'ONHOLD':
-      case 'موقوف':
-        return 'موقوف';
-      case 'COMPLETED':
-      case 'مكتمل':
-        return 'مكتمل';
-      default:
-        return status || 'غير معروف';
-    }
-  }
 
-  getStatusClass(status: string): string {
-    switch ((status || '').toUpperCase()) {
-      case 'ACTIVE':
-      case 'نشط':
-        return 'status-active';
-      case 'ON HOLD':
-      case 'ONHOLD':
-      case 'موقوف':
-        return 'status-hold';
-      case 'COMPLETED':
-      case 'مكتمل':
-        return 'status-completed';
-      default:
-        return 'status-default';
-    }
-  }
-
-  getPriorityLabel(priority: string): string {
-    switch ((priority || '').toUpperCase()) {
-      case 'HIGH':
-      case 'عالي':
-        return 'عالي';
-      case 'MEDIUM':
-      case 'متوسط':
-        return 'متوسط';
-      case 'LOW':
-      case 'منخفض':
-        return 'منخفض';
-      default:
-        return priority || 'غير محدد';
-    }
-  }
-
-  getPriorityClass(priority: string): string {
-    switch ((priority || '').toUpperCase()) {
-      case 'HIGH':
-      case 'عالي':
-        return 'priority-high';
-      case 'MEDIUM':
-      case 'متوسط':
-        return 'priority-medium';
-      case 'LOW':
-      case 'منخفض':
-        return 'priority-low';
-      default:
-        return 'priority-default';
-    }
-  }
 
   getProgress(project: any): number {
     return project?.progress ?? 0;

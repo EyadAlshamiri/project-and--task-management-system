@@ -155,13 +155,6 @@ export class ProjectForm implements OnInit {
                     assignedTo: [st.assignedTo || null]
                   }));
                 });
-              } else {
-                (taskForm.get('subTasks') as FormArray).push(this.fb.group({
-                  id: [0],
-                  title: ['', Validators.required],
-                  isCompleted: [false],
-                  assignedTo: [null]
-                }));
               }
 
               this.tasks.push(taskForm);
@@ -291,7 +284,7 @@ export class ProjectForm implements OnInit {
     const taskGroup = this.tasks.at(taskIndex) as FormGroup;
     const subTasksArray = taskGroup.get('subTasks') as FormArray;
     subTasksArray.clear();
-    if (subTasksData && Array.isArray(subTasksData)) {
+    if (subTasksData && Array.isArray(subTasksData) && subTasksData.length > 0) {
       subTasksData.forEach((st: any) => {
         subTasksArray.push(this.fb.group({
           id: [st.id || 0],

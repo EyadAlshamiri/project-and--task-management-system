@@ -128,6 +128,16 @@ export class TaskEditPage implements OnInit {
   }
 
   save(): void {
+    if (this.editForm) {
+      const subTasks = this.editForm.get('subTasks') as FormArray;
+      for (let i = subTasks.length - 1; i >= 0; i--) {
+        const sub = subTasks.at(i);
+        if (!sub.value.title && !sub.value.assignedTo) {
+          subTasks.removeAt(i);
+        }
+      }
+    }
+
     if (this.editForm?.valid && this.taskId) {
       this.taskService.updateTask(this.taskId, this.editForm.value).subscribe(() => {
         window.history.back();

@@ -18,6 +18,8 @@ import { TaskModal } from '../../tasks/task-modal/task-modal';
 import { TaskService } from '../../../core/services/task.service';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
+import { StatusFormatPipe } from '../../../shared/pipes/status-format.pipe';
+import { PriorityFormatPipe } from '../../../shared/pipes/priority-format.pipe';
 
 @Component({
   selector: 'app-project-details',
@@ -37,6 +39,8 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
     CustomButton,
     NzModalModule,
     NzPopconfirmModule,
+    StatusFormatPipe,
+    PriorityFormatPipe,
   ],
   templateUrl: './project-details.html',
   styleUrl: './project-details.css',
@@ -48,37 +52,7 @@ export class ProjectDetails implements OnInit {
   currentProjectId: number | null = null;
   isViewReady = false;
 
-  public getStatusLabel(status: string): string {
-    const s = (status || '').toUpperCase();
-    if (s === 'ACTIVE' || s === 'نشط') return 'نشط';
-    if (s === 'ON HOLD' || s === 'ONHOLD' || s === 'موقوف') return 'موقوف';
-    if (s === 'COMPLETED' || s === 'مكتمل') return 'مكتمل';
-    return status || 'غير محدد';
-  }
 
-  public getPriorityLabel(priority: string): string {
-    const p = (priority || '').toUpperCase();
-    if (p === 'HIGH' || p === 'عالي') return 'عالي';
-    if (p === 'MEDIUM' || p === 'متوسط') return 'متوسط';
-    if (p === 'LOW' || p === 'منخفض') return 'منخفض';
-    return priority || 'غير محدد';
-  }
-
-  public getStatusColor(status: string): string {
-    const s = (status || '').toUpperCase();
-    if (s === 'ACTIVE' || s === 'نشط') return 'blue';
-    if (s === 'ON HOLD' || s === 'ONHOLD' || s === 'موقوف') return 'orange';
-    if (s === 'COMPLETED' || s === 'مكتمل') return 'green';
-    return 'default';
-  }
-
-  public getPriorityColor(priority: string): string {
-    const p = (priority || '').toUpperCase();
-    if (p === 'HIGH' || p === 'عالي') return 'red';
-    if (p === 'MEDIUM' || p === 'متوسط') return 'orange';
-    if (p === 'LOW' || p === 'منخفض') return 'green';
-    return 'default';
-  }
 
   public getTaskStatusColor(status: string): string {
     switch (status) {

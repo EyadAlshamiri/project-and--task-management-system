@@ -85,6 +85,14 @@ export class TaskModal implements OnInit {
   }
 
   submit(): void {
+    // Clean up completely empty subtasks to avoid validation blockage
+    for (let i = this.subTasks.length - 1; i >= 0; i--) {
+      const sub = this.subTasks.at(i);
+      if (!sub.value.title && !sub.value.assignedTo) {
+        this.subTasks.removeAt(i);
+      }
+    }
+
     if (this.taskForm.valid) {
       this.modalRef.destroy(this.taskForm.value);
     } else {

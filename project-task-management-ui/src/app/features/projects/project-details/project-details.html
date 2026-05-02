@@ -7,11 +7,11 @@
           <div class="breadcrumb"><a routerLink="/projects">المشاريع</a> / {{ project.tilte }}</div>
           <h2>{{ project.tilte }}</h2>
           <div class="tags">
-            <nz-tag [nzColor]="getStatusColor(project.status)">
-              {{ getStatusLabel(project.status) }}
+            <nz-tag [nzColor]="project.status | statusFormat:'color'">
+              {{ project.status | statusFormat:'label' }}
             </nz-tag>
-            <nz-tag *ngIf="project.priority" [nzColor]="getPriorityColor(project.priority)">
-              {{ getPriorityLabel(project.priority) }}
+            <nz-tag *ngIf="project.priority" [nzColor]="project.priority | priorityFormat:'color'">
+              {{ project.priority | priorityFormat:'label' }}
             </nz-tag>
           </div>
         </div>
@@ -84,7 +84,7 @@
                     <div class="task-main">
                       <span class="task-name">{{ task.title }}</span>
                       <div class="task-tags">
-                        <nz-tag [nzColor]="getTaskStatusColor(task.status)">{{ getStatusLabel(task.status) }}</nz-tag>
+                        <nz-tag [nzColor]="getTaskStatusColor(task.status)">{{ task.status | statusFormat:'label' }}</nz-tag>
                         <span class="task-date" *ngIf="task.dueDate">
                           <span nz-icon nzType="calendar"></span>
                           {{ task.dueDate | date: 'shortDate' }}

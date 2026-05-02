@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -8,6 +8,7 @@ import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { ar_EG, provideNzI18n } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import ar from '@angular/common/locales/ar';
+import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 
 registerLocaleData(ar);
 
@@ -27,7 +28,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([ErrorInterceptor])),
     provideNzIcons(icons),
     provideNzI18n(customArEG),
   ],

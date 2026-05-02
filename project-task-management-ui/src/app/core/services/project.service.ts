@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, tap, catchError, of } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Project } from '../models/project';
 import { ApiResponse } from '../models/api-response';
@@ -30,10 +30,6 @@ export class ProjectService {
           createdAt: project.createdAt || project.createdAt,
           tasksCount: project.tasksCount || project.tasksCount
         }));
-      }),
-      catchError(err => {
-        console.error('❌ API Error: - project.service.ts:35', err);
-        return of([]);
       })
     );
   }
