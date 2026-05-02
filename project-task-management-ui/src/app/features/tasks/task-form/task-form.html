@@ -41,9 +41,9 @@
         <div class="input-wrapper">
           <label class="floating-label">الأولوية</label>
           <nz-select formControlName="priority" nzBorderless>
-            <nz-option nzValue="0" nzLabel="منخفض"></nz-option>
-            <nz-option nzValue="1" nzLabel="متوسط"></nz-option>
-            <nz-option nzValue="2" nzLabel="عالي"></nz-option>
+            <nz-option [nzValue]="0" nzLabel="منخفض"></nz-option>
+            <nz-option [nzValue]="1" nzLabel="متوسط"></nz-option>
+            <nz-option [nzValue]="2" nzLabel="عالي"></nz-option>
           </nz-select>
         </div>
       </nz-form-control>
@@ -72,7 +72,10 @@
     <nz-form-control>
       <div class="input-wrapper">
         <label class="floating-label">المسند إليه</label>
-        <input nz-input formControlName="assignedTo" />
+        <nz-select formControlName="assignedTo" nzBorderless [nzPlaceHolder]="'اختر المسند إليه'">
+          <nz-option *ngFor="let member of projectMembers" [nzValue]="member" [nzLabel]="member"></nz-option>
+          <nz-option *ngIf="projectMembers.length === 0" nzDisabled nzLabel="لا يوجد أعضاء في المشروع"></nz-option>
+        </nz-select>
       </div>
     </nz-form-control>
   </nz-form-item>

@@ -10,7 +10,7 @@ import { ApiResponse } from '../models/api-response';
 })
 export class TaskService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/projecttasks`;
+  private apiUrl = `${environment.apiUrl}/ProjectTasks`;
 
   getAllTasks(): Observable<ApiResponse<Task[]>> {
     return this.http.get<ApiResponse<Task[]>>(this.apiUrl);

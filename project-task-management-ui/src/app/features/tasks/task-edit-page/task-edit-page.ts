@@ -1,10 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from '../../../core/services/task.service';
 import { TaskForm } from '../task-form/task-form';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
+import { ProjectService } from '../../../core/services/project.service';
 
 @Component({
   selector: 'app-task-edit-page',
@@ -20,7 +21,7 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
         </div>
 
         <div *ngIf="!isLoading && editForm" class="edit-card">
-          <app-task-form [taskGroup]="editForm" [index]="0"></app-task-form>
+          <app-task-form [taskGroup]="editForm" [index]="0" [projectMembers]="projectMembers"></app-task-form>
           <div class="footer-actions">
             <app-custom-button label="تحديث" type="primary" (btnClick)="save()"></app-custom-button>
             <app-custom-button label="إلغاء" type="default" (btnClick)="cancel()"></app-custom-button>
@@ -46,9 +47,12 @@ export class TaskEditPage implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private taskService = inject(TaskService);
+  private projectService = inject(ProjectService);
+  private cdr = inject(ChangeDetectorRef);
 
   editForm?: FormGroup;
   taskId?: number;
+  projectMembers: string[] = [];
   isLoading = true;
 
   ngOnInit(): void {
@@ -78,11 +82,21 @@ export class TaskEditPage implements OnInit {
                 assignedTo: task.assignedTo ?? null,
                 description: task.description ?? ''
               });
+
+              // Fetch project members
+              this.projectService.getProjectById(task.projectId).subscribe(project => {
+                if (project && project.members) {
+                  this.projectMembers = project.members;
+                  this.cdr.detectChanges();
+                }
+              });
             }
             this.isLoading = false;
+            this.cdr.detectChanges();
           },
           error: () => {
             this.isLoading = false;
+            this.cdr.detectChanges();
           }
         });
       } else {

@@ -113,26 +113,46 @@ export class ProjectCard {
     return project?.progress ?? 0;
   }
 
-  getProgressColor(status: string): string {
-    switch ((status || '').toUpperCase()) {
-      case 'ACTIVE':
-        return '#22c55e';
-      case 'ON HOLD':
-      case 'ONHOLD':
-        return '#f59e0b';
-      case 'COMPLETED':
-        return '#22c55e';
-      default:
-        return '#0ea5e9';
-    }
+  getProgressColor(percent: number): string {
+    if (percent >= 100) return '#22c55e'; // Green
+    if (percent >= 70) return '#10b981'; // Emerald
+    if (percent >= 40) return '#f59e0b'; // Amber/Orange
+    if (percent >= 20) return '#f97316'; // Orange/Red
+    return '#ef4444'; // Red
   }
 
   showModal(project: any): void {
     this.edit.emit(project.id);
   }
 
+  getMemberAvatars(): any[] {
+    const members = this.project?.members || [];
+    const avatars = this.project?.avatars || [];
+    
+    // If we have explicit avatar images, use them
+    if (avatars.length > 0) return avatars;
+
+    // Otherwise, generate from member names
+    return members.map((name: string) => ({
+      name: name,
+      initial: name.trim().charAt(0).toUpperCase(),
+      color: this.getAvatarColor(name)
+    }));
+  }
+
+  getAvatarColor(name: string): string {
+    const colors = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae', '#1890ff', '#52c41a', '#eb2f96'];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  }
+
   get extraMembers(): number {
-    const count = Array.isArray(this.project?.avatars) ? this.project.avatars.length : 0;
+    const members = this.project?.members || [];
+    const avatars = this.project?.avatars || [];
+    const count = Math.max(members.length, avatars.length);
     return Math.max(0, count - 3);
   }
 

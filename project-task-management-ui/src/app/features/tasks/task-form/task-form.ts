@@ -25,6 +25,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 export class TaskForm {
   @Input() taskGroup!: FormGroup;
   @Input() index = 0;
+  @Input() projectMembers: string[] = [];
   @Output() remove = new EventEmitter<void>();
 
   onRemove(): void {

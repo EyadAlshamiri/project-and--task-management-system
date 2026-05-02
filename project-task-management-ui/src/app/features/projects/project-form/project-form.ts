@@ -115,6 +115,21 @@ export class ProjectForm implements OnInit {
             tasksCount: project.tasksCount
           });
 
+          // Load Manager Object
+          if (project.projectManagerName) {
+            this.userService.getUsersByNames([project.projectManagerName]).subscribe(users => {
+              if (users.length > 0) this.projectManager = users[0];
+            });
+          }
+
+          // Load Members Objects
+          if (project.members && project.members.length > 0) {
+            this.userService.getUsersByNames(project.members).subscribe(users => {
+              this.selectedMembers = [...users];
+              this.projectForm.patchValue({ members: users.map(u => u.id) });
+            });
+          }
+
           // Load tasks if available
           if (project.tasks) {
             this.tasks.clear();

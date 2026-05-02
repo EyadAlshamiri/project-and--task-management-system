@@ -1,4 +1,10 @@
 <div class="task-details-page">
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <nz-spin nzSimple nzSize="large"></nz-spin>
+    <p>جاري تحميل بيانات المهمة...</p>
+  </div>
+
   <div class="page-container" *ngIf="!isLoading && task">
     <!-- Header Section -->
     <div class="task-header">
@@ -9,13 +15,14 @@
           </div>
           <h2>{{ task.title }}</h2>
           <div class="tags">
-            <nz-tag [nzColor]="getStatusColor(task.status)">{{ task.status }}</nz-tag>
-            <nz-tag *ngIf="task.priority" [nzColor]="getPriorityColor(task.priority.toString())">
-              {{ task.priority === 2 ? 'عالي' : task.priority === 1 ? 'متوسط' : 'منخفض' }}
+            <nz-tag [nzColor]="getStatusColor(task.status)">{{ getStatusLabel(task.status) }}</nz-tag>
+            <nz-tag *ngIf="task.priority !== undefined" [nzColor]="getPriorityColor(task.priority)">
+              {{ getPriorityLabel(task.priority) }}
             </nz-tag>
           </div>
         </div>
         <div class="header-actions">
+          <app-custom-button label="تعديل المهمة" type="primary" (btnClick)="editTask()"></app-custom-button>
           <app-custom-button label="إغلاق" type="default" (btnClick)="goBack()"></app-custom-button>
         </div>
       </div>
@@ -31,27 +38,35 @@
         <div class="info-card">
           <span class="info-label">المسؤول</span>
           <div class="executor-info">
-            <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+            <nz-avatar nzIcon="user" nzSize="small" style="background-color: #87d068;"></nz-avatar>
             <span class="info-value">{{ task.assignedTo || 'غير محدد' }}</span>
           </div>
         </div>
         <div class="info-card">
-          <span class="info-label">تاريخ الاستحقاق</span>
+          <span class="info-label">تاريخ البدء</span>
           <span class="info-value">
             <span nz-icon nzType="calendar"></span> 
-            {{ task.dueDate ? (task.dueDate | date: 'mediumDate') : 'غير محدد' }}
+            {{ task.startDate ? (task.startDate | date: 'yyyy/MM/dd') : 'غير محدد' }}
+          </span>
+        </div>
+        <div class="info-card">
+          <span class="info-label">تاريخ الاستحقاق</span>
+          <span class="info-value text-danger">
+            <span nz-icon nzType="clock-circle"></span> 
+            {{ task.dueDate ? (task.dueDate | date: 'yyyy/MM/dd') : 'غير محدد' }}
           </span>
         </div>
       </div>
 
       <div class="subtasks-section card" *ngIf="task.subTasks && task.subTasks.length > 0">
-        <h3 class="section-title">المهام الفرعية</h3>
+        <h3 class="section-title">المهام الفرعية ({{ task.subTasks.length }})</h3>
         <div class="subtasks-list">
           <div class="subtask-item" *ngFor="let sub of task.subTasks">
             <span class="subtask-check" [class.completed]="sub.isCompleted">
-              <span nz-icon [nzType]="sub.isCompleted ? 'check-circle' : 'border'"></span>
+              <span nz-icon [nzType]="sub.isCompleted ? 'check-circle' : 'border'" [nzTheme]="sub.isCompleted ? 'fill' : 'outline'"></span>
             </span>
             <span class="subtask-title">{{ sub.title }}</span>
+            <span class="subtask-assignee" *ngIf="sub.assignedTo"> - {{ sub.assignedTo }}</span>
           </div>
         </div>
       </div>

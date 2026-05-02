@@ -36,4 +36,9 @@ export class UserService {
   getUsersByIds(ids: number[]): Observable<User[]> {
     return of(this.mockUsers.filter(u => ids.includes(u.id)));
   }
+
+  getUsersByNames(names: string[]): Observable<User[]> {
+    if (!names || names.length === 0) return of([]);
+    return of(this.mockUsers.filter(u => names.includes(u.name)));
+  }
 }
