@@ -54,18 +54,7 @@ export class ProjectDetails implements OnInit {
 
 
 
-  public getTaskStatusColor(status: string): string {
-    switch (status) {
-      case 'TODO':
-        return 'default';
-      case 'IN_PROGRESS':
-        return 'processing';
-      case 'DONE':
-        return 'success';
-      default:
-        return 'default';
-    }
-  }
+
 
   constructor(
     private route: ActivatedRoute,
@@ -77,10 +66,7 @@ export class ProjectDetails implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.isViewReady = true;
-      this.cdr.detectChanges();
-    });
+    this.isViewReady = true;
     this.route.paramMap.subscribe((params) => {
       const idParam = params.get('id');
       if (idParam) {

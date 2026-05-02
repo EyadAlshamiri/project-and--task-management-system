@@ -12,6 +12,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { StatusFormatPipe } from '../../pipes/status-format.pipe';
 import { PriorityFormatPipe } from '../../pipes/priority-format.pipe';
+import { ProgressColorPipe } from '../../pipes/progress-color.pipe';
 
 @Component({
   selector: 'app-project-card',
@@ -28,7 +29,8 @@ import { PriorityFormatPipe } from '../../pipes/priority-format.pipe';
     NzIconModule,
     NzSkeletonModule,
     StatusFormatPipe,
-    PriorityFormatPipe
+    PriorityFormatPipe,
+    ProgressColorPipe
   ],
   templateUrl: './project-card.html',
   styleUrl: './project-card.css',
@@ -54,13 +56,7 @@ export class ProjectCard {
     return project?.progress ?? 0;
   }
 
-  getProgressColor(percent: number): string {
-    if (percent >= 100) return '#22c55e'; // Green
-    if (percent >= 70) return '#10b981'; // Emerald
-    if (percent >= 40) return '#f59e0b'; // Amber/Orange
-    if (percent >= 20) return '#f97316'; // Orange/Red
-    return '#ef4444'; // Red
-  }
+
 
   showModal(project: any): void {
     this.edit.emit(project.id);

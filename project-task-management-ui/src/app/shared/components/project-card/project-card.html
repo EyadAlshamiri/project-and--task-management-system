@@ -65,8 +65,8 @@
 
     <div class="progress-section">
       <nz-progress
-        [nzPercent]="getProgress(project)"
-        [nzStrokeColor]="getProgressColor(getProgress(project))"
+        [nzPercent]="project.progress"
+        [nzStrokeColor]="project.progress | progressColor"
         nzSize="small"
         [nzShowInfo]="true"
       ></nz-progress>

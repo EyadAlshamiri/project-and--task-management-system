@@ -18,6 +18,8 @@ import { NzInputDirective, NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectComponent, NzSelectModule } from 'ng-zorro-antd/select';
 import { FormsModule } from '@angular/forms';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
+import { StatusFormatPipe } from '../../../shared/pipes/status-format.pipe';
+import { PriorityFormatPipe } from '../../../shared/pipes/priority-format.pipe';
 
 @Component({
   selector: 'app-task-details',
@@ -36,7 +38,9 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
     NzInputModule,
     NzSelectModule,
     FormsModule,
-    CustomButton
+    CustomButton,
+    StatusFormatPipe,
+    PriorityFormatPipe
   ],
   templateUrl: './task-details.html',
   styleUrl: './task-details.css',
@@ -218,35 +222,5 @@ export class TaskDetails implements OnInit {
     }
   }
 
-  public getStatusLabel(status: string): string {
-    const s = (status || '').toUpperCase();
-    if (s === 'TODO' || s === 'قيد الانتظار') return 'قيد الانتظار';
-    if (s === 'IN_PROGRESS' || s === 'قيد التنفيذ') return 'قيد التنفيذ';
-    if (s === 'DONE' || s === 'مكتمل') return 'مكتمل';
-    return status || 'غير محدد';
-  }
 
-  public getPriorityLabel(priority: any): string {
-    const p = (priority?.toString() || '').toUpperCase();
-    if (p === 'HIGH' || p === '2' || p === 'عالي') return 'عالي';
-    if (p === 'MEDIUM' || p === '1' || p === 'متوسط') return 'متوسط';
-    if (p === 'LOW' || p === '0' || p === 'منخفض') return 'منخفض';
-    return 'غير محدد';
-  }
-
-  public getStatusColor(status: string): string {
-    const s = (status || '').toUpperCase();
-    if (s === 'TODO' || s === 'قيد الانتظار') return 'default';
-    if (s === 'IN_PROGRESS' || s === 'قيد التنفيذ') return 'processing';
-    if (s === 'DONE' || s === 'مكتمل') return 'success';
-    return 'default';
-  }
-
-  public getPriorityColor(priority: any): string {
-    const p = (priority?.toString() || '').toUpperCase();
-    if (p === 'HIGH' || p === '2' || p === 'عالي') return 'red';
-    if (p === 'MEDIUM' || p === '1' || p === 'متوسط') return 'orange';
-    if (p === 'LOW' || p === '0' || p === 'منخفض') return 'green';
-    return 'default';
-  }
 }

@@ -19,16 +19,10 @@ export class ProjectService {
         console.log('Data: - project.service.ts:19', res?.data);
         return (res?.data ?? []).map(project => ({
           ...project,
+          tilte: project.tilte || '',
           members: project.members || [],
-          tilte: project.tilte || project.tilte || '',
-          startDate: project.startDate || project.startDate,
-          endDate: project.endDate || project.endDate,
-          status: project.status || project.status,
-          priority: project.priority || project.priority,
-          projectManagerName: project.projectManagerName || project.projectManagerName,
-          progress: project.progress || project.progress,
-          createdAt: project.createdAt || project.createdAt,
-          tasksCount: project.tasksCount || project.tasksCount
+          progress: project.progress || 0,
+          tasksCount: project.tasksCount || 0
         }));
       })
     );
@@ -37,11 +31,10 @@ export class ProjectService {
   getProjectById(id: number): Observable<Project> {
     return this.http.get<ApiResponse<Project>>(`${this.apiUrl}/${id}`).pipe(
       map(res => {
-        const project = res.data;
-        if (project) {
-          project.tilte = project.tilte || project.tilte || '';
+        if (res.data) {
+          res.data.tilte = res.data.tilte || '';
         }
-        return project;
+        return res.data;
       })
     );
   }

@@ -9,13 +9,15 @@ export interface Task {
   assignedTo?: string;
   projectId: number;
   createdAt: string;
-  subTasks?: SubTask[];             
+  selected?: boolean;
+  subTasks?: SubTask[];
 }
 
 export interface SubTask {
   id: number;
   title: string;
   isCompleted: boolean;
+  selected?: boolean;
   assignedTo?: string;
   taskId: number;
   createdAt: string;

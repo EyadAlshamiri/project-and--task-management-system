@@ -15,9 +15,9 @@
           </div>
           <h2>{{ task.title }}</h2>
           <div class="tags">
-            <nz-tag [nzColor]="getStatusColor(task.status)">{{ getStatusLabel(task.status) }}</nz-tag>
-            <nz-tag *ngIf="task.priority !== undefined" [nzColor]="getPriorityColor(task.priority)">
-              {{ getPriorityLabel(task.priority) }}
+            <nz-tag [nzColor]="task.status | statusFormat:'color'">{{ task.status | statusFormat:'label' }}</nz-tag>
+            <nz-tag *ngIf="task.priority !== undefined" [nzColor]="task.priority | priorityFormat:'color'">
+              {{ task.priority | priorityFormat:'label' }}
             </nz-tag>
           </div>
         </div>

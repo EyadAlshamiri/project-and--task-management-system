@@ -76,6 +76,8 @@
                   type="primary"
                   icon="plus"
                   (btnClick)="addTask()"
+                  [disabled]="project.status === 'Completed'"
+                  [title]="project.status === 'Completed' ? 'لا يمكن إضافة مهام لمشروع مكتمل' : ''"
                 ></app-custom-button>
               </div>
               <div class="task-container" *ngIf="project.tasks && project.tasks.length > 0; else noTasks">
@@ -84,7 +86,7 @@
                     <div class="task-main">
                       <span class="task-name">{{ task.title }}</span>
                       <div class="task-tags">
-                        <nz-tag [nzColor]="getTaskStatusColor(task.status)">{{ task.status | statusFormat:'label' }}</nz-tag>
+                        <nz-tag [nzColor]="task.status | statusFormat:'color'">{{ task.status | statusFormat:'label' }}</nz-tag>
                         <span class="task-date" *ngIf="task.dueDate">
                           <span nz-icon nzType="calendar"></span>
                           {{ task.dueDate | date: 'shortDate' }}
@@ -115,7 +117,8 @@
                         nzType="text"
                         nzShape="circle"
                         (click)="editTask(task)"
-                        nzTooltipTitle="تعديل المهمة"
+                        [disabled]="project.status === 'Completed'"
+                        [nzTooltipTitle]="project.status === 'Completed' ? 'لا يمكن تعديل مهام مشروع مكتمل' : 'تعديل المهمة'"
                         nz-tooltip
                       >
                         <span nz-icon nzType="edit" class="edit-icon"></span>
@@ -125,10 +128,11 @@
                         nzType="text"
                         nzShape="circle"
                         nzDanger
+                        [disabled]="project.status === 'Completed'"
                         nz-popconfirm
-                        nzPopconfirmTitle="هل أنت متأكد من حذف هذه المهمة؟"
+                        [nzPopconfirmTitle]="project.status === 'Completed' ? '' : 'هل أنت متأكد من حذف هذه المهمة؟'"
                         (nzOnConfirm)="deleteTask(task.id)"
-                        nzTooltipTitle="حذف المهمة"
+                        [nzTooltipTitle]="project.status === 'Completed' ? 'لا يمكن حذف مهام مشروع مكتمل' : 'حذف المهمة'"
                         nz-tooltip
                       >
                         <span nz-icon nzType="delete"></span>

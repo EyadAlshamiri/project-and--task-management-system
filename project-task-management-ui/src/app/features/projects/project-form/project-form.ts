@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of, Observable } from 'rxjs';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -8,7 +8,9 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
 import { TaskModal } from '../../tasks/task-modal/task-modal';
@@ -18,6 +20,11 @@ import { User } from '../../../core/models/user';
 import { UserService } from '../../../core/services/user.service';
 import { TaskService } from '../../../core/services/task.service';
 import { MemberSelectionModal, MemberSelectionData } from '../../../shared/components/member-selection-modal/member-selection-modal';
+import { EnumUtils } from '../../../core/utils/enum-utils';
+import { StatusFormatPipe } from '../../../shared/pipes/status-format.pipe';
+import { PriorityFormatPipe } from '../../../shared/pipes/priority-format.pipe';
+
+import { AppValidators } from '../../../shared/utils/validators';
 
 @Component({
   selector: 'app-project-form',
@@ -31,7 +38,10 @@ import { MemberSelectionModal, MemberSelectionData } from '../../../shared/compo
     NzButtonModule,
     NzIconModule,
     NzDatePickerModule,
-    CustomButton
+    CustomButton,
+    StatusFormatPipe,
+    PriorityFormatPipe,
+    NzTagModule
   ],
   templateUrl: './project-form.html',
   styleUrl: './project-form.css',
@@ -46,10 +56,12 @@ export class ProjectForm implements OnInit {
   private userService = inject(UserService);
   private taskService = inject(TaskService);
   private cdr = inject(ChangeDetectorRef);
+  private messageService = inject(NzMessageService);
 
   projectForm!: FormGroup;
   isEditMode = false;
   projectId: number | null = null;
+  isSubmitting = false;
 
   statuses = [
     { value: ProjectStatus.ACTIVE, label: 'Active' },
@@ -84,25 +96,15 @@ export class ProjectForm implements OnInit {
       projectManagerName: [null],
       members: [[]],
       tasks: this.fb.array([]),
-    });
+    }, { validators: [AppValidators.dateRange('startDate', 'endDate')] });
   }
 
   private loadProjectData(id: number): void {
     this.projectService.getProjectById(id).subscribe({
       next: (project) => {
         if (project) {
-          let pStatus = 'Active';
-          const s = (project.status || '').toUpperCase();
-          if (s === 'ACTIVE' || s === 'نشط') pStatus = 'Active';
-          else if (s === 'ON HOLD' || s === 'ONHOLD' || s === 'موقوف') pStatus = 'OnHold';
-          else if (s === 'COMPLETED' || s === 'مكتمل') pStatus = 'Completed';
-          else pStatus = 'Active';
-
-          let pPriority = 'Medium';
-          const p = (project.priority || '').toUpperCase();
-          if (p === 'LOW' || p === 'منخفض') pPriority = 'Low';
-          else if (p === 'HIGH' || p === 'عالي') pPriority = 'High';
-          else if (p === 'MEDIUM' || p === 'متوسط') pPriority = 'Medium';
+          const pStatus = EnumUtils.mapProjectStatus(project.status);
+          const pPriority = EnumUtils.mapPriority(project.priority);
 
           this.projectForm.patchValue({
             title: project.tilte || project.tilte || '',
@@ -385,32 +387,63 @@ export class ProjectForm implements OnInit {
         members: this.selectedMembers.map(u => u.name),
       };
 
+      // Business Logic: Prevent completing project if tasks are pending
+      if (formValue.status === 'Completed') {
+        const hasPendingTasks = formValue.tasks && formValue.tasks.some((t: any) => 
+          t.status !== 'DONE' && t.status !== 'Completed' && t.status !== 'مكتمل' && t.status !== 'منجز'
+        );
+        if (hasPendingTasks) {
+          this.messageService.error('لا يمكنك إكمال المشروع وهناك مهام غير منجزة!');
+          return;
+        }
+      }
+
+      this.isSubmitting = true;
+
       if (this.isEditMode && this.projectId) {
         this.projectService.updateProject(this.projectId, projectData).subscribe({
           next: () => {
             this.createPendingTasks(this.projectId!).subscribe({
-              next: () => this.router.navigate(['/projects', this.projectId]),
+              next: () => {
+                this.isSubmitting = false;
+                this.messageService.success('تم تحديث المشروع بنجاح');
+                this.router.navigate(['/projects', this.projectId]);
+              },
               error: (err: any) => {
+                this.isSubmitting = false;
                 console.error('Error creating project tasks after update: - project-form.ts:334', err);
+                this.messageService.success('تم تحديث المشروع بنجاح مع وجود مشاكل في إنشاء بعض المهام');
                 this.router.navigate(['/projects', this.projectId]);
               }
             });
           },
-          error: (err) => console.error('Error updating project: - project-form.ts:339', err)
+          error: (err) => {
+            this.isSubmitting = false;
+            console.error('Error updating project: - project-form.ts:339', err);
+          }
         });
       } else {
         this.projectService.addProject(projectData).subscribe({
           next: (createdProject) => {
             const projectId = createdProject.id;
             this.createPendingTasks(projectId).subscribe({
-              next: () => this.router.navigate(['/projects']),
+              next: () => {
+                this.isSubmitting = false;
+                this.messageService.success('تم إنشاء المشروع بنجاح');
+                this.router.navigate(['/projects']);
+              },
               error: (err: any) => {
+                this.isSubmitting = false;
                 console.error('Error creating project tasks after add: - project-form.ts:348', err);
+                this.messageService.success('تم إنشاء المشروع بنجاح مع وجود مشاكل في إضافة بعض المهام');
                 this.router.navigate(['/projects']);
               }
             });
           },
-          error: (err) => console.error('Error adding project: - project-form.ts:353', err)
+          error: (err) => {
+            this.isSubmitting = false;
+            console.error('Error adding project: - project-form.ts:353', err);
+          }
         });
       }
     } else {

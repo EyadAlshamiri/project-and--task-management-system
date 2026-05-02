@@ -18,6 +18,7 @@ export class CustomButton {
   @Input() danger: boolean = false;
   @Input() size: 'large' | 'default' | 'small' = 'default';
   @Input() icon: string = '';
+  @Input() loading: boolean = false;
   @Output() btnClick = new EventEmitter<Event>();
 
   onClick(event: Event): void {

@@ -1,4 +1,6 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { TaskUtils } from '../../../shared/utils/task-utils';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -33,6 +35,16 @@ export class TaskForm {
   @Input() index = 0;
   @Input() projectMembers: string[] = [];
   @Output() remove = new EventEmitter<void>();
+  private destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    TaskUtils.setupAutoCompletion(this.taskGroup, this.destroy$);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   getSubTasks(): FormArray {
     return this.taskGroup.get('subTasks') as FormArray;

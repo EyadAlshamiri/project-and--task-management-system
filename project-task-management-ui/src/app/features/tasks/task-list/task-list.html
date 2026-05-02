@@ -37,12 +37,12 @@
       </thead>
       <tbody>
         <tr *ngFor="let data of basicTable.data">
-          <td><label nz-checkbox [(ngModel)]="data.selected"></label></td>
+          <td><label nz-checkbox [(ngModel)]="$any(data).selected"></label></td>
           <td class="task-name">{{ data.title }}</td>
           <td>
-            <span class="status-tag" [class]="data.status">
-              {{ data.status }}
-            </span>
+            <nz-tag [nzColor]="data.status | statusFormat:'color'">
+              {{ data.status | statusFormat:'label' }}
+            </nz-tag>
           </td>
           <td nzRight>
             <div class="action-buttons">

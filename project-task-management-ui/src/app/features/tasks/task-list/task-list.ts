@@ -11,6 +11,9 @@ import { TaskModal } from '../task-modal/task-modal';
 import { FormsModule } from '@angular/forms';
 
 import { TaskService } from '../../../core/services/task.service';
+import { Task } from '../../../core/models/task';
+import { EnumUtils } from '../../../core/utils/enum-utils';
+import { StatusFormatPipe } from '../../../shared/pipes/status-format.pipe';
 
 @Component({
   selector: 'app-task-list',
@@ -23,15 +26,16 @@ import { TaskService } from '../../../core/services/task.service';
     NzRadioModule,
     NzTagModule,
     NzCheckboxModule,
-    FormsModule
+    FormsModule,
+    StatusFormatPipe
   ],
   templateUrl: './task-list.html',
   styleUrl: './task-list.css'
 })
 export class TaskList implements OnInit {
   filterStatus = 'All';
-  tasks: any[] = [];
-  filteredTasks: any[] = [];
+  tasks: Task[] = [];
+  filteredTasks: Task[] = [];
   isLoading = false;
 
   constructor(
@@ -47,7 +51,7 @@ export class TaskList implements OnInit {
     this.isLoading = true;
     this.taskService.getAllTasks().subscribe({
       next: (res) => {
-        this.tasks = res.data;
+        this.tasks = res.data || [];
         this.applyFilter();
         this.isLoading = false;
       },
@@ -62,12 +66,7 @@ export class TaskList implements OnInit {
     if (this.filterStatus === 'All') {
       this.filteredTasks = [...this.tasks];
     } else {
-      const statusMap: any = {
-        'Todo': 'TODO',
-        'In Progress': 'IN_PROGRESS',
-        'Done': 'DONE'
-      };
-      const targetStatus = statusMap[this.filterStatus];
+      const targetStatus = this.filterStatus.toUpperCase().replace(' ', '_');
       this.filteredTasks = this.tasks.filter(t => t.status === targetStatus);
     }
   }

@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { TaskUtils } from '../../../shared/utils/task-utils';
 import { NzModalRef, NZ_MODAL_DATA } from 'ng-zorro-antd/modal';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -10,6 +12,8 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
+import { StatusFormatPipe } from '../../../shared/pipes/status-format.pipe';
+import { PriorityFormatPipe } from '../../../shared/pipes/priority-format.pipe';
 
 @Component({
   selector: 'app-task-modal',
@@ -24,7 +28,9 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
     NzCheckboxModule,
     NzIconModule,
     NzDividerModule,
-    CustomButton
+    CustomButton,
+    StatusFormatPipe,
+    PriorityFormatPipe
   ],
   templateUrl: './task-modal.html',
   styleUrl: './task-modal.css'
@@ -33,6 +39,7 @@ export class TaskModal implements OnInit {
   taskForm!: FormGroup;
   isEdit = false;
   projectMembers: any[] = [];
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -64,6 +71,14 @@ export class TaskModal implements OnInit {
       // Add one empty subtask by default if none exist (for both new and edit)
       this.addSubTask();
     }
+
+    // Auto-completion logic
+    TaskUtils.setupAutoCompletion(this.taskForm, this.destroy$);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   get subTasks(): FormArray {

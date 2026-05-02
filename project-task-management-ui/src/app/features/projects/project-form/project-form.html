@@ -70,6 +70,9 @@
             </nz-form-control>
           </nz-form-item>
         </div>
+        <div *ngIf="projectForm.hasError('dateRangeInvalid') && projectForm.get('endDate')?.touched" class="date-error" style="color: #ff4d4f; font-size: 12px; margin-top: -15px; margin-bottom: 15px;">
+          تاريخ الانتهاء يجب أن يكون بعد تاريخ البدء.
+        </div>
 
         <div class="form-row two-cols">
           <!-- Priority -->
@@ -186,12 +189,12 @@
               <div class="task-details">
                 <span class="task-title">{{ task.get('title')?.value }}</span>
                 <div class="task-meta">
-                  <span class="task-status-badge" [class]="task.get('status')?.value">{{
-                    task.get('status')?.value
-                  }}</span>
+                  <nz-tag [nzColor]="task.get('status')?.value | statusFormat:'color'">{{
+                    task.get('status')?.value | statusFormat:'label'
+                  }}</nz-tag>
                   <span class="task-meta-item" *ngIf="task.get('priority')?.value">
                     <span nz-icon nzType="flag" nzTheme="outline"></span>
-                    {{ task.get('priority')?.value }}
+                    {{ task.get('priority')?.value | priorityFormat:'label' }}
                   </span>
                   <span class="task-date" *ngIf="task.get('dueDate')?.value">
                     <span nz-icon nzType="calendar" nzTheme="outline"></span>
@@ -238,7 +241,8 @@
         [label]="isEditMode ? 'تحديث' : 'حفظ'"
         type="primary"
         (btnClick)="submitForm()"
-        [disabled]="!!(projectForm.get('title')?.invalid || projectForm.get('startDate')?.invalid || projectForm.get('endDate')?.invalid)"
+        [loading]="isSubmitting"
+        [disabled]="projectForm.invalid || isSubmitting"
         size="large"
       ></app-custom-button>
       <app-custom-button label="إلغاء" type="default" size="large" (btnClick)="cancel()"></app-custom-button>

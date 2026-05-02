@@ -12,6 +12,9 @@ import { SearchBar } from '../../../shared/components/search-bar/search-bar';
 import { AddButton } from '../../../shared/components/add-button/add-button';
 import { ProjectService } from '../../../core/services/project.service';
 import { ProjectStatus } from '../../../core/models/project';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { StatusFormatPipe } from '../../../shared/pipes/status-format.pipe';
 
 @Component({
   selector: 'app-project-list',
@@ -25,10 +28,12 @@ import { ProjectStatus } from '../../../core/models/project';
     NzSkeletonModule, 
     ProjectCard, 
     SearchBar, 
-    AddButton
+    AddButton,
+    StatusFormatPipe
   ],
   templateUrl: './project-list.html',
   styleUrl: './project-list.css',
+  providers: [NzModalService]
 })
 export class ProjectList implements OnInit {
   projects: any[] = [];
@@ -43,7 +48,9 @@ export class ProjectList implements OnInit {
     private projectService: ProjectService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private messageService: NzMessageService,
+    private modalService: NzModalService
   ) {}
 
   ngOnInit(): void {
@@ -51,23 +58,21 @@ export class ProjectList implements OnInit {
   }
 
   private loadProjects(): void {
-    setTimeout(() => {
-      this.isLoading = true;
-      this.cdr.detectChanges();
+    this.isLoading = true;
+    this.cdr.detectChanges();
 
-      this.projectService.getProjects().subscribe({
-        next: (data) => {
-          this.projects = data || [];
-          this.applyFiltersAndSort();
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        },
-        error: (error) => {
-          console.error('Error loading projects:', error);
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        }
-      });
+    this.projectService.getProjects().subscribe({
+      next: (data) => {
+        this.projects = data || [];
+        this.applyFiltersAndSort();
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading projects:', error);
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -88,8 +93,28 @@ export class ProjectList implements OnInit {
     this.router.navigate(['/projects/edit', projectId]);
   }
 
-  onDeleteProject(projectId: number): void {
+  onDeleteProject(project: any): void {
+    const projectId = typeof project === 'number' ? project : project.id;
+    const tasksCount = typeof project === 'object' ? project.tasksCount : 0;
+
+    if (tasksCount > 0) {
+      this.modalService.confirm({
+        nzTitle: 'تحذير حذف المشروع',
+        nzContent: `هذا المشروع يحتوي على ${tasksCount} مهام. حذف المشروع سيؤدي لحذف كافة المهام المرتبطة نهائياً. هل تريد الاستمرار؟`,
+        nzOkText: 'نعم، احذف الكل',
+        nzOkType: 'primary',
+        nzOkDanger: true,
+        nzOnOk: () => this.executeDelete(projectId),
+        nzCancelText: 'إلغاء'
+      });
+    } else {
+      this.executeDelete(projectId);
+    }
+  }
+
+  private executeDelete(projectId: number): void {
     this.projectService.deleteProject(projectId).subscribe(() => {
+      this.messageService.success('تم حذف المشروع بنجاح');
       this.loadProjects();
     });
   }
@@ -106,20 +131,7 @@ export class ProjectList implements OnInit {
     this.applyFiltersAndSort();
   }
 
-  getFilterStatusText(): string {
-    switch (this.filterStatus) {
-      case 'ALL':
-        return 'الكل';
-      case ProjectStatus.ACTIVE:
-        return 'نشط';
-      case ProjectStatus.ON_HOLD:
-        return 'معلق';
-      case ProjectStatus.COMPLETED:
-        return 'مكتمل';
-      default:
-        return 'الكل';
-    }
-  }
+
 
   private applyFiltersAndSort(): void {
     let filtered = [...this.projects];
