@@ -1,4 +1,4 @@
-<div class="project-details-page">
+<div class="project-details-page" *ngIf="isViewReady">
   <div class="page-container" *ngIf="!isLoading && project">
     <!-- Header Section -->
     <div class="project-header">
@@ -82,7 +82,15 @@
 
           <nz-tab nzTitle="المهام">
             <div class="tab-pane">
-              <div *ngIf="project.tasks && project.tasks.length > 0; else noTasks">
+              <div class="tasks-header">
+                <app-custom-button
+                  label="إضافة مهمة"
+                  type="primary"
+                  icon="plus"
+                  (btnClick)="addTask()"
+                ></app-custom-button>
+              </div>
+              <div class="task-container" *ngIf="project.tasks && project.tasks.length > 0; else noTasks">
                 <div class="tasks-list">
                   <div class="task-row" *ngFor="let task of project.tasks">
                     <div class="task-main">
@@ -120,7 +128,7 @@
                         nz-button
                         nzType="text"
                         nzShape="circle"
-                        (click)="editTask(task.id)"
+                        (click)="editTask(task)"
                         nzTooltipTitle="تعديل المهمة"
                         nz-tooltip
                       >
@@ -154,9 +162,14 @@
               <div class="members-layout">
                 <div
                   class="member-item"
-                  *ngFor="let avatar of project.projectManagerName; let i = index"
+                  *ngFor="let member of project.members; let i = index"
                 >
-                  <img [src]="avatar" alt="Member Avatar" class="member-img" />
+                  <nz-avatar
+                    [nzText]="member[0] || '?'"
+                    nzSize="large"
+                    style="background-color: #4f46e5; color: #fff"
+                  ></nz-avatar>
+                  <span class="member-name">{{ member }}</span>
                   <span class="member-role">عضو فريق</span>
                 </div>
               </div>

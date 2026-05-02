@@ -14,12 +14,21 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
     <div class="page-container">
       <div class="form-container">
         <h2 class="page-title">تعديل المهمة</h2>
-        <div *ngIf="editForm" class="edit-card">
-          <app-task-form [taskGroup]="editForm"></app-task-form>
+
+        <div *ngIf="isLoading" class="loading-state">
+          جاري جلب مهمة التحرير...
+        </div>
+
+        <div *ngIf="!isLoading && editForm" class="edit-card">
+          <app-task-form [taskGroup]="editForm" [index]="0"></app-task-form>
           <div class="footer-actions">
             <app-custom-button label="تحديث" type="primary" (btnClick)="save()"></app-custom-button>
             <app-custom-button label="إلغاء" type="default" (btnClick)="cancel()"></app-custom-button>
           </div>
+        </div>
+
+        <div *ngIf="!isLoading && !editForm" class="empty-state">
+          لم يتم العثور على المهمة.
         </div>
       </div>
     </div>
@@ -40,23 +49,46 @@ export class TaskEditPage implements OnInit {
 
   editForm?: FormGroup;
   taskId?: number;
+  isLoading = true;
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.taskId = parseInt(idParam, 10);
-      this.taskService.getTaskById(this.taskId).subscribe(task => {
-        if (task) {
-          this.editForm = this.fb.group({
-            title: [task.title, Validators.required],
-            status: [task.status, Validators.required],
-            priority: [task.priority],
-            dueDate: [task.dueDate],
-            description: [task.description]
-          });
-        }
-      });
-    }
+    this.editForm = this.fb.group({
+      title: ['', Validators.required],
+      status: ['TODO', Validators.required],
+      priority: [0],
+      startDate: [new Date(), Validators.required],
+      dueDate: [null],
+      assignedTo: [null],
+      description: ['']
+    });
+
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam) {
+        this.taskId = parseInt(idParam, 10);
+        this.taskService.getTaskById(this.taskId).subscribe({
+          next: task => {
+            if (task) {
+              this.editForm?.patchValue({
+                title: task.title,
+                status: task.status || 'TODO',
+                priority: task.priority ?? 0,
+                startDate: task.startDate ? new Date(task.startDate) : new Date(),
+                dueDate: task.dueDate ? new Date(task.dueDate) : null,
+                assignedTo: task.assignedTo ?? null,
+                description: task.description ?? ''
+              });
+            }
+            this.isLoading = false;
+          },
+          error: () => {
+            this.isLoading = false;
+          }
+        });
+      } else {
+        this.isLoading = false;
+      }
+    });
   }
 
   save(): void {

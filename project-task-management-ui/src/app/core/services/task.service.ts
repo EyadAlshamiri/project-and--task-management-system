@@ -42,7 +42,7 @@ export class TaskService {
 
   deleteTask(id: number): Observable<boolean> {
     return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/${id}`).pipe(
-      map(res => res.data)
+      map(res => res ? res.data : true)
     );
   }
 }

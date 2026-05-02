@@ -1,5 +1,13 @@
 @import 'ng-zorro-antd/ng-zorro-antd.css';
 
+/* Fix for ng-zorro-antd accessibility issues */
+.ant-dropdown-trigger[aria-hidden="true"]:focus,
+.ant-dropdown-trigger[aria-hidden="true"]:focus-within,
+.ant-tabs-dropdown .ant-dropdown-trigger[aria-hidden="true"]:focus,
+.ant-tabs-dropdown .ant-dropdown-trigger[aria-hidden="true"]:focus-within {
+  aria-hidden: false !important;
+}
+
 :root {
   /* Brand Colors */
   --primary-color: #3b82f6;

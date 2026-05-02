@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -23,7 +23,7 @@ export class App implements OnInit {
   userAvatar = 'assets/avatars/avatar1.png'
   projects: any[] = [];
 
-  constructor(private projectService: ProjectService, private router: Router) {
+  constructor(private projectService: ProjectService, private router: Router, private cdr: ChangeDetectorRef) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
@@ -33,7 +33,10 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     this.projectService.getProjects().subscribe({
-      next: (res) => this.projects = res,
+      next: (res) => {
+        this.projects = res;
+        this.cdr.detectChanges();
+      },
       error: (err) => console.error('Error loading projects:', err)
     });
   }

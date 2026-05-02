@@ -28,15 +28,29 @@
       </nz-form-control>
     </nz-form-item>
 
+    <!-- Start Date -->
+    <nz-form-item class="floating-label-item">
+      <nz-form-control nzErrorTip="تاريخ البداية مطلوب.">
+        <div class="input-wrapper">
+          <label class="floating-label">تاريخ البداية</label>
+          <nz-date-picker
+            formControlName="startDate"
+            nzBorderless
+            style="width: 100%"
+          ></nz-date-picker>
+        </div>
+      </nz-form-control>
+    </nz-form-item>
+
     <!-- Priority -->
     <nz-form-item class="floating-label-item">
       <nz-form-control>
         <div class="input-wrapper">
           <label class="floating-label">الأولوية</label>
           <nz-select formControlName="priority" nzBorderless>
-            <nz-option nzValue="LOW" nzLabel="منخفض"></nz-option>
-            <nz-option nzValue="MEDIUM" nzLabel="متوسط"></nz-option>
-            <nz-option nzValue="HIGH" nzLabel="عالي"></nz-option>
+            <nz-option nzValue="0" nzLabel="منخفض"></nz-option>
+            <nz-option nzValue="1" nzLabel="متوسط"></nz-option>
+            <nz-option nzValue="2" nzLabel="عالي"></nz-option>
           </nz-select>
         </div>
       </nz-form-control>

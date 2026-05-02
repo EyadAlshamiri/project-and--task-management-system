@@ -13,8 +13,10 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzModalService, NzModalModule } from 'ng-zorro-antd/modal';
+import { TaskModal } from '../../tasks/task-modal/task-modal';
 import { TaskService } from '../../../core/services/task.service';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
 
 @Component({
@@ -32,8 +34,9 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
     NzButtonModule,
     NzTooltipModule,
     NzAvatarModule,
-    NzPopconfirmModule,
-    CustomButton
+    CustomButton,
+    NzModalModule,
+    NzPopconfirmModule
   ],
   templateUrl: './project-details.html',
   styleUrl: './project-details.css'
@@ -43,16 +46,22 @@ export class ProjectDetails implements OnInit {
   isLoading = true;
   isRefreshing = false;
   currentProjectId: number | null = null;
+  isViewReady = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private projectService: ProjectService,
     private taskService: TaskService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private modal: NzModalService
   ) {}
 
   ngOnInit(): void {
+    setTimeout(() => {
+      this.isViewReady = true;
+      this.cdr.detectChanges();
+    });
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
@@ -78,7 +87,7 @@ export class ProjectDetails implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Error fetching project:', err);
+        console.error('Error fetching project: - project-details.ts:89', err);
         this.isLoading = false;
         this.isRefreshing = false;
         this.cdr.detectChanges();
@@ -106,16 +115,75 @@ export class ProjectDetails implements OnInit {
     this.router.navigate(['/tasks/details-task', taskId]);
   }
 
-  editTask(taskId: number): void {
-    // Navigate to a task edit page (using the route we added)
-    this.router.navigate(['/tasks/edit-task', taskId]);
+  editTask(task: any): void {
+    const modalRef = this.modal.create({
+      nzTitle: 'تعديل المهمة',
+      nzContent: TaskModal,
+      nzWidth: 600,
+      nzFooter: null,
+      nzData: {
+        task: task,
+        members: this.project?.members || []
+      }
+    });
+
+    modalRef.afterClose.subscribe((result) => {
+      if (result && this.currentProjectId) {
+        const taskData = {
+          ...result,
+          projectId: this.currentProjectId
+        };
+        this.taskService.updateTask(task.id, taskData).subscribe({
+          next: () => {
+            this.loadProject(this.currentProjectId!);
+          },
+          error: (err: any) => {
+            console.error('Error updating task:', err);
+          }
+        });
+      }
+    });
+  }
+
+  addTask(): void {
+    const modalRef = this.modal.create({
+      nzTitle: 'إضافة مهمة جديدة',
+      nzContent: TaskModal,
+      nzWidth: 600,
+      nzFooter: null,
+      nzData: {
+        projectId: this.currentProjectId,
+        members: this.project?.members || []
+      }
+    });
+
+    modalRef.afterClose.subscribe((result) => {
+      if (result && this.currentProjectId) {
+        const taskData = {
+          ...result,
+          projectId: this.currentProjectId
+        };
+        this.taskService.createTask(taskData).subscribe({
+          next: () => {
+            // Refresh the project data after adding task
+            this.loadProject(this.currentProjectId!);
+          },
+          error: (err: any) => {
+            console.error('Error creating task: - project-details.ts:142', err);
+          }
+        });
+      }
+    });
   }
 
   deleteTask(taskId: number): void {
-    if (this.project) {
-      this.taskService.deleteTask(taskId).subscribe(() => {
-        if (this.project) {
-           this.projectService.getProjectById(this.project.id).subscribe(p => this.project = p);
+    if (this.currentProjectId) {
+      this.taskService.deleteTask(taskId).subscribe({
+        next: () => {
+          this.loadProject(this.currentProjectId!);
+        },
+        error: (err: any) => {
+          console.error('Error deleting task:', err);
         }
       });
     }

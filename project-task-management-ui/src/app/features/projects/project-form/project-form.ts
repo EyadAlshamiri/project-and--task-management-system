@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, of, Observable } from 'rxjs';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -95,8 +96,8 @@ export class ProjectForm implements OnInit {
             description: project.description,
             status: project.status,
             priority: project.priority,
-            startDate: project.startDate,
-            endDate: project.endDate,
+            startDate: project.startDate ? new Date(project.startDate) : null,
+            endDate: project.endDate ? new Date(project.endDate) : null,
             projectManagerName: project.projectManagerName,
             tasksCount: project.tasksCount
           });
@@ -106,10 +107,12 @@ export class ProjectForm implements OnInit {
             this.tasks.clear();
             project.tasks.forEach(t => {
               const taskForm = this.fb.group({
+                id: [t.id || null],
                 title: [t.title, [Validators.required]],
                 description: [t.description || ''],
                 status: [t.status, [Validators.required]],
-                dueDate: [t.dueDate],
+                startDate: [t.startDate ? new Date(t.startDate) : new Date(), [Validators.required]],
+                dueDate: [t.dueDate ? new Date(t.dueDate) : null],
                 priority: [t.priority],
                 assignedTo: [t.assignedTo],
                 subTasks: [t.subTasks || []]
@@ -135,6 +138,35 @@ export class ProjectForm implements OnInit {
     return index;
   }
 
+  private buildTaskPayload(task: any, projectId: number): any {
+    return {
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      priority: Number(task.priority),
+      startDate: task.startDate ? new Date(task.startDate).toISOString() : new Date().toISOString(),
+      dueDate: task.dueDate ? new Date(task.dueDate).toISOString() : undefined,
+      assignedTo: task.assignedTo,
+      projectId
+    };
+  }
+
+  private createPendingTasks(projectId: number): Observable<any> {
+    const newTasks = this.tasks.controls
+      .map(control => control.value)
+      .filter(task => !task.id);
+
+    if (!newTasks.length) {
+      return of(null);
+    }
+
+    const requests = newTasks.map(task =>
+      this.taskService.createTask(this.buildTaskPayload(task, projectId))
+    );
+
+    return forkJoin(requests);
+  }
+
   addTask(): void {
     const modal = this.modalService.create({
       nzTitle: 'إضافة مهمة جديدة',
@@ -147,12 +179,14 @@ export class ProjectForm implements OnInit {
     modal.afterClose.subscribe(result => {
       if (result) {
         const taskForm = this.fb.group({
+          id: [null],
           title: [result.title, [Validators.required]],
           description: [result.description],
           status: [result.status, [Validators.required]],
+          startDate: [result.startDate ? new Date(result.startDate) : new Date(), [Validators.required]],
           dueDate: [result.dueDate],
           priority: [result.priority],
-          executorName: [result.executorName],
+          assignedTo: [result.assignedTo],
           subTasks: [result.subTasks || []]
         });
         this.tasks.push(taskForm);
@@ -175,15 +209,42 @@ export class ProjectForm implements OnInit {
 
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.tasks.at(index).patchValue(result);
-        this.cdr.detectChanges();
+        if (task.id) {
+          const taskData = { ...result, projectId: this.projectId };
+          this.taskService.updateTask(task.id, taskData).subscribe({
+            next: () => {
+              this.tasks.at(index).patchValue(result);
+              this.cdr.detectChanges();
+            },
+            error: (err) => console.error('Error updating task in project-form:', err)
+          });
+        } else {
+          this.tasks.at(index).patchValue(result);
+          this.cdr.detectChanges();
+        }
       }
     });
   }
 
   removeTask(index: number): void {
-    this.tasks.removeAt(index);
-    this.cdr.detectChanges();
+    const task = this.tasks.at(index).value;
+    if (task.id) {
+      this.modalService.confirm({
+        nzTitle: 'هل أنت متأكد من حذف هذه المهمة من قاعدة البيانات؟',
+        nzOnOk: () => {
+          this.taskService.deleteTask(task.id).subscribe({
+            next: () => {
+              this.tasks.removeAt(index);
+              this.cdr.detectChanges();
+            },
+            error: (err) => console.error('Error deleting task from project-form:', err)
+          });
+        }
+      });
+    } else {
+      this.tasks.removeAt(index);
+      this.cdr.detectChanges();
+    }
   }
 
   openManagerSelectionModal(): void {
@@ -257,13 +318,30 @@ export class ProjectForm implements OnInit {
       if (this.isEditMode && this.projectId) {
         projectData.id = this.projectId;
         this.projectService.updateProject(projectData).subscribe({
-          next: () => this.router.navigate(['/projects', this.projectId]),
-          error: (err) => console.error('Error updating project:', err)
+          next: () => {
+            this.createPendingTasks(this.projectId!).subscribe({
+              next: () => this.router.navigate(['/projects', this.projectId]),
+              error: (err: any) => {
+                console.error('Error creating project tasks after update: - project-form.ts:298', err);
+                this.router.navigate(['/projects', this.projectId]);
+              }
+            });
+          },
+          error: (err) => console.error('Error updating project: - project-form.ts:303', err)
         });
       } else {
         this.projectService.addProject(projectData).subscribe({
-          next: () => this.router.navigate(['/projects']),
-          error: (err) => console.error('Error adding project:', err)
+          next: (createdProject) => {
+            const projectId = createdProject.id;
+            this.createPendingTasks(projectId).subscribe({
+              next: () => this.router.navigate(['/projects']),
+              error: (err: any) => {
+                console.error('Error creating project tasks after add: - project-form.ts:312', err);
+                this.router.navigate(['/projects']);
+              }
+            });
+          },
+          error: (err) => console.error('Error adding project: - project-form.ts:317', err)
         });
       }
     } else {

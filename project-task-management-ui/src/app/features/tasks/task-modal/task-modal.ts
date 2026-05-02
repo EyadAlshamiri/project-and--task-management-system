@@ -49,8 +49,9 @@ export class TaskModal implements OnInit {
       title: [taskData?.title || null, [Validators.required]],
       description: [taskData?.description || null],
       status: [taskData?.status || 'TODO', [Validators.required]],
-      dueDate: [taskData?.dueDate || null],
-      priority: [taskData?.priority || 'MEDIUM'],
+      startDate: [taskData?.startDate ? new Date(taskData.startDate) : new Date(), [Validators.required]],
+      dueDate: [taskData?.dueDate ? new Date(taskData.dueDate) : null],
+      priority: [taskData?.priority ?? 2],
       assignedTo: [taskData?.assignedTo || null],
       subTasks: this.fb.array([])
     });

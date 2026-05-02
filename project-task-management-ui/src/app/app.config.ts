@@ -11,12 +11,24 @@ import ar from '@angular/common/locales/ar';
 
 registerLocaleData(ar);
 
+// Extend ar_EG with missing translations
+const customArEG = {
+  ...ar_EG,
+  DatePicker: {
+    ...ar_EG.DatePicker,
+    lang: {
+      ...ar_EG.DatePicker?.lang,
+      rangeQuarterPlaceholder: ['البداية', 'النهاية']
+    }
+  }
+};
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withFetch()),
     provideNzIcons(icons),
-    provideNzI18n(ar_EG),
+    provideNzI18n(customArEG),
   ],
 };

@@ -50,23 +50,23 @@ export class ProjectList implements OnInit {
   }
 
   private loadProjects(): void {
-    this.isLoading = true;
-    this.projectService.getProjects().subscribe({
-      next: (data) => {
-        this.ngZone.run(() => {
+    setTimeout(() => {
+      this.isLoading = true;
+      this.cdr.detectChanges();
+
+      this.projectService.getProjects().subscribe({
+        next: (data) => {
           this.projects = data || [];
           this.applyFiltersAndSort();
           this.isLoading = false;
           this.cdr.detectChanges();
-        });
-      },
-      error: (error) => {
-        console.error('Error loading projects:', error);
-        this.ngZone.run(() => {
+        },
+        error: (error) => {
+          console.error('Error loading projects:', error);
           this.isLoading = false;
           this.cdr.detectChanges();
-        });
-      }
+        }
+      });
     });
   }
 

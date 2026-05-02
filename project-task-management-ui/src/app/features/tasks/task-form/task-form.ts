@@ -5,6 +5,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
 @Component({
   selector: 'app-task-form',
@@ -15,6 +16,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzFormModule,
     NzInputModule,
     NzSelectModule,
+    NzDatePickerModule,
     NzIconModule
   ],
   templateUrl: './task-form.html',
@@ -22,7 +24,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 })
 export class TaskForm {
   @Input() taskGroup!: FormGroup;
-  @Input() index!: number;
+  @Input() index = 0;
   @Output() remove = new EventEmitter<void>();
 
   onRemove(): void {
