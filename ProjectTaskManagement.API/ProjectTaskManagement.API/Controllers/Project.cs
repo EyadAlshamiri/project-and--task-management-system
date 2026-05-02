@@ -33,7 +33,7 @@ public class ProjectsController : ControllerBase
         var dto = new ProjectDTO
         {
             Id = p.Id,
-            Tilte = p.Title,
+            Title = p.Title,
             Description = p.Description,
             StartDate = p.StartDate,
             EndDate = p.EndDate,
@@ -44,7 +44,7 @@ public class ProjectsController : ControllerBase
             CreatedAt = p.CreatedAt,
             TasksCount = p.Tasks?.Count ?? 0,
             Progress = (p.Tasks != null && p.Tasks.Count > 0)
-                ? (int)((double)p.Tasks.Count(t => t.Status == "DONE") / p.Tasks.Count * 100)
+                ? (int)((double)p.Tasks.Count(t => t.Status.ToUpper() == "DONE") / p.Tasks.Count * 100)
                 : 0,
             Tasks = p.Tasks?.Select(t => new ProjectTaskDTO
             {
@@ -69,11 +69,11 @@ public class ProjectsController : ControllerBase
     public async Task<IActionResult> Create(CreateProjectDto dto)
     {
         if (dto == null) return BadRequest(new ApiResponse<string>("", "Invalid project data"));
-        if (string.IsNullOrWhiteSpace(dto.Tilte)) return BadRequest(new ApiResponse<string>("", "Title is required"));
+        if (string.IsNullOrWhiteSpace(dto.Title)) return BadRequest(new ApiResponse<string>("", "Title is required"));
 
         var project = new Project
         {
-            Title = dto.Tilte,
+            Title = dto.Title,
             Description = dto.Description,
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,
@@ -92,11 +92,11 @@ public class ProjectsController : ControllerBase
     public async Task<IActionResult> Update(int id, UpdateProjectDto dto)
     {
         if (dto == null) return BadRequest(new ApiResponse<string>("", "Invalid project data"));
-        if (string.IsNullOrWhiteSpace(dto.Tilte)) return BadRequest(new ApiResponse<string>("", "Title is required"));
+        if (string.IsNullOrWhiteSpace(dto.Title)) return BadRequest(new ApiResponse<string>("", "Title is required"));
 
         var project = new Project
         {
-            Title = dto.Tilte,
+            Title = dto.Title,
             Description = dto.Description,
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,

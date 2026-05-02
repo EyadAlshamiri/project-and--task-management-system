@@ -1,9 +1,9 @@
 import { Task } from "./task";
 
 export enum ProjectStatus {
-  ACTIVE = 'ACTIVE',
-  ON_HOLD = 'ON HOLD',
-  COMPLETED = 'COMPLETED'
+  ACTIVE = 'Active',
+  ON_HOLD = 'OnHold',
+  COMPLETED = 'Completed'
 }
 
 export interface Project {

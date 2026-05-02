@@ -35,6 +35,7 @@ export class ProjectList implements OnInit {
   filteredProjects: any[] = [];
   sortOrder: 'asc' | 'desc' = 'asc';
   filterStatus: ProjectStatus | 'ALL' = 'ALL';
+  currentSearchText: string = '';
   isLoading = true;
 
 
@@ -71,7 +72,8 @@ export class ProjectList implements OnInit {
   }
 
   onSearchChange(searchText: string): void {
-    this.applyFiltersAndSort(searchText);
+    this.currentSearchText = searchText;
+    this.applyFiltersAndSort();
   }
 
   onAddClick(): void {
@@ -119,13 +121,13 @@ export class ProjectList implements OnInit {
     }
   }
 
-  private applyFiltersAndSort(searchText: string = ''): void {
+  private applyFiltersAndSort(): void {
     let filtered = [...this.projects];
 
     // تطبيق البحث
-    if (searchText && searchText.trim()) {
-      const value = searchText.trim().toLowerCase();
-      filtered = filtered.filter((project) => (project.title || '').toLowerCase().includes(value));
+    if (this.currentSearchText && this.currentSearchText.trim()) {
+      const value = this.currentSearchText.trim().toLowerCase();
+      filtered = filtered.filter((project) => (project.tilte || '').toLowerCase().includes(value));
     }
 
     // تطبيق التصفية حسب الحالة
@@ -135,8 +137,8 @@ export class ProjectList implements OnInit {
 
     // تطبيق الترتيب
     filtered.sort((a, b) => {
-      const titleA = (a.title || '').toLowerCase();
-      const titleB = (b.title || '').toLowerCase();
+      const titleA = (a.tilte || '').toLowerCase();
+      const titleB = (b.tilte || '').toLowerCase();
       if (this.sortOrder === 'asc') {
         return titleA.localeCompare(titleB);
       } else {

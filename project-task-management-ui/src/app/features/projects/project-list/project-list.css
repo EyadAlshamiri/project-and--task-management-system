@@ -27,6 +27,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
+  align-items: start;
   overflow-y: auto;
   /* Fit exactly 2 rows: 2 * 220px (card height) + 20px (gap) = 460px */
   height:520px;

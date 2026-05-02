@@ -49,6 +49,7 @@ export class ProjectCard {
       case 'نشط':
         return 'نشط';
       case 'ON HOLD':
+      case 'ONHOLD':
       case 'موقوف':
         return 'موقوف';
       case 'COMPLETED':
@@ -65,6 +66,7 @@ export class ProjectCard {
       case 'نشط':
         return 'status-active';
       case 'ON HOLD':
+      case 'ONHOLD':
       case 'موقوف':
         return 'status-hold';
       case 'COMPLETED':
@@ -72,6 +74,38 @@ export class ProjectCard {
         return 'status-completed';
       default:
         return 'status-default';
+    }
+  }
+
+  getPriorityLabel(priority: string): string {
+    switch ((priority || '').toUpperCase()) {
+      case 'HIGH':
+      case 'عالي':
+        return 'عالي';
+      case 'MEDIUM':
+      case 'متوسط':
+        return 'متوسط';
+      case 'LOW':
+      case 'منخفض':
+        return 'منخفض';
+      default:
+        return priority || 'غير محدد';
+    }
+  }
+
+  getPriorityClass(priority: string): string {
+    switch ((priority || '').toUpperCase()) {
+      case 'HIGH':
+      case 'عالي':
+        return 'priority-high';
+      case 'MEDIUM':
+      case 'متوسط':
+        return 'priority-medium';
+      case 'LOW':
+      case 'منخفض':
+        return 'priority-low';
+      default:
+        return 'priority-default';
     }
   }
 
@@ -84,6 +118,7 @@ export class ProjectCard {
       case 'ACTIVE':
         return '#22c55e';
       case 'ON HOLD':
+      case 'ONHOLD':
         return '#f59e0b';
       case 'COMPLETED':
         return '#22c55e';

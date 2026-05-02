@@ -7,7 +7,8 @@ namespace ProjectTaskManagement.Core.DTOs
     public class ProjectDTO
     {
         public int Id { get; set; }
-        public string Tilte { get; set; } = null!;
+        [System.Text.Json.Serialization.JsonPropertyName("tilte")]
+        public string Title { get; set; } = null!;
         public string? Description { get; set; }
 
         public DateTime StartDate { get; set; }

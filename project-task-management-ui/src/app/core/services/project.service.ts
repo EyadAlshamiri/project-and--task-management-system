@@ -20,7 +20,7 @@ export class ProjectService {
         return (res?.data ?? []).map(project => ({
           ...project,
           members: project.members || [],
-          tilte: project.tilte || project.tilte,
+          tilte: project.tilte || project.tilte || '',
           startDate: project.startDate || project.startDate,
           endDate: project.endDate || project.endDate,
           status: project.status || project.status,
@@ -40,7 +40,13 @@ export class ProjectService {
 
   getProjectById(id: number): Observable<Project> {
     return this.http.get<ApiResponse<Project>>(`${this.apiUrl}/${id}`).pipe(
-      map(res => res.data)
+      map(res => {
+        const project = res.data;
+        if (project) {
+          project.tilte = project.tilte || project.tilte || '';
+        }
+        return project;
+      })
     );
   }
 
@@ -50,8 +56,8 @@ export class ProjectService {
     );
   }
 
-  updateProject(project: Project): Observable<boolean> {
-    return this.http.put<ApiResponse<boolean>>(`${this.apiUrl}/${project.id}`, project).pipe(
+  updateProject(id: number, projectData: any): Observable<boolean> {
+    return this.http.put<ApiResponse<boolean>>(`${this.apiUrl}/${id}`, projectData).pipe(
       map(res => res.data)
     );
   }

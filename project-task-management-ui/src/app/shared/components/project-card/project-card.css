@@ -61,6 +61,40 @@
   background: #f1f5f9;
   color: var(--text-muted);
 }
+
+.badges-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.priority-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.priority-high {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.priority-medium {
+  background: #fff7ed;
+  color: #f59e0b;
+}
+
+.priority-low {
+  background: #f0fdf4;
+  color: #22c55e;
+}
+
+.priority-default {
+  background: #f1f5f9;
+  color: var(--text-muted);
+}
 .card-footer {
   margin-top: auto;
 }

@@ -36,10 +36,10 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
     NzAvatarModule,
     CustomButton,
     NzModalModule,
-    NzPopconfirmModule
+    NzPopconfirmModule,
   ],
   templateUrl: './project-details.html',
-  styleUrl: './project-details.css'
+  styleUrl: './project-details.css',
 })
 export class ProjectDetails implements OnInit {
   project: Project | undefined;
@@ -48,13 +48,58 @@ export class ProjectDetails implements OnInit {
   currentProjectId: number | null = null;
   isViewReady = false;
 
+  public getStatusLabel(status: string): string {
+    const s = (status || '').toUpperCase();
+    if (s === 'ACTIVE' || s === 'نشط') return 'نشط';
+    if (s === 'ON HOLD' || s === 'ONHOLD' || s === 'موقوف') return 'موقوف';
+    if (s === 'COMPLETED' || s === 'مكتمل') return 'مكتمل';
+    return status || 'غير محدد';
+  }
+
+  public getPriorityLabel(priority: string): string {
+    const p = (priority || '').toUpperCase();
+    if (p === 'HIGH' || p === 'عالي') return 'عالي';
+    if (p === 'MEDIUM' || p === 'متوسط') return 'متوسط';
+    if (p === 'LOW' || p === 'منخفض') return 'منخفض';
+    return priority || 'غير محدد';
+  }
+
+  public getStatusColor(status: string): string {
+    const s = (status || '').toUpperCase();
+    if (s === 'ACTIVE' || s === 'نشط') return 'blue';
+    if (s === 'ON HOLD' || s === 'ONHOLD' || s === 'موقوف') return 'orange';
+    if (s === 'COMPLETED' || s === 'مكتمل') return 'green';
+    return 'default';
+  }
+
+  public getPriorityColor(priority: string): string {
+    const p = (priority || '').toUpperCase();
+    if (p === 'HIGH' || p === 'عالي') return 'red';
+    if (p === 'MEDIUM' || p === 'متوسط') return 'orange';
+    if (p === 'LOW' || p === 'منخفض') return 'green';
+    return 'default';
+  }
+
+  public getTaskStatusColor(status: string): string {
+    switch (status) {
+      case 'TODO':
+        return 'default';
+      case 'IN_PROGRESS':
+        return 'processing';
+      case 'DONE':
+        return 'success';
+      default:
+        return 'default';
+    }
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private projectService: ProjectService,
     private taskService: TaskService,
     private cdr: ChangeDetectorRef,
-    private modal: NzModalService
+    private modal: NzModalService,
   ) {}
 
   ngOnInit(): void {
@@ -62,7 +107,7 @@ export class ProjectDetails implements OnInit {
       this.isViewReady = true;
       this.cdr.detectChanges();
     });
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const idParam = params.get('id');
       if (idParam) {
         this.currentProjectId = parseInt(idParam, 10);
@@ -91,7 +136,7 @@ export class ProjectDetails implements OnInit {
         this.isLoading = false;
         this.isRefreshing = false;
         this.cdr.detectChanges();
-      }
+      },
     });
   }
 
@@ -123,15 +168,15 @@ export class ProjectDetails implements OnInit {
       nzFooter: null,
       nzData: {
         task: task,
-        members: this.project?.members || []
-      }
+        members: this.project?.members || [],
+      },
     });
 
     modalRef.afterClose.subscribe((result) => {
       if (result && this.currentProjectId) {
         const taskData = {
           ...result,
-          projectId: this.currentProjectId
+          projectId: this.currentProjectId,
         };
         this.taskService.updateTask(task.id, taskData).subscribe({
           next: () => {
@@ -139,7 +184,7 @@ export class ProjectDetails implements OnInit {
           },
           error: (err: any) => {
             console.error('Error updating task:', err);
-          }
+          },
         });
       }
     });
@@ -153,15 +198,15 @@ export class ProjectDetails implements OnInit {
       nzFooter: null,
       nzData: {
         projectId: this.currentProjectId,
-        members: this.project?.members || []
-      }
+        members: this.project?.members || [],
+      },
     });
 
     modalRef.afterClose.subscribe((result) => {
       if (result && this.currentProjectId) {
         const taskData = {
           ...result,
-          projectId: this.currentProjectId
+          projectId: this.currentProjectId,
         };
         this.taskService.createTask(taskData).subscribe({
           next: () => {
@@ -170,7 +215,7 @@ export class ProjectDetails implements OnInit {
           },
           error: (err: any) => {
             console.error('Error creating task: - project-details.ts:142', err);
-          }
+          },
         });
       }
     });
@@ -184,35 +229,8 @@ export class ProjectDetails implements OnInit {
         },
         error: (err: any) => {
           console.error('Error deleting task:', err);
-        }
+        },
       });
-    }
-  }
-
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'ACTIVE': return 'blue';
-      case 'ON HOLD': return 'orange';
-      case 'COMPLETED': return 'green';
-      default: return 'default';
-    }
-  }
-
-  getPriorityColor(priority: string): string {
-    switch (priority?.toUpperCase()) {
-      case 'HIGH': return 'red';
-      case 'MEDIUM': return 'orange';
-      case 'LOW': return 'green';
-      default: return 'default';
-    }
-  }
-
-  getTaskStatusColor(status: string): string {
-    switch (status) {
-      case 'TODO': return 'default';
-      case 'IN_PROGRESS': return 'processing';
-      case 'DONE': return 'success';
-      default: return 'default';
     }
   }
 }

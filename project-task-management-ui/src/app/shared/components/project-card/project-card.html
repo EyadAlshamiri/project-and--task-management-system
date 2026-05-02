@@ -33,8 +33,13 @@
     </div>
 
     <div class="card-body">
-      <div class="status-badge" [ngClass]="getStatusClass(project.status)">
-        {{ getStatusLabel(project.status) }}
+      <div class="badges-row">
+        <div class="status-badge" [ngClass]="getStatusClass(project.status)">
+          {{ getStatusLabel(project.status) }}
+        </div>
+        <div class="priority-badge" [ngClass]="getPriorityClass(project.priority)">
+          {{ getPriorityLabel(project.priority) }}
+        </div>
       </div>
 
       <div class="team-section">

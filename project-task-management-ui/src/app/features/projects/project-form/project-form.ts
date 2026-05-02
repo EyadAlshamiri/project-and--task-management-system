@@ -77,10 +77,10 @@ export class ProjectForm implements OnInit {
     this.projectForm = this.fb.group({
       title: [null, [Validators.required, Validators.minLength(3)]],
       description: [null],
-      status: [ProjectStatus.ACTIVE, [Validators.required]],
+      status: ['Active', [Validators.required]],
       startDate: [null, [Validators.required]],
       endDate: [null, [Validators.required]],
-      priority: ['MEDIUM', [Validators.required]],
+      priority: ['Medium', [Validators.required]],
       projectManagerName: [null],
       members: [[]],
       tasks: this.fb.array([]),
@@ -91,11 +91,24 @@ export class ProjectForm implements OnInit {
     this.projectService.getProjectById(id).subscribe({
       next: (project) => {
         if (project) {
+          let pStatus = 'Active';
+          const s = (project.status || '').toUpperCase();
+          if (s === 'ACTIVE' || s === 'نشط') pStatus = 'Active';
+          else if (s === 'ON HOLD' || s === 'ONHOLD' || s === 'موقوف') pStatus = 'OnHold';
+          else if (s === 'COMPLETED' || s === 'مكتمل') pStatus = 'Completed';
+          else pStatus = 'Active';
+
+          let pPriority = 'Medium';
+          const p = (project.priority || '').toUpperCase();
+          if (p === 'LOW' || p === 'منخفض') pPriority = 'Low';
+          else if (p === 'HIGH' || p === 'عالي') pPriority = 'High';
+          else if (p === 'MEDIUM' || p === 'متوسط') pPriority = 'Medium';
+
           this.projectForm.patchValue({
-            title: project.tilte,
+            title: project.tilte || project.tilte || '',
             description: project.description,
-            status: project.status,
-            priority: project.priority,
+            status: pStatus,
+            priority: pPriority,
             startDate: project.startDate ? new Date(project.startDate) : null,
             endDate: project.endDate ? new Date(project.endDate) : null,
             projectManagerName: project.projectManagerName,
@@ -216,7 +229,7 @@ export class ProjectForm implements OnInit {
               this.tasks.at(index).patchValue(result);
               this.cdr.detectChanges();
             },
-            error: (err) => console.error('Error updating task in project-form:', err)
+            error: (err) => console.error('Error updating task in projectform: - project-form.ts:229', err)
           });
         } else {
           this.tasks.at(index).patchValue(result);
@@ -237,7 +250,7 @@ export class ProjectForm implements OnInit {
               this.tasks.removeAt(index);
               this.cdr.detectChanges();
             },
-            error: (err) => console.error('Error deleting task from project-form:', err)
+            error: (err) => console.error('Error deleting task from projectform: - project-form.ts:250', err)
           });
         }
       });
@@ -316,18 +329,17 @@ export class ProjectForm implements OnInit {
       };
 
       if (this.isEditMode && this.projectId) {
-        projectData.id = this.projectId;
-        this.projectService.updateProject(projectData).subscribe({
+        this.projectService.updateProject(this.projectId, projectData).subscribe({
           next: () => {
             this.createPendingTasks(this.projectId!).subscribe({
               next: () => this.router.navigate(['/projects', this.projectId]),
               error: (err: any) => {
-                console.error('Error creating project tasks after update: - project-form.ts:298', err);
+                console.error('Error creating project tasks after update: - project-form.ts:334', err);
                 this.router.navigate(['/projects', this.projectId]);
               }
             });
           },
-          error: (err) => console.error('Error updating project: - project-form.ts:303', err)
+          error: (err) => console.error('Error updating project: - project-form.ts:339', err)
         });
       } else {
         this.projectService.addProject(projectData).subscribe({
@@ -336,12 +348,12 @@ export class ProjectForm implements OnInit {
             this.createPendingTasks(projectId).subscribe({
               next: () => this.router.navigate(['/projects']),
               error: (err: any) => {
-                console.error('Error creating project tasks after add: - project-form.ts:312', err);
+                console.error('Error creating project tasks after add: - project-form.ts:348', err);
                 this.router.navigate(['/projects']);
               }
             });
           },
-          error: (err) => console.error('Error adding project: - project-form.ts:317', err)
+          error: (err) => console.error('Error adding project: - project-form.ts:353', err)
         });
       }
     } else {

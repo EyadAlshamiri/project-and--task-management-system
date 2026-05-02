@@ -8,22 +8,10 @@
           <h2>{{ project.tilte }}</h2>
           <div class="tags">
             <nz-tag [nzColor]="getStatusColor(project.status)">
-              {{
-                project.status === 'ACTIVE'
-                  ? 'نشط'
-                  : project.status === 'ON HOLD'
-                    ? 'موقوف'
-                    : 'مكتمل'
-              }}
+              {{ getStatusLabel(project.status) }}
             </nz-tag>
             <nz-tag *ngIf="project.priority" [nzColor]="getPriorityColor(project.priority)">
-              {{
-                project.priority === 'HIGH'
-                  ? 'عالي'
-                  : project.priority === 'MEDIUM'
-                    ? 'متوسط'
-                    : 'منخفض'
-              }}
+              {{ getPriorityLabel(project.priority) }}
             </nz-tag>
           </div>
         </div>
@@ -96,9 +84,7 @@
                     <div class="task-main">
                       <span class="task-name">{{ task.title }}</span>
                       <div class="task-tags">
-                        <nz-tag [nzColor]="getTaskStatusColor(task.status)">{{
-                          task.status
-                        }}</nz-tag>
+                        <nz-tag [nzColor]="getTaskStatusColor(task.status)">{{ getStatusLabel(task.status) }}</nz-tag>
                         <span class="task-date" *ngIf="task.dueDate">
                           <span nz-icon nzType="calendar"></span>
                           {{ task.dueDate | date: 'shortDate' }}

@@ -31,7 +31,7 @@ namespace ProjectTaskManagement.Service
                 .Select(p => new ProjectDTO
                 {
                     Id = p.Id,
-                    Tilte = p.Title,
+                    Title = p.Title,
                     Description = p.Description,
                     StartDate = p.StartDate,
                     EndDate = p.EndDate,
@@ -43,8 +43,16 @@ namespace ProjectTaskManagement.Service
 
                     TasksCount = p.Tasks.Count(),
                     Progress = p.Tasks.Count > 0 
-                        ? (int)((double)p.Tasks.Count(t => t.Status == "DONE") / p.Tasks.Count * 100) 
-                        : 0
+                        ? (int)((double)p.Tasks.Count(t => t.Status.ToUpper() == "DONE") / p.Tasks.Count * 100) 
+                        : 0,
+                    Tasks = p.Tasks.Select(t => new ProjectTaskDTO
+                    {
+                        Id = t.Id,
+                        Title = t.Title,
+                        Status = t.Status,
+                        Priority = t.Priority,
+                        DueDate = t.DueDate
+                    }).ToList()
                 })
                 .ToListAsync();
         }
@@ -70,6 +78,12 @@ namespace ProjectTaskManagement.Service
 
             existing.Title = project.Title;
             existing.Description = project.Description;
+            existing.Status = project.Status;
+            existing.Priority = project.Priority;
+            existing.StartDate = project.StartDate;
+            existing.EndDate = project.EndDate;
+            existing.ProjectManagerName = project.ProjectManagerName;
+            existing.Members = project.Members;
 
             await _context.SaveChangesAsync();
             return true;
