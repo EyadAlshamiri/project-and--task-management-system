@@ -73,7 +73,10 @@ namespace ProjectTaskManagement.Service
 
         public async Task<bool> UpdateAsync(int id, UpdateProjectTaskDTO dto)
         {
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _context.Tasks
+                .Include(t => t.SubTasks)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
             if (task == null) return false;
 
             task.Title = dto.Title;
@@ -83,6 +86,42 @@ namespace ProjectTaskManagement.Service
             task.StartDate = dto.StartDate;
             task.DueDate = dto.DueDate;
             task.AssignedTo = dto.AssignedTo;
+
+            // Synchronize SubTasks
+            // 1. Remove subtasks not in DTO
+            var dtoSubTaskIds = dto.SubTasks.Where(st => st.Id > 0).Select(st => st.Id).ToList();
+            var subTasksToRemove = task.SubTasks.Where(st => !dtoSubTaskIds.Contains(st.Id)).ToList();
+            foreach (var st in subTasksToRemove)
+            {
+                _context.SubTasks.Remove(st);
+            }
+
+            // 2. Add or Update subtasks
+            foreach (var subDto in dto.SubTasks)
+            {
+                if (subDto.Id > 0)
+                {
+                    // Update existing
+                    var existingSub = task.SubTasks.FirstOrDefault(st => st.Id == subDto.Id);
+                    if (existingSub != null)
+                    {
+                        existingSub.Title = subDto.Title;
+                        existingSub.IsCompleted = subDto.IsCompleted;
+                        existingSub.AssignedTo = subDto.AssignedTo;
+                    }
+                }
+                else
+                {
+                    // Add new
+                    task.SubTasks.Add(new SubTask
+                    {
+                        Title = subDto.Title,
+                        IsCompleted = subDto.IsCompleted,
+                        AssignedTo = subDto.AssignedTo,
+                        TaskId = task.Id
+                    });
+                }
+            }
 
             await _context.SaveChangesAsync();
             return true;

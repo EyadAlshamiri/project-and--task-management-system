@@ -56,12 +56,12 @@ export class TaskModal implements OnInit {
       subTasks: this.fb.array([])
     });
 
-    if (taskData?.subTasks && Array.isArray(taskData.subTasks)) {
+    if (taskData?.subTasks && Array.isArray(taskData.subTasks) && taskData.subTasks.length > 0) {
       taskData.subTasks.forEach((subTask: any) => {
         this.addSubTask(subTask);
       });
-    } else if (!this.isEdit) {
-      // Add one empty subtask by default for new tasks
+    } else {
+      // Add one empty subtask by default if none exist (for both new and edit)
       this.addSubTask();
     }
   }
@@ -72,6 +72,7 @@ export class TaskModal implements OnInit {
 
   addSubTask(subTaskData?: any): void {
     const subTaskGroup = this.fb.group({
+      id: [subTaskData?.id || 0],
       title: [subTaskData?.title || null, [Validators.required]],
       isCompleted: [subTaskData?.isCompleted || false],
       assignedTo: [subTaskData?.assignedTo || null]

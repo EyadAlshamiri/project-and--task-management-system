@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from '../../../core/services/task.service';
 import { TaskForm } from '../task-form/task-form';
@@ -63,7 +63,8 @@ export class TaskEditPage implements OnInit {
       startDate: [new Date(), Validators.required],
       dueDate: [null],
       assignedTo: [null],
-      description: ['']
+      description: [''],
+      subTasks: this.fb.array([])
     });
 
     this.route.paramMap.subscribe(params => {
@@ -82,6 +83,27 @@ export class TaskEditPage implements OnInit {
                 assignedTo: task.assignedTo ?? null,
                 description: task.description ?? ''
               });
+
+              // Clear and Fill SubTasks
+              const subTasksArray = this.editForm?.get('subTasks') as FormArray;
+              if (task.subTasks && task.subTasks.length > 0) {
+                task.subTasks.forEach((st: any) => {
+                  subTasksArray.push(this.fb.group({
+                    id: [st.id || 0],
+                    title: [st.title, Validators.required],
+                    isCompleted: [st.isCompleted || false],
+                    assignedTo: [st.assignedTo || null]
+                  }));
+                });
+              } else {
+                // Add one empty row if none exist
+                subTasksArray.push(this.fb.group({
+                  id: [0],
+                  title: ['', Validators.required],
+                  isCompleted: [false],
+                  assignedTo: [null]
+                }));
+              }
 
               // Fetch project members
               this.projectService.getProjectById(task.projectId).subscribe(project => {

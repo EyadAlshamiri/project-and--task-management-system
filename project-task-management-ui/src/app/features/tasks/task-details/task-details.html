@@ -58,18 +58,30 @@
         </div>
       </div>
 
-      <div class="subtasks-section card" *ngIf="task.subTasks && task.subTasks.length > 0">
-        <h3 class="section-title">المهام الفرعية ({{ task.subTasks.length }})</h3>
-        <div class="subtasks-list">
-          <div class="subtask-item" *ngFor="let sub of task.subTasks">
-            <span class="subtask-check" [class.completed]="sub.isCompleted">
-              <span nz-icon [nzType]="sub.isCompleted ? 'check-circle' : 'border'" [nzTheme]="sub.isCompleted ? 'fill' : 'outline'"></span>
-            </span>
-            <span class="subtask-title">{{ sub.title }}</span>
-            <span class="subtask-assignee" *ngIf="sub.assignedTo"> - {{ sub.assignedTo }}</span>
+        <div class="subtasks-section card">
+          <div class="subtasks-header">
+            <h3 class="section-title">المهام الفرعية ({{ task.subTasks ? task.subTasks.length : 0 }})</h3>
+            <app-custom-button label="إضافة" type="dashed" size="small" (btnClick)="addSubTask()"></app-custom-button>
+          </div>
+          
+          <div class="subtasks-list" *ngIf="task.subTasks && task.subTasks.length > 0">
+            <div class="subtask-item interactive" *ngFor="let sub of task.subTasks">
+              <label nz-checkbox [nzChecked]="sub.isCompleted" (nzCheckedChange)="toggleSubTaskStatus(sub)"></label>
+              <div class="subtask-info">
+                <span class="subtask-title" [class.completed]="sub.isCompleted">{{ sub.title }}</span>
+                <span class="subtask-assignee" *ngIf="sub.assignedTo"> المسند إليه: {{ sub.assignedTo }}</span>
+              </div>
+              <div class="subtask-actions">
+                <span nz-icon nzType="edit" nzTheme="outline" class="action-icon edit" (click)="editSubTask(sub)"></span>
+                <span nz-icon nzType="delete" nzTheme="outline" class="action-icon delete" (click)="deleteSubTask(sub)"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-subtasks" *ngIf="!task.subTasks || task.subTasks.length === 0">
+            <nz-empty nzNotFoundImage="simple" nzNotFoundContent="لا توجد مهام فرعية مضافة بعد."></nz-empty>
           </div>
         </div>
-      </div>
     </div>
   </div>
 
@@ -77,4 +89,21 @@
     <nz-empty nzNotFoundContent="المهمة غير موجودة"></nz-empty>
     <app-custom-button label="العودة" type="primary" (btnClick)="goBack()"></app-custom-button>
   </div>
+
+  <!-- Template for Add Subtask Modal -->
+  <ng-template #addSubTaskTpl let-data>
+    <div style="padding: 10px;">
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px;">عنوان المهمة الفرعية</label>
+        <input nz-input [(ngModel)]="newSubTask.title" placeholder="أدخل العنوان هنا..." />
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 5px;">المسند إليه</label>
+        <nz-select [(ngModel)]="newSubTask.assignedTo" style="width: 100%" nzPlaceHolder="اختر المنفذ">
+          <nz-option nzValue="" nzLabel="-- اختر المنفذ --"></nz-option>
+          <nz-option *ngFor="let member of projectMembers" [nzValue]="member" [nzLabel]="member"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </ng-template>
 </div>

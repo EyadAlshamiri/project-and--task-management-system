@@ -94,3 +94,65 @@
     grid-template-columns: 1fr;
   }
 }
+
+.subtasks-container {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed #e8e8e8;
+}
+
+.subtasks-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sub-title {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  font-weight: 600;
+}
+
+.subtask-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  background: #fafafa;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.sub-check {
+  margin-top: 4px;
+}
+
+.sub-title-input {
+  flex: 2;
+  margin-bottom: 0;
+}
+
+.sub-assignee {
+  flex: 1;
+  width: 150px;
+}
+
+.sub-delete {
+  color: #ff4d4f;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.no-subtasks {
+  text-align: center;
+  padding: 16px;
+  color: #999;
+  font-style: italic;
+  font-size: 13px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}

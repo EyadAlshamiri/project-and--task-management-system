@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,5 +16,6 @@ namespace ProjectTaskManagement.Core.DTOs
         public DateTime? DueDate { get; set; }
 
         public string? AssignedTo { get; set; }
+        public List<SubTaskDTO> SubTasks { get; set; } = new();
     }
 }

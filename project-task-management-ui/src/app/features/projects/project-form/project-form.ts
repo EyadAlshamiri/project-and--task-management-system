@@ -143,8 +143,27 @@ export class ProjectForm implements OnInit {
                 dueDate: [t.dueDate ? new Date(t.dueDate) : null],
                 priority: [t.priority],
                 assignedTo: [t.assignedTo],
-                subTasks: [t.subTasks || []]
+                subTasks: this.fb.array([])
               });
+
+              if (t.subTasks && Array.isArray(t.subTasks) && t.subTasks.length > 0) {
+                t.subTasks.forEach((st: any) => {
+                  (taskForm.get('subTasks') as FormArray).push(this.fb.group({
+                    id: [st.id || 0],
+                    title: [st.title, Validators.required],
+                    isCompleted: [st.isCompleted || false],
+                    assignedTo: [st.assignedTo || null]
+                  }));
+                });
+              } else {
+                (taskForm.get('subTasks') as FormArray).push(this.fb.group({
+                  id: [0],
+                  title: ['', Validators.required],
+                  isCompleted: [false],
+                  assignedTo: [null]
+                }));
+              }
+
               this.tasks.push(taskForm);
             });
           }
@@ -215,8 +234,20 @@ export class ProjectForm implements OnInit {
           dueDate: [result.dueDate],
           priority: [result.priority],
           assignedTo: [result.assignedTo],
-          subTasks: [result.subTasks || []]
+          subTasks: this.fb.array([])
         });
+
+        if (result.subTasks && Array.isArray(result.subTasks)) {
+          result.subTasks.forEach((st: any) => {
+            (taskForm.get('subTasks') as FormArray).push(this.fb.group({
+              id: [st.id || 0],
+              title: [st.title, Validators.required],
+              isCompleted: [st.isCompleted || false],
+              assignedTo: [st.assignedTo || null]
+            }));
+          });
+        }
+
         this.tasks.push(taskForm);
         this.showAllTasks = true;
         this.cdr.detectChanges();
@@ -241,17 +272,35 @@ export class ProjectForm implements OnInit {
           const taskData = { ...result, projectId: this.projectId };
           this.taskService.updateTask(task.id, taskData).subscribe({
             next: () => {
+              this.syncSubTasksArray(index, result.subTasks);
               this.tasks.at(index).patchValue(result);
               this.cdr.detectChanges();
             },
             error: (err) => console.error('Error updating task in projectform: - project-form.ts:229', err)
           });
         } else {
+          this.syncSubTasksArray(index, result.subTasks);
           this.tasks.at(index).patchValue(result);
           this.cdr.detectChanges();
         }
       }
     });
+  }
+
+  private syncSubTasksArray(taskIndex: number, subTasksData: any[]): void {
+    const taskGroup = this.tasks.at(taskIndex) as FormGroup;
+    const subTasksArray = taskGroup.get('subTasks') as FormArray;
+    subTasksArray.clear();
+    if (subTasksData && Array.isArray(subTasksData)) {
+      subTasksData.forEach((st: any) => {
+        subTasksArray.push(this.fb.group({
+          id: [st.id || 0],
+          title: [st.title, Validators.required],
+          isCompleted: [st.isCompleted || false],
+          assignedTo: [st.assignedTo || null]
+        }));
+      });
+    }
   }
 
   removeTask(index: number): void {

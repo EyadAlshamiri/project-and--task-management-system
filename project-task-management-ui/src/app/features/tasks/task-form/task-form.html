@@ -92,4 +92,32 @@
       </div>
     </nz-form-control>
   </nz-form-item>
+
+  <!-- Subtasks Section -->
+  <div class="subtasks-container full-width">
+    <div class="subtasks-header">
+      <h4 class="sub-title">المهام الفرعية</h4>
+      <app-custom-button label="إضافة مهمة فرعية" type="dashed" size="small" (btnClick)="addSubTask()"></app-custom-button>
+    </div>
+
+    <div [formArrayName]="'subTasks'" class="subtasks-list">
+      <div *ngFor="let sub of getSubTasks().controls; let i = index" [formGroupName]="i" class="subtask-row">
+        <label nz-checkbox formControlName="isCompleted" class="sub-check"></label>
+        
+        <nz-form-control class="sub-title-input" nzErrorTip="العنوان مطلوب">
+          <input nz-input formControlName="title" placeholder="عنوان المهمة الفرعية" />
+        </nz-form-control>
+
+        <nz-select formControlName="assignedTo" nzPlaceHolder="المنفذ" class="sub-assignee">
+          <nz-option *ngFor="let member of projectMembers" [nzValue]="member" [nzLabel]="member"></nz-option>
+        </nz-select>
+
+        <span nz-icon nzType="delete" nzTheme="outline" class="sub-delete" (click)="removeSubTask(i)"></span>
+      </div>
+      
+      <div *ngIf="getSubTasks().length === 0" class="no-subtasks">
+        لا توجد مهام فرعية مضافة.
+      </div>
+    </div>
+  </div>
 </div>
