@@ -1,10 +1,10 @@
 @import 'ng-zorro-antd/ng-zorro-antd.css';
 
 /* Fix for ng-zorro-antd accessibility issues */
-.ant-dropdown-trigger[aria-hidden="true"]:focus,
-.ant-dropdown-trigger[aria-hidden="true"]:focus-within,
-.ant-tabs-dropdown .ant-dropdown-trigger[aria-hidden="true"]:focus,
-.ant-tabs-dropdown .ant-dropdown-trigger[aria-hidden="true"]:focus-within {
+.ant-dropdown-trigger[aria-hidden='true']:focus,
+.ant-dropdown-trigger[aria-hidden='true']:focus-within,
+.ant-tabs-dropdown .ant-dropdown-trigger[aria-hidden='true']:focus,
+.ant-tabs-dropdown .ant-dropdown-trigger[aria-hidden='true']:focus-within {
   aria-hidden: false !important;
 }
 
@@ -14,7 +14,7 @@
   --primary-hover: #2563eb;
   --primary-light: #eff6ff;
   --primary-border: #bfdbfe;
-  
+
   /* Text Colors */
   --text-main: #1e293b;
   --text-muted: #64748b;
@@ -23,27 +23,27 @@
   --text-slate: #2d3748;
   --text-gray: #4a5568;
   --text-cool: #718096;
-  
+
   /* Status Colors */
   --error-color: #ef4444;
   --success-color: #10b981;
   --warning-color: #f59e0b;
   --info-color: #3b82f6;
-  
+
   /* Status Surface Colors */
   --error-surface: #fef2f2;
   --success-surface: #ecfdf5;
   --warning-surface: #fff7ed;
   --info-surface: #eff6ff;
   --neutral-surface: #f1f5f9;
-  
+
   /* Backgrounds & Borders */
   --bg-color: #ffffff;
   --bg-body: #fbfdff;
   --border-color: #cbd5e1;
   --border-light: #f1f5f9;
   --border-avatar: #e2e8f0;
-  
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -55,7 +55,7 @@
   --spacing-4xl: 40px;
   --spacing-5xl: 50px;
   --spacing-6xl: 80px;
-  
+
   /* Border Radius */
   --radius-xs: 4px;
   --radius-sm: 5px;
@@ -64,7 +64,7 @@
   --radius-xl: 16px;
   --radius-2xl: 20px;
   --radius-full: 9999px;
-  
+
   /* Typography */
   --font-xs: 11px;
   --font-sm: 12px;
@@ -77,50 +77,63 @@
   --font-5xl: 22px;
   --font-6xl: 24px;
   --font-7xl: 28px;
-  
+
   --weight-normal: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
-  
+
   /* Transitions */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
-  
+
   /* Shadows */
   --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.02);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+
   /* Gradients */
   --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 * {
   box-sizing: border-box;
-  padding : 0 ; 
-  margin : 0 ;
+  padding: 0;
+  margin: 0;
 }
 
-a{
-    text-decoration: none;
+a {
+  text-decoration: none;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   font-weight: 600;
-  font-family: Avenir,
+  font-family:
+    Avenir,
     Helvetica Neue,
     Arial,
     Helvetica,
     sans-serif;
-
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--bg-body);
@@ -143,4 +156,4 @@ body {
     --font-5xl: 16px;
     --font-xl: 14px;
   }
-}
+}

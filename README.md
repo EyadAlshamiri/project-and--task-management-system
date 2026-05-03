@@ -27,6 +27,16 @@ cd project-and--task-management-system
    cd ProjectTaskManagement.API
    ```
 
+     📁 قائمة الحزم الأساسية المثبتة (Key Packages)
+   بناءً على ملفات المشروع:
+
+- **Microsoft.EntityFrameworkCore.SqlServer (10.0.7)**: للاتصال بقاعدة البيانات.
+- **Microsoft.EntityFrameworkCore.Tools (10.0.7)**: لإدارة التهجير (Migrations).
+- **Swashbuckle.AspNetCore (10.1.7)**: لتوليد وثائق Swagger API.
+- **Microsoft.AspNetCore.OpenApi (10.0.7)**: لدعم مواصفات OpenAPI.
+
+![البكج](./UiImages/pakeg.png)
+
 2. **تعديل قاعدة البيانات:**
    افتح ملف `ProjectTaskManagement.API/appsettings.json` وقم بتعديل `DefaultConnection` لتتوافق مع اسم السيرفر لديك في SQL Server.
 
@@ -102,6 +112,22 @@ cd project-and--task-management-system
 | **التوثيق**        | Swagger / OpenAPI          |
 
 ---
+
+
+
+## واجهات المستخدم (User Interfaces)
+
+![صفحةة التحميل ](./UiImages/prograses.png)
+![لايوجد مشاريع](./UiImages/not_project.png)
+![عرض المشاريع](./UiImages/project.png)
+![إنشاء مشروع](./UiImages/add_project.png)
+![عرض بيانات المشروع ](./UiImages/project_ditals.png)
+![تفاصيل المشروع مع المهام ](./UiImages/project_ditals2.png)
+![تفاصيل المشروع مع الاشخاص ](./UiImages/project_ditales_3.png)
+![](./UiImages/update.png)
+![](./UiImages/task.png)
+![](./UiImages/add.png)
+
 
 ## 📧 التواصل (Contact)
 

@@ -7,11 +7,11 @@
           <div class="breadcrumb"><a routerLink="/projects">المشاريع</a> / {{ project.tilte }}</div>
           <h2>{{ project.tilte }}</h2>
           <div class="tags">
-            <nz-tag [nzColor]="project.status | statusFormat:'color'">
-              {{ project.status | statusFormat:'label' }}
+            <nz-tag [nzColor]="project.status | statusFormat: 'color'">
+              {{ project.status | statusFormat: 'label' }}
             </nz-tag>
-            <nz-tag *ngIf="project.priority" [nzColor]="project.priority | priorityFormat:'color'">
-              {{ project.priority | priorityFormat:'label' }}
+            <nz-tag *ngIf="project.priority" [nzColor]="project.priority | priorityFormat: 'color'">
+              {{ project.priority | priorityFormat: 'label' }}
             </nz-tag>
           </div>
         </div>
@@ -80,13 +80,18 @@
                   [title]="project.status === 'Completed' ? 'لا يمكن إضافة مهام لمشروع مكتمل' : ''"
                 ></app-custom-button>
               </div>
-              <div class="task-container" *ngIf="project.tasks && project.tasks.length > 0; else noTasks">
+              <div
+                class="task-container"
+                *ngIf="project.tasks && project.tasks.length > 0; else noTasks"
+              >
                 <div class="tasks-list">
                   <div class="task-row" *ngFor="let task of project.tasks">
                     <div class="task-main">
                       <span class="task-name">{{ task.title }}</span>
                       <div class="task-tags">
-                        <nz-tag [nzColor]="task.status | statusFormat:'color'">{{ task.status | statusFormat:'label' }}</nz-tag>
+                        <nz-tag [nzColor]="task.status | statusFormat: 'color'">{{
+                          task.status | statusFormat: 'label'
+                        }}</nz-tag>
                         <span class="task-date" *ngIf="task.dueDate">
                           <span nz-icon nzType="calendar"></span>
                           {{ task.dueDate | date: 'shortDate' }}
@@ -118,7 +123,11 @@
                         nzShape="circle"
                         (click)="editTask(task)"
                         [disabled]="project.status === 'Completed'"
-                        [nzTooltipTitle]="project.status === 'Completed' ? 'لا يمكن تعديل مهام مشروع مكتمل' : 'تعديل المهمة'"
+                        [nzTooltipTitle]="
+                          project.status === 'Completed'
+                            ? 'لا يمكن تعديل مهام مشروع مكتمل'
+                            : 'تعديل المهمة'
+                        "
                         nz-tooltip
                       >
                         <span nz-icon nzType="edit" class="edit-icon"></span>
@@ -130,9 +139,15 @@
                         nzDanger
                         [disabled]="project.status === 'Completed'"
                         nz-popconfirm
-                        [nzPopconfirmTitle]="project.status === 'Completed' ? '' : 'هل أنت متأكد من حذف هذه المهمة؟'"
+                        [nzPopconfirmTitle]="
+                          project.status === 'Completed' ? '' : 'هل أنت متأكد من حذف هذه المهمة؟'
+                        "
                         (nzOnConfirm)="deleteTask(task.id)"
-                        [nzTooltipTitle]="project.status === 'Completed' ? 'لا يمكن حذف مهام مشروع مكتمل' : 'حذف المهمة'"
+                        [nzTooltipTitle]="
+                          project.status === 'Completed'
+                            ? 'لا يمكن حذف مهام مشروع مكتمل'
+                            : 'حذف المهمة'
+                        "
                         nz-tooltip
                       >
                         <span nz-icon nzType="delete"></span>
@@ -150,10 +165,7 @@
           <nz-tab nzTitle="الفريق">
             <div class="tab-pane">
               <div class="members-layout">
-                <div
-                  class="member-item"
-                  *ngFor="let member of project.members; let i = index"
-                >
+                <div class="member-item" *ngFor="let member of project.members; let i = index">
                   <nz-avatar
                     [nzText]="member[0] || '?'"
                     nzSize="large"
