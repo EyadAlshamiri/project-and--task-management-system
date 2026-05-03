@@ -1,63 +1,92 @@
-# Project Task Management UI
+# نظام إدارة المشاريع والمهام (Project Task Management UI)
 
-تطبيق Angular لإدارة المشاريع والمهام، مبني باستخدام Angular 21 و ng-zorro-antd للواجهة.
+تطبيق ويب احترافي مبني باستخدام **Angular 21** و **NG-ZORRO** لإدارة المشاريع والمهام بكفاءة عالية واجهة مستخدم عصرية.
 
-## الميزات
-- إدارة المشاريع: إضافة، تعديل، حذف، وعرض المشاريع.
-- إدارة المهام: إضافة، تعديل، حذف، وعرض المهام المرتبطة بالمشاريع.
-- واجهة عربية باستخدام ng-zorro-antd.
-- تخزين محلي باستخدام localStorage.
+---
 
-## التقنيات المستخدمة
-- Angular 21
-- ng-zorro-antd (UI Library)
-- TypeScript
-- RxJS
-- Vitest (للاختبارات)
+## 🚀 كيفية تشغيل المشروع (Getting Started)
 
-## التطوير
+اتبع الخطوات التالية لتنزيل وتشغيل المشروع على جهازك المحلي.
 
-### تشغيل الخادم المحلي
-```bash
-ng serve
-```
-افتح المتصفح على `http://localhost:4200/`.
+### 📋 المتطلبات المسبقة (Prerequisites)
 
-### البناء للإنتاج
-```bash
-ng build
-```
+تأكد من تثبيت الأدوات التالية:
+- **Node.js**: إصدار 18 أو أحدث.
+- **Angular CLI**: يمكنك تثبيته عبر الأمر:
+  ```bash
+  npm install -g @angular/cli
+  ```
 
-### الاختبارات
-```bash
-ng test
-```
+### 🛠️ خطوات التثبيت (Installation Steps)
 
-## هيكل المشروع
-```
+1. **نسخ المستودع (Clone the Repository):**
+   ```bash
+   git clone https://github.com/EyadAlshamiri/project-and--task-management-system.git
+   cd project-task-management-ui
+   ```
+
+2. **تثبيت المكتبات (Install Dependencies):**
+   قم بتشغيل الأمر التالي لتحميل جميع المكتبات اللازمة:
+   ```bash
+   npm install
+   ```
+
+3. **تشغيل المشروع (Run the Application):**
+   ابدأ خادم التطوير المحلي:
+   ```bash
+   npm start
+   # أو
+   ng serve
+   ```
+
+4. **المعاينة (Preview):**
+   افتح المتصفح وانتقل إلى العنوان التالي:
+   [http://localhost:4200](http://localhost:4200)
+
+---
+
+## ✨ المميزات (Features)
+
+- **إدارة المشاريع:** إضافة مشاريع جديدة، تعديل البيانات، وحذف المشاريع.
+- **إدارة المهام:** تنظيم المهام داخل كل مشروع مع تحديد الأولوية والحالة.
+- **واجهة مستخدم متجاوبة:** تصميم يدعم مختلف أحجام الشاشات (Responsive Design).
+- **تجربة مستخدم سلسة:** استخدام مكونات NG-ZORRO Ant Design لتوفير واجهة احترافية.
+- **دعم اللغة العربية:** واجهة مهيأة بالكامل للغة العربية.
+
+---
+
+## 🛠️ التقنيات المستخدمة (Tech Stack)
+
+- **Framework:** [Angular 21](https://angular.io/)
+- **UI Library:** [NG-ZORRO](https://ng.ant.design/)
+- **State Management:** RxJS
+- **Styling:** Vanilla CSS & Flexbox/Grid
+- **Icons:** Lucide Icons & NG-ZORRO Icons
+
+---
+
+## 📁 هيكل المشروع (Project Structure)
+
+```text
 src/
 ├── app/
-│   ├── core/
-│   │   ├── models/          # النماذج (Project, Task)
-│   │   └── services/        # الخدمات (ProjectService, TaskService)
-│   ├── features/
-│   │   ├── projects/        # مكونات المشاريع
-│   │   └── tasks/           # مكونات المهام
-│   ├── shared/              # مكونات مشتركة
-│   ├── app.config.ts        # إعدادات التطبيق
-│   ├── app.routes.ts        # التوجيه
-│   └── app.html             # القالب الرئيسي
+│   ├── core/           # الخدمات (Services) والنماذج (Models)
+│   ├── features/       # المكونات الرئيسية (Projects, Tasks)
+│   ├── shared/         # المكونات والمواسير (Pipes) المشتركة
+│   └── app.routes.ts   # إعدادات التنقل (Routing)
+├── assets/             # الصور والملفات الثابتة
+└── styles.css          # التنسيقات العامة
 ```
 
-## الترخيص
-هذا المشروع مفتوح المصدر.
+---
 
-```bash
-ng e2e
-```
+## 📧 التواصل (Contact)
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+إذا كان لديك أي استفسار، لا تتردد في التواصل معنا.
 
-## Additional Resources
++967 738 928 202
+engineeriyadalshamiri@gmail.com 
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+
+
