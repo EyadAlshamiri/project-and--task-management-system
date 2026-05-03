@@ -4,11 +4,11 @@
 
 ---
 
-## 🚀 دليل التنزيل والتشغيل (Quick Start Guide)
+##  دليل التنزيل والتشغيل (Quick Start Guide)
 
 اتبع هذه الخطوات بدقة لتشغيل المشروع بالكامل على جهازك المحلي.
 
-### 1️⃣ نسخ المستودع (Clone the Repository)
+###  نسخ المستودع (Clone the Repository)
 
 قم بفتح الطرفية (Terminal) وكتابة الأمر التالي:
 
@@ -19,7 +19,7 @@ cd project-and--task-management-system
 
 ---
 
-### 2️⃣ تشغيل الواجهة البرمجية (Backend Setup - ASP.NET Core)
+###  تشغيل الواجهة البرمجية (Backend Setup - ASP.NET Core)
 
 1. **انتقل إلى مجلد الباك أند:**
 
@@ -73,7 +73,7 @@ cd project-and--task-management-system
 
 ---
 
-### 3️⃣ تشغيل واجهة المستخدم (Frontend Setup - Angular)
+###  تشغيل واجهة المستخدم (Frontend Setup - Angular)
 
 1. **افتح نافذة طرفية جديدة وانتقل لمجلد الفرونت إند:**
 
@@ -95,14 +95,14 @@ cd project-and--task-management-system
 
 ---
 
-## 📁 هيكل المشروع (Project Structure)
+##  هيكل المشروع (Project Structure)
 
 - **`ProjectTaskManagement.API/`**: يحتوي على منطق الباك أند، قاعدة البيانات، والخدمات.
 - **`project-task-management-ui/`**: يحتوي على واجهة المستخدم المبنية بـ Angular و NG-ZORRO.
 
 ---
 
-## ✨ التقنيات المستخدمة (Tech Stack)
+##  التقنيات المستخدمة (Tech Stack)
 
 | المجال             | التقنية المستخدمة          |
 | :----------------- | :------------------------- |
@@ -113,6 +113,20 @@ cd project-and--task-management-system
 
 ---
 
+# المخططات 
+   ** ER Diagram**
+
+ ![](./UiImages/ER%20Daigram.png)
+
+ ** Relational Schema**
+
+ ![](./UiImages/Relatinal.png)
+
+ 
+
+## الإند بوينت (End Points)
+
+![](./UiImages//project_end_points.png)[](./UiImages/task_end_points.png) [](./UiImages/sub_task_end_points.png)
 
 
 ## واجهات المستخدم (User Interfaces)
@@ -129,7 +143,7 @@ cd project-and--task-management-system
 ![](./UiImages/add.png)
 
 
-## 📧 التواصل (Contact)
+##  التواصل (Contact)
 
 - **المهندس:** إياد الشميري
 - **واتساب:** +967 738 928 202

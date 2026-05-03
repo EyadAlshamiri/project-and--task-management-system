@@ -4,11 +4,11 @@
 
 ---
 
-## 🚀 كيفية تشغيل المشروع (Getting Started)
+##  كيفية تشغيل المشروع (Getting Started)
 
 اتبع الخطوات التالية لتجهيز وتشغيل الواجهة البرمجية على جهازك.
 
-### 📋 المتطلبات المسبقة (Prerequisites)
+###  المتطلبات المسبقة (Prerequisites)
 
 تأكد من تثبيت الأدوات التالية:
 
@@ -19,7 +19,7 @@
   dotnet tool install --global dotnet-ef
   ```
 
-### 🛠️ خطوات التثبيت (Installation Steps)
+###  خطوات التثبيت (Installation Steps)
 
 1. **إعداد قاعدة البيانات (Database Setup):**
    قم بفتح ملف `appsettings.json` في مشروع `ProjectTaskManagement.API` وتعديل سلسلة الاتصال (ConnectionString) لتناسب جهازك:
@@ -68,7 +68,7 @@
 
 ---
 
-## 🏗️ بنية المشروع (Architecture)
+##  بنية المشروع (Architecture)
 
 يعتمد المشروع على بنية الطبقات (Layered Architecture) لضمان فصل المهام:
 
@@ -80,7 +80,7 @@
 
 ---
 
-## ✨ المميزات التقنية (Technical Features)
+##  المميزات التقنية (Technical Features)
 
 - **Clean Architecture:** لسهولة الصيانة والتوسع.
 - **Entity Framework Core:** للتعامل السلس مع قاعدة البيانات.
@@ -90,7 +90,7 @@
 
 ---
 
-## 📧 التواصل (Contact)
+##  التواصل (Contact)
 
 +967 738 928 202  
 engineeriyadalshamiri@gmail.com
