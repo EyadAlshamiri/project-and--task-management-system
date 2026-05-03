@@ -113,12 +113,12 @@ cd project-and--task-management-system
 
 ---
 
-# المخططات 
-   ** ER Diagram**
+## المخططات 
+  **ER Diagram**   
 
  ![](./UiImages/ER%20Daigram.png)
 
- ** Relational Schema**
+  **Relational Schema**
 
  ![](./UiImages/Relatinal.png)
 
@@ -126,7 +126,7 @@ cd project-and--task-management-system
 
 ## الإند بوينت (End Points)
 
-![](./UiImages//project_end_points.png)[](./UiImages/task_end_points.png) [](./UiImages/sub_task_end_points.png)
+![](./UiImages//project_end_points.png)![](./UiImages/task_end_points.png) ![](./UiImages/sub_task_end_points.png)
 
 
 ## واجهات المستخدم (User Interfaces)
