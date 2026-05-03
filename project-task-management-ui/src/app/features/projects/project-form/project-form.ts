@@ -215,7 +215,7 @@ export class ProjectForm implements OnInit {
       nzContent: TaskModal,
       nzData: { task: null, members: this.selectedMembers },
       nzFooter: null,
-      nzWidth: 600
+      nzWidth: 'min(600px, 95vw)'
     });
 
     modal.afterClose.subscribe(result => {
@@ -258,7 +258,7 @@ export class ProjectForm implements OnInit {
       nzContent: TaskModal,
       nzData: { task: task, members: this.selectedMembers },
       nzFooter: null,
-      nzWidth: 600
+      nzWidth: 'min(600px, 95vw)'
     });
 
     modal.afterClose.subscribe(result => {
@@ -330,7 +330,7 @@ export class ProjectForm implements OnInit {
         singleSelection: true
       } as MemberSelectionData,
       nzFooter: null,
-      nzWidth: 480,
+      nzWidth: 'min(480px, 95vw)',
       nzBodyStyle: { padding: '16px' }
     });
 
@@ -357,7 +357,7 @@ export class ProjectForm implements OnInit {
         selectedUserIds: currentMemberIds
       } as MemberSelectionData,
       nzFooter: null,
-      nzWidth: 480,
+      nzWidth: 'min(480px, 95vw)',
       nzBodyStyle: { padding: '16px' }
     });
 

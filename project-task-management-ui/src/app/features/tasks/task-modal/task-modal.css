@@ -1,14 +1,14 @@
 .task-modal-form {
-  padding: 10px 0;
+  padding: var(--spacing-sm) 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-xl);
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: var(--spacing-lg);
 }
 
 .full-width-item {
@@ -22,10 +22,10 @@
 .input-wrapper {
   position: relative;
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-sm);
-  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
   transition: all var(--transition-normal);
-  background: white;
+  background: var(--bg-color);
 }
 
 .input-wrapper.has-error {
@@ -40,12 +40,12 @@
 .floating-label {
   position: absolute;
   top: -10px;
-  inset-inline-start: 12px;
-  background: white;
-  padding: 0 4px;
-  font-size: 12px;
+  inset-inline-start: var(--spacing-md);
+  background: var(--bg-color);
+  padding: 0 var(--spacing-xs);
+  font-size: var(--font-sm);
   color: var(--primary-color);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   z-index: 1;
 }
 
@@ -55,12 +55,12 @@
 
 .required-asterisk {
   position: absolute;
-  inset-inline-end: 12px;
+  inset-inline-end: var(--spacing-md);
   top: 50%;
   transform: translateY(-50%);
   color: var(--error-color);
-  font-size: 16px;
-  font-weight: bold;
+  font-size: var(--font-lg);
+  font-weight: var(--weight-bold);
 }
 
 ::ng-deep .input-wrapper input.ant-input,
@@ -69,7 +69,7 @@
   border: none !important;
   box-shadow: none !important;
   padding: 0;
-  font-size: 15px;
+  font-size: var(--font-xl);
   color: var(--text-main);
   width: 100%;
   background: transparent;
@@ -87,15 +87,15 @@
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 10px;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-sm);
 }
 
 /* Subtasks Styles */
 .subtasks-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .subtasks-header {
@@ -106,27 +106,27 @@
 
 .section-title {
   margin: 0;
-  font-size: 15px;
-  font-weight: 700;
+  font-size: var(--font-xl);
+  font-weight: var(--weight-bold);
   color: var(--text-main);
 }
 
 .subtasks-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-md);
   max-height: 250px;
   overflow-y: auto;
-  padding-inline-end: 5px;
+  padding-inline-end: var(--spacing-xs);
 }
 
 .subtask-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   background: var(--bg-body);
-  padding: 10px;
-  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
 }
 
@@ -144,8 +144,8 @@
 .delete-icon {
   cursor: pointer;
   color: var(--error-color);
-  font-size: 18px;
-  transition: all 0.2s;
+  font-size: var(--font-xl);
+  transition: all var(--transition-fast);
 }
 
 .delete-icon:hover {

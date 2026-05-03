@@ -66,7 +66,10 @@ export class ProjectDetails implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isViewReady = true;
+    setTimeout(() => {
+      this.isViewReady = true;
+      this.cdr.detectChanges();
+    });
     this.route.paramMap.subscribe((params) => {
       const idParam = params.get('id');
       if (idParam) {
@@ -124,7 +127,7 @@ export class ProjectDetails implements OnInit {
     const modalRef = this.modal.create({
       nzTitle: 'تعديل المهمة',
       nzContent: TaskModal,
-      nzWidth: 600,
+      nzWidth: 'min(600px, 95vw)',
       nzFooter: null,
       nzData: {
         task: task,
@@ -154,7 +157,7 @@ export class ProjectDetails implements OnInit {
     const modalRef = this.modal.create({
       nzTitle: 'إضافة مهمة جديدة',
       nzContent: TaskModal,
-      nzWidth: 600,
+      nzWidth: 'min(600px, 95vw)',
       nzFooter: null,
       nzData: {
         projectId: this.currentProjectId,

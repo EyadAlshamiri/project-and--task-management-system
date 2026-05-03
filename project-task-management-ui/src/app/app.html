@@ -1,6 +1,8 @@
 <ng-container *ngIf="!isFullPage; else fullPage">
   <nz-layout class="app-layout">
+    <!-- Desktop Sidebar -->
     <nz-sider
+      *ngIf="!isMobile"
       class="menu-sidebar"
       nzCollapsible
       nzWidth="260px"
@@ -8,37 +10,39 @@
       [nzTrigger]="null"
       nzTheme="light"
     >
-      <!-- Logo -->
       <div class="sidebar-logo">
         <img [src]="logo" alt="logo" style="width: 32px" />
         <h1 *ngIf="!isCollapsed">إدارة المشاريع</h1>
       </div>
-
-      <!-- Menu -->
-      <ul nz-menu nzTheme="light" nzMode="inline">
-        <li nz-menu-group>
-          <ul>
-            <li nz-menu-item routerLink="/projects" routerLinkActive="nzSelected">
-              <span nz-icon nzType="dashboard"></span>
-              <span>الرئيسية</span>
-            </li>
-            <li nz-submenu nzTitle="المشاريع" nzIcon="project">
-              <ul>
-                <li nz-menu-item *ngFor="let project of projects">
-                  <a [routerLink]="['/projects', project.id]">{{ project.tilte }}</a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
+      <ng-container [ngTemplateOutlet]="menuTpl"></ng-container>
     </nz-sider>
+
+    <!-- Mobile Drawer -->
+    <nz-drawer
+      [nzVisible]="isDrawerVisible"
+      nzPlacement="right"
+      [nzTitle]="drawerTitle"
+      (nzOnClose)="closeDrawer()"
+      *ngIf="isMobile"
+    >
+      <ng-container *nzDrawerContent>
+        <ng-container [ngTemplateOutlet]="menuTpl"></ng-container>
+      </ng-container>
+    </nz-drawer>
+
+    <ng-template #drawerTitle>
+      <div class="sidebar-logo drawer-logo">
+        <img [src]="logo" alt="logo" style="width: 32px" />
+        <h1>إدارة المشاريع</h1>
+      </div>
+    </ng-template>
 
     <nz-layout>
       <nz-header>
         <div class="app-header">
-          <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-            <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" />
+          <span class="header-trigger" (click)="toggleSidebar()">
+            <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" *ngIf="!isMobile" />
+            <span nz-icon nzType="menu" class="trigger" *ngIf="isMobile"></span>
           </span>
         </div>
         <div class="header-right">
@@ -59,6 +63,26 @@
     </nz-layout>
   </nz-layout>
 </ng-container>
+
+<ng-template #menuTpl>
+  <ul nz-menu nzTheme="light" nzMode="inline" class="app-menu">
+    <li nz-menu-group>
+      <ul>
+        <li nz-menu-item routerLink="/projects" routerLinkActive="nzSelected">
+          <span nz-icon nzType="dashboard"></span>
+          <span>الرئيسية</span>
+        </li>
+        <li nz-submenu nzTitle="المشاريع" nzIcon="project">
+          <ul>
+            <li nz-menu-item *ngFor="let project of projects">
+              <a [routerLink]="['/projects', project.id]">{{ project.tilte }}</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</ng-template>
 
 <ng-template #fullPage>
   <div class="full-page-router-wrapper">

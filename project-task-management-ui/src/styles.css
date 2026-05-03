@@ -19,11 +19,23 @@
   --text-main: #1e293b;
   --text-muted: #64748b;
   --text-light: #94a3b8;
+  --text-dark: #1a202c;
+  --text-slate: #2d3748;
+  --text-gray: #4a5568;
+  --text-cool: #718096;
   
   /* Status Colors */
   --error-color: #ef4444;
   --success-color: #10b981;
   --warning-color: #f59e0b;
+  --info-color: #3b82f6;
+  
+  /* Status Surface Colors */
+  --error-surface: #fef2f2;
+  --success-surface: #ecfdf5;
+  --warning-surface: #fff7ed;
+  --info-surface: #eff6ff;
+  --neutral-surface: #f1f5f9;
   
   /* Backgrounds & Borders */
   --bg-color: #ffffff;
@@ -32,17 +44,55 @@
   --border-light: #f1f5f9;
   --border-avatar: #e2e8f0;
   
-  /* Spacing & Sizes */
-  --border-radius-sm: 8px;
-  --border-radius-md: 12px;
-  --border-radius-lg: 16px;
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 30px;
+  --spacing-4xl: 40px;
+  --spacing-5xl: 50px;
+  --spacing-6xl: 80px;
+  
+  /* Border Radius */
+  --radius-xs: 4px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+  
+  /* Typography */
+  --font-xs: 11px;
+  --font-sm: 12px;
+  --font-md: 13px;
+  --font-lg: 14px;
+  --font-xl: 15px;
+  --font-2xl: 16px;
+  --font-3xl: 18px;
+  --font-4xl: 20px;
+  --font-5xl: 22px;
+  --font-6xl: 24px;
+  --font-7xl: 28px;
+  
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  
+  /* Transitions */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.02);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   
   /* Gradients */
   --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -76,3 +126,21 @@ body {
   background: var(--bg-body);
   min-height: 100vh;
 }
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  :root {
+    --font-7xl: 24px;
+    --font-6xl: 22px;
+    --font-5xl: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  :root {
+    --font-7xl: 20px;
+    --font-6xl: 18px;
+    --font-5xl: 16px;
+    --font-xl: 14px;
+  }
+}

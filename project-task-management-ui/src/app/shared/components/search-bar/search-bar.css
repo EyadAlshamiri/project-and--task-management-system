@@ -1,21 +1,21 @@
 .search-bar {
   flex: 1;
-  transition: all 0.3s;
+  transition: all var(--transition-normal);
   
 }
 
 .search-bar:focus-within {
   box-shadow: 0 0 0 2px var(--primary-color);
-  border-radius: 7px;
+  border-radius: var(--radius-md);
 }
 
 nz-input-group {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
   align-items: center;
   border: none;
   background-color: var(--primary-light);
-  border-radius: 7px;
+  border-radius: var(--radius-md);
   padding: 10px 5px;
   height: 42px;
 }
@@ -25,10 +25,10 @@ nz-input-group input {
   border: none;
   outline: none;
   width: 100%;
-  font-size: 14px;
-  color: var(--main-text-color);
+  font-size: var(--font-lg);
+  color: var(--text-main);
 }
 
 nz-input-group input::placeholder {
-  color: var(--muted-text-color);
+  color: var(--text-muted);
 }

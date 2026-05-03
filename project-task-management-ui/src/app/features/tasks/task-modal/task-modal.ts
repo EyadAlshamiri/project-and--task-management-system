@@ -12,8 +12,6 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { CustomButton } from '../../../shared/components/custom-button/custom-button';
-import { StatusFormatPipe } from '../../../shared/pipes/status-format.pipe';
-import { PriorityFormatPipe } from '../../../shared/pipes/priority-format.pipe';
 
 @Component({
   selector: 'app-task-modal',
@@ -28,9 +26,7 @@ import { PriorityFormatPipe } from '../../../shared/pipes/priority-format.pipe';
     NzCheckboxModule,
     NzIconModule,
     NzDividerModule,
-    CustomButton,
-    StatusFormatPipe,
-    PriorityFormatPipe
+    CustomButton
   ],
   templateUrl: './task-modal.html',
   styleUrl: './task-modal.css'

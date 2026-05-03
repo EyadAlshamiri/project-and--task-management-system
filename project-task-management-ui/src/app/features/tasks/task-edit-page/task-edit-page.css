@@ -1,0 +1,28 @@
+.page-container {
+  padding: var(--spacing-4xl);
+  background: var(--primary-light);
+  min-height: 100vh;
+}
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.page-title {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+  font-weight: var(--weight-bold);
+}
+.edit-card {
+  background: var(--bg-color);
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.footer-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-2xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--border-light);
+}

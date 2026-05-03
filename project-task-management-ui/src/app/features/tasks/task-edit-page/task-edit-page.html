@@ -1,0 +1,27 @@
+<div class="page-container">
+  <div class="form-container">
+    <h2 class="page-title">تعديل المهمة</h2>
+
+    <div *ngIf="isLoading" class="loading-state">جاري جلب مهمة التحرير...</div>
+
+    <div *ngIf="!isLoading && editForm" class="edit-card">
+      <app-task-form
+        [taskGroup]="editForm"
+        [index]="0"
+        [projectMembers]="projectMembers"
+      ></app-task-form>
+      <div class="footer-actions">
+        <app-custom-button
+          label="تحديث"
+          type="primary"
+          [loading]="isSubmitting"
+          [disabled]="editForm.invalid || isSubmitting"
+          (btnClick)="save()"
+        ></app-custom-button>
+        <app-custom-button label="إلغاء" type="default" (btnClick)="cancel()"></app-custom-button>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && !editForm" class="empty-state">لم يتم العثور على المهمة.</div>
+  </div>
+</div>

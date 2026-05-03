@@ -1,5 +1,5 @@
 .project-card {
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   transition: all var(--transition-normal);
   cursor: pointer;
@@ -7,6 +7,7 @@
   height: 230px;
   display: flex;
   flex-direction: column;
+  background: var(--bg-color);
 }
 
 ::ng-deep .project-card .ant-card-body {
@@ -22,68 +23,68 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-xl);
 }
 .project-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: var(--font-3xl);
+  font-weight: var(--weight-bold);
   color: var(--text-main);
 }
 .task-count {
-  margin: 4px 0 0;
+  margin: var(--spacing-xs) 0 0;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: var(--font-lg);
 }
 .card-body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-2xl);
 }
 .status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 6px var(--spacing-md);
+  border-radius: var(--radius-2xl);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 .status-active {
-  background: #ecfdf5; /* Keeping light specific bg since it's an opacity variant, but matching text to variable */
+  background: var(--success-surface);
   color: var(--success-color);
 }
 .status-hold {
-  background: #fff7ed;
+  background: var(--warning-surface);
   color: var(--warning-color);
 }
 .status-completed {
-  background: #f1f5f9;
+  background: var(--neutral-surface);
   color: var(--text-muted);
 }
 
 .badges-row {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-sm);
   align-items: center;
 }
 
 .priority-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 6px var(--spacing-md);
+  border-radius: var(--radius-2xl);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.5px;
 }
 
 .priority-high {
-  background: #fef2f2;
-  color: #ef4444;
+  background: var(--error-surface);
+  color: var(--error-color);
 }
 
 .priority-medium {
-  background: #fff7ed;
-  color: #f59e0b;
+  background: var(--warning-surface);
+  color: var(--warning-color);
 }
 
 .priority-low {
@@ -92,7 +93,7 @@
 }
 
 .priority-default {
-  background: #f1f5f9;
+  background: var(--neutral-surface);
   color: var(--text-muted);
 }
 .card-footer {

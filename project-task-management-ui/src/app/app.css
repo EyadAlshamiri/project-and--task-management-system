@@ -1,26 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-:root {
-  --primary-color: #4f46e5; 
-  --bg-color: #f1f5f9;
-  --sider-bg: #ffffff; 
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --border-radius: 12px;
-}
-
-
 body {
-  font-family:
-    'Inter',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  background-color: var(--bg-color);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg-body);
   margin: 0;
   color: var(--text-main);
 }
@@ -39,23 +21,23 @@ body {
 .full-page-router-wrapper {
   width: 100%;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: var(--bg-body);
 }
 
 
 .menu-sidebar {
-  background: #fff !important;
-  border-left: 1px solid #e2e8f0; 
+  background: var(--bg-color) !important;
+  border-left: 1px solid var(--border-avatar); 
   box-shadow: none !important;
 }
 
 .sidebar-logo {
-  background: white !important;
-  border-bottom: 1px solid #f1f5f9;
+  background: var(--bg-color) !important;
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 11.5px 15px;
+  padding: 11.5px var(--spacing-lg);
 }
 
 .sidebar-logo img {
@@ -69,22 +51,22 @@ body {
 .sidebar-logo h1 {
   color: var(--primary-color) !important;
   font-size: 1.1rem;
-  margin: 0 10px 0 0;
+  margin: 0 var(--spacing-md) 0 0;
 }
 
 [nz-menu] {
   border-right: none !important;
-  background: #fff !important;
-  border-bottom: 2px solid #e2e8f0;
+  background: var(--bg-color) !important;
+  border-bottom: 2px solid var(--border-avatar);
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 }
 
 
 .nz-menu-item-selected {
-  background-color: #eef2ff !important;
+  background-color: var(--primary-light) !important;
   color: var(--primary-color) !important;
-  border-radius: 8px;
-  margin: 4px 8px;
+  border-radius: var(--radius-md);
+  margin: var(--spacing-xs) var(--spacing-sm);
 }
 
 
@@ -99,8 +81,8 @@ body {
 nz-header {
   background: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(8px); 
-  border-bottom: 1px solid #e2e8f0;
-  padding: 0 24px;
+  border-bottom: 1px solid var(--border-avatar);
+  padding: 0 var(--spacing-2xl);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -108,12 +90,10 @@ nz-header {
 
 .header-trigger {
   height: 64px;
-  padding: 20px 24px;
-  font-size: 20px;
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  font-size: var(--font-4xl);
   cursor: pointer;
-  transition:
-    all 0.3s,
-    padding 0s;
+  transition: all var(--transition-normal), padding 0s;
 }
 
 .trigger:hover {
@@ -125,14 +105,14 @@ nz-header {
   display: flex;
   margin-left: 25px;
   align-items: center;
-  gap: 20px;
+  gap: var(--spacing-xl);
 }
 
 nz-badge {
   display: flex;
-  background-color: var(--primary-light)   ;
-  border-radius: 50%;
-  padding: 10px;
+  background-color: var(--primary-light);
+  border-radius: var(--radius-full);
+  padding: var(--spacing-sm);
 }
 
 nz-content {
@@ -140,21 +120,66 @@ nz-content {
 }
 
 .inner-content {
-  padding: 24px 50px;
-  background: #fff;
+  padding: var(--spacing-2xl) var(--spacing-5xl);
+  background: var(--bg-color);
   height: 100%;
+}
+
+@media (max-width: 768px) {
+  .inner-content {
+    padding: var(--spacing-lg);
+  }
+  
+  nz-header {
+    padding: 0 var(--spacing-lg);
+  }
+  
+  .header-right {
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar-logo h1 {
+    display: none;
+  }
+  
+  .drawer-logo h1 {
+    display: block !important;
+    font-size: var(--font-xl);
+  }
+  
+  .drawer-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 0;
+    margin: 0;
+  }
+}
+
+::ng-deep .ant-drawer-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+::ng-deep .ant-drawer-body {
+  padding: 0;
+}
+
+.app-menu {
+  border: none !important;
 }
 
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--border-light);
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--border-color);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--text-light);
 }

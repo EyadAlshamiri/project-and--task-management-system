@@ -28,17 +28,21 @@ import { CustomButton } from '../../../shared/components/custom-button/custom-bu
   templateUrl: './task-form.html',
   styleUrl: './task-form.css',
 })
-export class TaskForm {
+export class TaskForm implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   
-  @Input() taskGroup!: FormGroup;
-  @Input() index = 0;
+  @Input({ required: true }) taskGroup!: FormGroup;
+  @Input() index: number = 0;
   @Input() projectMembers: string[] = [];
+  
   @Output() remove = new EventEmitter<void>();
+  
   private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    TaskUtils.setupAutoCompletion(this.taskGroup, this.destroy$);
+    if (this.taskGroup) {
+      TaskUtils.setupAutoCompletion(this.taskGroup, this.destroy$);
+    }
   }
 
   ngOnDestroy(): void {

@@ -1,11 +1,11 @@
 .app-custom-button {
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 5px 20px;
+  gap: var(--spacing-sm);
+  padding: 5px var(--spacing-xl);
   justify-content: center;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   transition: all var(--transition-normal);
 }
 
